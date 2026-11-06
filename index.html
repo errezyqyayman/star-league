@@ -85,7 +85,7 @@ index.html
       <div class="flex items-center gap-3">
         <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
           <i class="fa-solid fa-trophy"></i>
-          <span id="currentTourneyNameDisp">La towjada botola mokhtara</span>
+          <span id="currentTourneyNameDisp">La towjada botola</span>
         </div>
 
         <div class="relative">
@@ -115,7 +115,7 @@ index.html
         <i class="fa-solid fa-list-ol"></i> <span>At-tartib w l-hadafin</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-tab text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span>Al-mobarayat w l-chat</span>
+        <i class="fa-solid fa-calendar-days"></i> <span>Al-mobarayat</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-tab text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>Lowhat l-admin</span>
@@ -132,13 +132,9 @@ index.html
         <div class="space-y-2 text-right rtl:text-right">
           <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold">STAR LEAGUE</span>
           <h2 class="text-3xl font-extrabold">Manasa l-botolat l-ihtirafiya</h2>
-          <p class="text-brand-muted text-sm">Onši botolatak, sajl l-fariq, ḥaddid mawa3id l-mobarayat.</p>
+          <p class="text-brand-muted text-sm">Onši botolatak, sajl l-fariq, w taba3 at-tartib.</p>
         </div>
         <div class="flex gap-4">
-          <div onclick="switchTab('schedule')" class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px] cursor-pointer hover:border-brand-primary transition">
-            <span class="text-2xl font-bold text-brand-accent" id="stat-matches">0</span>
-            <p class="text-xs text-brand-muted mt-1">Al-mobarayat</p>
-          </div>
           <div onclick="switchTab('standings')" class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px] cursor-pointer hover:border-brand-primary transition">
             <span class="text-2xl font-bold text-brand-secondary" id="stat-players">0</span>
             <p class="text-xs text-brand-muted mt-1">Al-la3abin</p>
@@ -147,7 +143,7 @@ index.html
       </div>
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-list-check"></i> <span>Al-botolat an-nachita (Ikhtar li-motaba3atha)</span>
+          <i class="fa-solid fa-list-check"></i> <span>Al-botolat an-nachita</span>
         </h3>
         <div id="activeTourneysContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <p class="text-sm text-brand-muted">La towjada botolat.</p>
@@ -155,11 +151,11 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 2: TOURNAMENTS (With Theme Selector) -->
+    <!-- TAB 2: TOURNAMENTS -->
     <section id="sec-tournaments" class="hidden space-y-6 max-w-3xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-sitemap"></i> <span>Inša' botola jadida w ikhtiyar ath-thim (Theme)</span>
+          <i class="fa-solid fa-sitemap"></i> <span>Inša' botola jadida w ikhtiyar ath-thim</span>
         </h3>
         <form id="tournamentForm" class="space-y-4" onsubmit="handleCreateTournament(event)">
           <div>
@@ -195,11 +191,11 @@ index.html
         <form id="playerForm" class="space-y-4" onsubmit="handleRegisterPlayer(event)">
           <div>
             <label class="block text-sm text-brand-muted mb-1">ID (Ismak f l-lo3ba wela l-fariq)</label>
-            <input type="text" id="playerName" value="Man City" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            <input type="text" id="playerName" value="Arsenal" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">Ism l-fariq / Montaxab</label>
-            <input type="text" id="teamName" value="Manchester City" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            <input type="text" id="teamName" value="Arsenal FC" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">Lowgo l-fariq / Sswira (Logo)</label>
@@ -207,7 +203,7 @@ index.html
           </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">3adad l-ahdaf (Goals)</label>
-            <input type="number" id="playerGoals" value="30" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            <input type="number" id="playerGoals" value="25" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">Tasjil daba</button>
         </form>
@@ -223,7 +219,7 @@ index.html
         </div>
       </div>
 
-      <!-- Sub-tabs for Table vs Scorers -->
+      <!-- Sub-tabs -->
       <div class="flex gap-3 border-b border-brand-border pb-4">
         <button onclick="switchSubTab('table')" id="subtab-table" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition">Table (At-tartib)</button>
         <button onclick="switchSubTab('scorers')" id="subtab-scorers" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition">Scorers (Al-hadafin)</button>
@@ -265,7 +261,7 @@ index.html
           <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
             <i class="fa-solid fa-futbol text-brand-secondary"></i> Scorers (Al-Hadafin)
           </h3>
-          <span class="text-xs text-brand-muted" id="scorersCountDisp">10 Players</span>
+          <span class="text-xs text-brand-muted" id="scorersCountDisp">0 Players</span>
         </div>
         <div id="scorersListContainer" class="space-y-3">
           <p class="text-sm text-brand-muted text-center py-6">La towjada ahdaf mosajjala ba3d.</p>
@@ -313,10 +309,8 @@ index.html
     let tournaments = [];
     let activeTourneyId = localStorage.getItem('star_active_tourney') || null;
     let players = [];
-    let matches = [];
     let currentSubTab = 'table';
 
-    // تطبيق الثيم الخاص بالبطولة النشطة تلقائياً
     function applyTournamentTheme(themeName) {
       const body = document.getElementById('appBody');
       if (themeName === 'dark') {
@@ -326,7 +320,7 @@ index.html
       } else if (themeName === 'crimson') {
         body.style.backgroundColor = '#2a0808';
       } else {
-        body.style.backgroundColor = '#120428'; // الافتراضي الملكي
+        body.style.backgroundColor = '#120428';
       }
     }
 
@@ -458,7 +452,6 @@ index.html
     }
 
     function renderAll() {
-      // Tourneys lists
       const tourneysCont = document.getElementById('tournamentsListContainer');
       const activeTourneysContainer = document.getElementById('activeTourneysContainer');
 
@@ -500,7 +493,7 @@ index.html
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       document.getElementById('stat-players').innerText = currentTourneyPlayers.length;
 
-      // 1. Render Table
+      // Table Render
       const playersTable = document.getElementById('playersTable');
       if(currentTourneyPlayers.length === 0) {
         playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">La towjada bayanatan.</td></tr>';
@@ -538,7 +531,7 @@ index.html
         }).join('');
       }
 
-      // 2. Render Scorers
+      // Scorers Render
       const scorersCont = document.getElementById('scorersListContainer');
       document.getElementById('scorersCountDisp').innerText = currentTourneyPlayers.length + " Players";
 
