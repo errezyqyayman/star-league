@@ -101,7 +101,7 @@ index.html
 <body>
 
     <div class="container">
-        <!-- iḫtiyar al-luġat -->
+        <!-- Sélecteur de langue -->
         <div class="lang-selector">
             <label for="langSwitch" style="display:inline-block; margin-left: 10px;" id="lblLanguage">اللغة / Language:</label>
             <select id="langSwitch" onchange="changeLanguage(this.value)">
@@ -115,7 +115,7 @@ index.html
         <h1 id="mainTitle">منصة STAR LEAGUE لإدارة البطولات</h1>
         <p style="text-align: center; color: #aaa;" id="mainSubtitle">منصتك المتكاملة لتسيير الفرق، النتائج، والمشرفين بكل سهولة</p>
 
-        <!-- qism iḍafat al-firaq -->
+        <!-- Section des équipes -->
         <div class="section">
             <h2 id="teamsHeader">إدارة الفرق والمشاركين</h2>
             <div class="form-group">
@@ -128,7 +128,7 @@ index.html
             </div>
         </div>
 
-        <!-- qism iḍafat al-mošrifin -->
+        <!-- Section des administrateurs -->
         <div class="section">
             <h2 id="adminsHeader">إدارة المشرفين والصلاحيات</h2>
             <p style="font-size: 14px; color: #ccc;" id="adminsDesc">يمكنك إضافة مشرفين جدد للمنصة لكي يتمكنوا من الدخول والمساعدة في التسيير:</p>
@@ -143,11 +143,12 @@ index.html
         </div>
     </div>
 
-    <!-- Firebase w tarajamat -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <!-- Firebase SDK (Compat Version pour éviter les erreurs de modules) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+    <script>
+        // Configuration Firebase
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -157,9 +158,10 @@ index.html
             appId: "YOUR_APP_ID"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
+        // Dictionnaire des traductions
         const translations = {
             ar: {
                 dir: "rtl",
@@ -249,7 +251,7 @@ index.html
 
         let currentLang = 'ar';
 
-        window.changeLanguage = function(lang) {
+        function changeLanguage(lang) {
             currentLang = lang;
             const t = translations[lang];
             
@@ -276,7 +278,7 @@ index.html
             loadAdmins();
         }
 
-        window.addTeam = async function() {
+        async function addTeam() {
             const teamName = document.getElementById('teamName').value.trim();
             const t = translations[currentLang];
             if (!teamName) {
@@ -284,16 +286,16 @@ index.html
                 return;
             }
             try {
-                await addDoc(collection(db, "teams"), { name: teamName, createdAt: new Date() });
+                await db.collection("teams").add({ name: teamName, createdAt: new Date() });
                 alert(t.teamAdded);
                 document.getElementById('teamName').value = '';
                 loadTeams();
             } catch (e) {
                 console.error(e);
             }
-        };
+        }
 
-        window.addAdmin = async function() {
+        async function addAdmin() {
             const adminEmail = document.getElementById('adminEmail').value.trim();
             const t = translations[currentLang];
             if (!adminEmail) {
@@ -301,26 +303,26 @@ index.html
                 return;
             }
             try {
-                await addDoc(collection(db, "admins"), { email: adminEmail, addedAt: new Date() });
+                await db.collection("admins").add({ email: adminEmail, addedAt: new Date() });
                 alert(t.adminAdded);
                 document.getElementById('adminEmail').value = '';
                 loadAdmins();
             } catch (e) {
                 console.error(e);
             }
-        };
+        }
 
         async function loadTeams() {
             const listEl = document.getElementById('teamsList');
             const t = translations[currentLang];
             try {
-                const querySnapshot = await getDocs(collection(db, "teams"));
+                const snapshot = await db.collection("teams").get();
                 listEl.innerHTML = '';
-                if (querySnapshot.empty) {
+                if (snapshot.empty) {
                     listEl.innerHTML = `<span style="color: #777;">${t.noTeams}</span>`;
                     return;
                 }
-                querySnapshot.forEach((doc) => {
+                snapshot.forEach((doc) => {
                     const data = doc.data();
                     listEl.innerHTML += `<div class="item-row"><span>🎮 ${data.name}</span><span style="color: #f39c12; font-size: 12px;">OK</span></div>`;
                 });
@@ -333,13 +335,13 @@ index.html
             const listEl = document.getElementById('adminsList');
             const t = translations[currentLang];
             try {
-                const querySnapshot = await getDocs(collection(db, "admins"));
+                const snapshot = await db.collection("admins").get();
                 listEl.innerHTML = '';
-                if (querySnapshot.empty) {
+                if (snapshot.empty) {
                     listEl.innerHTML = `<span style="color: #777;">${t.noAdmins}</span>`;
                     return;
                 }
-                querySnapshot.forEach((doc) => {
+                snapshot.forEach((doc) => {
                     const data = doc.data();
                     listEl.innerHTML += `<div class="item-row"><span>🛡️ ${data.email}</span><span style="color: #2ecc71; font-size: 12px;">Admin</span></div>`;
                 });
