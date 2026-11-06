@@ -1216,7 +1216,6 @@ index.html
       }
 
       container.innerHTML = tourneyMatches.map(m => {
-        // البحث عن اللوغو الحقيقي للاعبين من جدول اللاعبين لتحديثه تلقائياً
         const p1Obj = players.find(p => p.name === m.player1 && p.tourneyId === activeTourneyId);
         const p2Obj = players.find(p => p.name === m.player2 && p.tourneyId === activeTourneyId);
         const l1 = p1Obj ? p1Obj.logo : (m.logo1 || 'https://via.placeholder.com/40');
@@ -1250,13 +1249,11 @@ index.html
               </div>
             </div>
 
-            <!-- Time Selector -->
             <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
               <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
               <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد الوقت</button>
             </div>
 
-            <!-- Chat Box -->
             <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
               <p class="text-xs font-bold text-brand-primary flex items-center gap-1"><i class="fa-solid fa-comments"></i> شات الاتفاق بين اللاعبين:</p>
               <div class="max-h-32 overflow-y-auto space-y-1.5 pr-1 text-xs">
@@ -1398,7 +1395,6 @@ index.html
         `).join('');
       }
 
-      // جدول الترتيب الرسمي مع اللوغو بجانب اسم كل لاعب
       const playersTable = document.getElementById('playersTable');
       if(currentTourneyPlayers.length === 0) {
         playersTable.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-brand-muted" data-i18n="no_data">لا توجد بيانات لعرضها حالياً.</td></tr>';
