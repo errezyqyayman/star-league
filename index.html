@@ -78,7 +78,7 @@ index.html
         <img src="logo-star-league.png" alt="Logo" class="w-10 h-10 object-contain flex-shrink-0">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
-          <p class="text-xs text-brand-muted" data-i18n="subtitle">منصة البطولات الذكية</p>
+          <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
         </div>
       </div>
 
@@ -112,22 +112,22 @@ index.html
     <!-- Navigation Tabs -->
     <nav class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-chart-pie"></i> <span data-i18n="nav_dashboard">الرئيسية</span>
+        <i class="fa-solid fa-chart-pie"></i> <span>الرئيسية</span>
       </button>
       <button onclick="switchTab('tournaments')" id="tab-tournaments" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-sitemap"></i> <span data-i18n="nav_tournaments">إدارة البطولات</span>
+        <i class="fa-solid fa-sitemap"></i> <span>إدارة البطولات</span>
       </button>
       <button onclick="switchTab('register')" id="tab-register" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-user-plus"></i> <span data-i18n="nav_register">تسجيل لاعب</span>
+        <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب</span>
       </button>
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-list-ol"></i> <span data-i18n="nav_standings">الترتيب والهدافيين</span>
+        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والهدافيين</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="nav_schedule">المباريات والشات</span>
+        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
-        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="nav_admin">لوحة الأدمن</span>
+        <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
       </button>
     </nav>
   </header>
@@ -161,7 +161,7 @@ index.html
         </div>
       </div>
 
-      <!-- قسم الأخبار والقوانين -->
+      <!-- قسم الأخبار والقوانين (تحديث ديناميكي) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- الأخبار الجديدة -->
@@ -172,15 +172,8 @@ index.html
             </h3>
             <span class="text-[10px] bg-brand-secondary/10 text-brand-secondary px-2 py-0.5 rounded font-bold">جديد</span>
           </div>
-          <div class="space-y-3 text-sm text-brand-muted">
-            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
-              <span class="text-xs font-bold text-brand-accent">🔥 انطلاق البطولة الجديدة</span>
-              <p class="text-white text-xs">التسجيل مفتوح لجميع اللاعبين والفرق. اختر فريقك وبدأ المنافسة بقوة!</p>
-            </div>
-            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
-              <span class="text-xs font-bold text-brand-primary">💡 نصيحة للمشاركين</span>
-              <p class="text-white text-xs">تواصل مباشرة مع خصمك في شات المباريات لتحديد وقت اللعب المتفق عليه.</p>
-            </div>
+          <div id="newsContentDisplay" class="space-y-3 text-sm text-brand-muted">
+            <p class="text-white text-xs">جاري تحميل الأخبار...</p>
           </div>
         </div>
 
@@ -192,11 +185,9 @@ index.html
             </h3>
             <span class="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded font-bold">مهم</span>
           </div>
-          <ul class="space-y-2 text-xs text-brand-muted list-disc list-inside bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
-            <li><strong class="text-white">الاحترام المتبادل:</strong> الروح الرياضية واجبة بين جميع المشاركين في الشات والمباريات.</li>
-            <li><strong class="text-white">التوقيت:</strong> الالتزام بالوقت المحددة لكل مباراة تفادياً لأي انسحاب.</li>
-            <li><strong class="text-white">النتائج:</strong> في حال حدوث أي نزاع، يرجى إرسال لقطة شاشة (Screenshot) للأدمن للفصل في الأمر.</li>
-          </ul>
+          <div id="rulesContentDisplay" class="space-y-2 text-xs text-brand-muted bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
+            <p class="text-white text-xs">جاري تحميل القوانين...</p>
+          </div>
         </div>
 
       </div>
@@ -204,7 +195,7 @@ index.html
       <!-- البطولات النشطة -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-list-check"></i> <span data-i18n="active_tourneys_title">البطولات النشطة (اختر بطولة للمتابعة)</span>
+          <i class="fa-solid fa-list-check"></i> <span>البطولات النشطة (اختر بطولة للمتابعة)</span>
         </h3>
         <div id="activeTourneysContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <p class="text-sm text-brand-muted">لا توجد بطولات بعد.</p>
@@ -340,8 +331,28 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN -->
+    <!-- TAB 6: ADMIN (محدث فيه زر تعديل الأخبار والقوانين) -->
     <section id="sec-admin" class="hidden space-y-6">
+      
+      <!-- قسم تعديل الأخبار والقوانين في الأدمن -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> تعديل الأخبار والقوانين في الواجهة
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="block text-xs text-brand-muted">تعديل الأخبار (HTML أو نص):</label>
+            <textarea id="adminNewsInput" rows="4" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none"></textarea>
+            <button onclick="saveAdminNews()" class="gradient-bg text-brand-dark px-4 py-2 rounded-lg text-xs font-bold">حفظ الأخبار</button>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs text-brand-muted">تعديل القوانين (HTML أو نص):</label>
+            <textarea id="adminRulesInput" rows="4" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none"></textarea>
+            <button onclick="saveAdminRules()" class="gradient-bg text-brand-dark px-4 py-2 rounded-lg text-xs font-bold">حفظ القوانين</button>
+          </div>
+        </div>
+      </div>
+
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <div class="flex justify-between items-center border-b border-brand-border pb-4">
           <h3 class="text-xl font-bold text-brand-primary">لوحة الأدمن وتوليد المباريات</h3>
@@ -581,6 +592,41 @@ index.html
     }
 
     function fetchRealtimeData() {
+      // جلب الأخبار والقوانين من فايربيز بشكل حي
+      db.collection("settings").doc("site_content").onSnapshot((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById('newsContentDisplay').innerHTML = data.news || '<p class="text-white text-xs">لا توجد أخبار حالياً.</p>';
+          document.getElementById('rulesContentDisplay').innerHTML = data.rules || '<p class="text-white text-xs">لا توجد قوانين حالياً.</p>';
+          
+          if(document.getElementById('adminNewsInput') && !document.getElementById('adminNewsInput').dataset.loaded) {
+            document.getElementById('adminNewsInput').value = data.news || '';
+            document.getElementById('adminRulesInput').value = data.rules || '';
+            document.getElementById('adminNewsInput').dataset.loaded = "true";
+          }
+        } else {
+          // قيم افتراضية أولية إذا لم تكن موجودة
+          const defaultNews = `
+            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
+              <span class="text-xs font-bold text-brand-accent">🔥 انطلاق البطولة الجديدة</span>
+              <p class="text-white text-xs">التسجيل مفتوح لجميع اللاعبين والفرق. اختر فريقك وبدأ المنافسة بقوة!</p>
+            </div>
+            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
+              <span class="text-xs font-bold text-brand-primary">💡 نصيحة للمشاركين</span>
+              <p class="text-white text-xs">تواصل مباشرة مع خصمك في شات المباريات لتحديد وقت اللعب المتفق عليه.</p>
+            </div>
+          `;
+          const defaultRules = `
+            <ul class="space-y-2 text-xs text-brand-muted list-disc list-inside leading-relaxed">
+              <li><strong class="text-white">الاحترام المتبادل:</strong> الروح الرياضية واجبة بين جميع المشاركين في الشات والمباريات.</li>
+              <li><strong class="text-white">التوقيت:</strong> الالتزام بالوقت المحددة لكل مباراة تفادياً لأي انسحاب.</li>
+              <li><strong class="text-white">النتائج:</strong> في حال حدوث أي نزاع، يرجى إرسال لقطة شاشة للأدمن للفصل في الأمر.</li>
+            </ul>
+          `;
+          db.collection("settings").doc("site_content").set({ news: defaultNews, rules: defaultRules });
+        }
+      });
+
       db.collection("tournaments").onSnapshot((snapshot) => {
         tournaments = [];
         snapshot.forEach((doc) => {
@@ -608,6 +654,30 @@ index.html
           matches.push({ id: doc.id, ...doc.data() });
         });
         renderMatches();
+      });
+    }
+
+    // حفظ الأخبار من الأدمن
+    function saveAdminNews() {
+      const newsHtml = document.getElementById('adminNewsInput').value;
+      db.collection("settings").doc("site_content").update({ news: newsHtml }).then(() => {
+        alert('تم تحديث الأخبار بنجاح!');
+      }).catch(err => {
+        db.collection("settings").doc("site_content").set({ news: newsHtml }, { merge: true }).then(() => {
+          alert('تم حفظ الأخبار بنجاح!');
+        });
+      });
+    }
+
+    // حفظ القوانين من الأدمن
+    function saveAdminRules() {
+      const rulesHtml = document.getElementById('adminRulesInput').value;
+      db.collection("settings").doc("site_content").update({ rules: rulesHtml }).then(() => {
+        alert('تم تحديث القوانين بنجاح!');
+      }).catch(err => {
+        db.collection("settings").doc("site_content").set({ rules: rulesHtml }, { merge: true }).then(() => {
+          alert('تم حفظ القوانين بنجاح!');
+        });
       });
     }
 
