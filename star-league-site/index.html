@@ -1,0 +1,918 @@
+index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STAR LEAGUE - منصة البطولات المتعددة</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1b2a">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Firebase App & Firestore SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0a1118',
+              card: '#121d28',
+              border: '#1e2d3d',
+              primary: '#00c4d6',
+              secondary: '#29b6f6',
+              accent: '#38bdf8',
+              text: '#f8fafc',
+              muted: '#94a3b8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0a1118;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #00c4d6 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #00c4d6 0%, #0284c7 100%);
+    }
+    .tab-active {
+      background-color: rgba(0, 196, 214, 0.15);
+      color: #00c4d6;
+      border-bottom: 2px solid #00c4d6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header / Navigation -->
+  <header class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      
+      <div class="flex items-center space-x-3 space-x-reverse">
+        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain flex-shrink-0">
+        <div>
+          <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
+          <p class="text-xs text-brand-muted">منصة البطولات المتعددة والذكية</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
+          <i class="fa-solid fa-trophy"></i>
+          <span id="currentTourneyNameDisp">لا توجد بطولة مختارة</span>
+        </div>
+
+        <div class="relative">
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+            <option value="ar">العربية 🇲🇦</option>
+            <option value="fr">Français 🇫🇷</option>
+            <option value="en">English 🇬🇧</option>
+            <option value="es">Español 🇪🇸</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-chart-pie"></i> <span>الرئيسية</span>
+      </button>
+      <button onclick="switchTab('tournaments')" id="tab-tournaments" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-sitemap"></i> <span>إدارة البطولات</span>
+      </button>
+      <button onclick="switchTab('register')" id="tab-register" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب</span>
+      </button>
+      <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والهدافيين</span>
+      </button>
+      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
+      </button>
+      <button onclick="switchTab('proof')" id="tab-proof" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-camera"></i> <span>إرسال النتيجة</span>
+      </button>
+      <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
+        <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+
+    <!-- TAB 1: DASHBOARD -->
+    <section id="sec-dashboard" class="space-y-6">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+        <div class="space-y-2 text-right rtl:text-right ltr:text-left">
+          <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold">STAR LEAGUE</span>
+          <h2 class="text-3xl font-extrabold">منصة البطولات الاحترافية</h2>
+          <p class="text-brand-muted text-sm">أنشئ بطولتك، سجل في الفريق، حدد مواعيد المباريات وتتبع الترتيب بكل ملاسة.</p>
+        </div>
+        <div class="flex gap-4">
+          <div onclick="switchTab('schedule')" class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px] cursor-pointer hover:border-brand-primary transition">
+            <span class="text-2xl font-bold text-brand-accent" id="stat-matches">0</span>
+            <p class="text-xs text-brand-muted mt-1">المباريات</p>
+          </div>
+          <div onclick="switchTab('standings')" class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px] cursor-pointer hover:border-brand-primary transition">
+            <span class="text-2xl font-bold text-brand-secondary" id="stat-players">0</span>
+            <p class="text-xs text-brand-muted mt-1">اللاعبين</p>
+          </div>
+          <div onclick="switchTab('tournaments')" class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px] cursor-pointer hover:border-brand-primary transition">
+            <span class="text-2xl font-bold text-brand-primary" id="stat-tourneys">0</span>
+            <p class="text-xs text-brand-muted mt-1">البطولات</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-list-check"></i> <span>البطولات النشطة هذا الأسبوع (اختر لمتابعتها)</span>
+        </h3>
+        <div id="activeTourneysContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <p class="text-sm text-brand-muted">لا توجد بطولات بعد.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TOURNAMENTS -->
+    <section id="sec-tournaments" class="hidden space-y-6 max-w-3xl mx-auto">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة وتحديد نظامها</span>
+        </h3>
+        <form id="tournamentForm" class="space-y-4" onsubmit="handleCreateTournament(event)">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">اسم البطولة</label>
+            <input type="text" id="tourneyName" required placeholder="UEFA Nations League" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">نظام البطولة</label>
+            <select id="tourneySystem" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none cursor-pointer">
+              <option value="league">بطولة عادية بنظام الترتيب (الدوري / League)</option>
+              <option value="group_knockout">مجموعات ثم إقصائيات (Group Stage + Knockout)</option>
+              <option value="knockout">إقصائيات مباشرة / خروج المغلوب (Knockout)</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">إضافة وإنشاء البطولة</button>
+        </form>
+      </div>
+
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-secondary flex items-center gap-2">
+          <i class="fa-solid fa-database"></i> <span>جميع البطولات المُنشأة في المنصة</span>
+        </h3>
+        <div id="tournamentsListContainer" class="space-y-3">
+          <p class="text-sm text-brand-muted">لا توجد بطولات مسجلة بعد.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: REGISTER PLAYER -->
+    <section id="sec-register" class="hidden max-w-xl mx-auto">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب جديد في البطولة النشطة</span>
+        </h3>
+        <div class="bg-brand-dark p-3 rounded-lg border border-brand-primary/35 text-xs text-brand-primary flex items-center justify-between">
+          <span>البطولة المستهدفة: <strong id="regTargetTourneyName" class="text-white">لم تختار بطولة</strong></span>
+        </div>
+        <form id="playerForm" class="space-y-4" onsubmit="handleRegisterPlayer(event)">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">الـ ID (اسمك في اللعبة)</label>
+            <input type="text" id="playerName" value="Zigaziga_12" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">اسم الفريق / المنتخب</label>
+            <input type="text" id="teamName" value="France" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">صورة لوغو الفريق / العلم (اختياري)</label>
+            <input type="file" id="teamLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
+          </div>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">تسجيل الان</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 4: STANDINGS -->
+    <section id="sec-standings" class="hidden space-y-8">
+      <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-brand-primary" id="standingsTourneyDisplay">البطولة الحالية</h3>
+          <p class="text-xs text-brand-muted" id="standingsSystemDisplay">النظام: -</p>
+        </div>
+        <button onclick="openDesignModal()" class="gradient-bg text-brand-dark px-4 py-2 rounded-lg font-bold text-xs shadow hover:opacity-90 transition flex items-center gap-2">
+          <i class="fa-solid fa-palette"></i> ديزاين الترتيب (Instagram)
+        </button>
+      </div>
+
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-trophy"></i> <span>جدول الترتيب الرسمي (انقر على أي لاعب لعرض بروفيله)</span>
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right border-collapse">
+            <thead>
+              <tr class="border-b border-brand-border text-brand-muted text-sm">
+                <th class="p-3">المركز</th>
+                <th class="p-3">اللوغو والـ ID</th>
+                <th class="p-3">الفريق / المنتخب</th>
+                <th class="p-3 text-center">النقاط</th>
+              </tr>
+            </thead>
+            <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
+              <tr><td colspan="4" class="p-4 text-center text-brand-muted">لا توجد بيانات لعرضها حالياً.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SCHEDULE & CHAT -->
+    <section id="sec-schedule" class="hidden space-y-6">
+      <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="text-xl font-bold text-brand-primary">جدول المباريات والدردشة المباشرة لتحديد التوقيت</h3>
+          <p class="text-xs text-brand-muted">تواصل مع خصمك مباشرة تحت كل مباراة لتحديد وقت اللعب.</p>
+        </div>
+      </div>
+      <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <p class="text-sm text-brand-muted">لا توجد مباريات مجدولة حالياً. اذهب لوحة الأدمن لتوليدها.</p>
+      </div>
+    </section>
+
+    <!-- TAB 6: PROOF -->
+    <section id="sec-proof" class="hidden max-w-xl mx-auto space-y-6">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-camera"></i> <span>إرسال سكرين شوت النتيجة</span>
+        </h3>
+        <form id="matchProofForm" class="space-y-4" onsubmit="handleProofSubmit(event)">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">اسمك (ID)</label>
+            <input type="text" id="matchPlayer" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm text-brand-muted mb-1">اسم الخصم</label>
+              <input type="text" id="matchOpponent" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-sm text-brand-muted mb-1">النتيجة</label>
+              <input type="text" id="matchScore" required placeholder="3 - 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">صورة السكرين شوت</label>
+            <input type="file" id="matchImage" accept="image/*" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
+          </div>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">إرسال النتيجة للأدمن</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 7: ADMIN -->
+    <section id="sec-admin" class="hidden space-y-6">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-brand-border pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved"></i> <span>إدارة اللاعبين وتوليد المباريات للبطولة النشطة</span>
+            </h3>
+            <p class="text-xs text-brand-muted mt-1">البطولة الحالية: <span id="adminCurrentTourneyLabel" class="text-white font-bold">-</span></p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-3 py-2 rounded-lg font-bold text-xs shadow hover:opacity-90 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> توليد المباريات
+            </button>
+            <button onclick="forceRegisterMe()" class="bg-green-500/20 text-green-400 border border-green-500/40 px-3 py-2 rounded-lg font-bold text-xs hover:bg-green-500/30 transition">
+              <i class="fa-solid fa-user-check"></i> تسجيل Zigaziga_12
+            </button>
+            <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-3 py-2 rounded-lg font-bold text-xs hover:bg-red-500/30 transition">
+              <i class="fa-solid fa-trash-can"></i> مسح اللاعبين (Reset)
+            </button>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <h4 class="text-sm font-semibold text-brand-muted">اللاعبون المسجلون في هذه البطولة:</h4>
+          <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto">
+            <p class="text-sm text-brand-muted">لا توجد لاعبين مسجلين بعد.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Player Profile Modal -->
+  <div id="playerProfileModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center relative">
+      <button onclick="closePlayerProfile()" class="absolute top-4 left-4 text-brand-muted hover:text-white text-lg font-bold">&times;</button>
+      <div class="flex flex-col items-center space-y-3">
+        <img id="profilePlayerLogo" src="" class="w-20 h-20 rounded-full object-cover border-2 border-brand-primary shadow-lg">
+        <div>
+          <h3 id="profilePlayerName" class="text-xl font-bold text-white">اسم اللاعب</h3>
+          <p id="profilePlayerTeam" class="text-xs text-brand-muted">الفريق</p>
+        </div>
+      </div>
+      <div class="bg-brand-dark p-4 rounded-xl border border-brand-border grid grid-cols-2 gap-2 text-center">
+        <div>
+          <span class="text-xs text-brand-muted">النقاط</span>
+          <p id="profilePlayerPoints" class="text-lg font-bold text-brand-primary">0</p>
+        </div>
+        <div>
+          <span class="text-xs text-brand-muted">الأهداف</span>
+          <p id="profilePlayerGoals" class="text-lg font-bold text-brand-secondary">0</p>
+        </div>
+      </div>
+      <button onclick="closePlayerProfile()" class="w-full bg-brand-border text-white px-4 py-2.5 rounded-lg font-bold text-sm">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- Edit Player Modal -->
+  <div id="editPlayerModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+      <h3 class="text-lg font-bold text-brand-primary">تعديل بيانات اللاعب</h3>
+      <input type="hidden" id="editPlayerId">
+      <div>
+        <label class="block text-sm text-brand-muted mb-1">اسم اللاعب (ID)</label>
+        <input type="text" id="editPlayerName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+      </div>
+      <div>
+        <label class="block text-sm text-brand-muted mb-1">اسم الفريق / المنتخب</label>
+        <input type="text" id="editPlayerTeam" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+      </div>
+      <div>
+        <label class="block text-sm text-brand-muted mb-1">تعديل النقاط</label>
+        <input type="number" id="editPlayerPoints" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="saveEditedPlayer()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90">حفظ التعديلات</button>
+        <button onclick="closeEditModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Design Export Modal -->
+  <div id="designModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-brand-border pb-3">
+        <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-palette"></i> ديزاين الترتيب لإنستغرام
+        </h3>
+        <button onclick="closeDesignModal()" class="text-brand-muted hover:text-white text-lg font-bold">&times;</button>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="setDesignTheme('viking')" id="theme-viking" class="p-3 rounded-xl border border-brand-primary bg-brand-primary/10 text-brand-primary font-bold text-sm text-center transition">
+          <i class="fa-solid fa-shield-halved"></i> ستايل الفايكنج الداكن
+        </button>
+        <button onclick="setDesignTheme('neon')" id="theme-neon" class="p-3 rounded-xl border border-brand-border bg-brand-dark text-white font-bold text-sm text-center transition">
+          <i class="fa-solid fa-bolt"></i> ستايل النيون العصري
+        </button>
+      </div>
+      <div id="previewDesignCard" class="p-6 rounded-2xl space-y-4 transition shadow-2xl bg-gradient-to-br from-[#0d1b2a] to-[#1b263b] border border-cyan-500/40 text-white">
+        <div class="text-center space-y-1 border-b border-white/10 pb-3">
+          <h4 id="previewTourneyName" class="text-xl font-black uppercase tracking-wider text-cyan-400">STAR LEAGUE</h4>
+          <p class="text-xs text-gray-400">جدول الترتيب الرسمي</p>
+        </div>
+        <div id="previewTableRows" class="space-y-2"></div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="closeDesignModal()" class="w-full bg-brand-border text-white px-4 py-3 rounded-lg font-bold">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase & App Script -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyASNrJten6zhja-LZNok84-I3vLl9adZE",
+      authDomain: "star-league-2e873.firebaseapp.com",
+      projectId: "star-league-2e873",
+      storageBucket: "star-league-2e873.firebasestorage.app",
+      messagingSenderId: "454839687304",
+      appId: "1:454839687304:web:aa402d4f74e96f6f54e73d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let tournaments = [];
+    let activeTourneyId = localStorage.getItem('star_active_tourney') || null;
+    let players = [];
+    let matches = [];
+    let currentTheme = 'viking';
+
+    function switchTab(tabId) {
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      const targetSec = document.getElementById('sec-' + tabId);
+      if (targetSec) targetSec.classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active', 'text-brand-primary'));
+      const targetBtn = document.getElementById('tab-' + tabId);
+      if (targetBtn) targetBtn.classList.add('tab-active');
+    }
+
+    function fetchRealtimeData() {
+      db.collection("tournaments").onSnapshot((snapshot) => {
+        tournaments = [];
+        snapshot.forEach((doc) => {
+          tournaments.push({ id: doc.id, ...doc.data() });
+        });
+        if(!activeTourneyId && tournaments.length > 0) {
+          activeTourneyId = tournaments[0].id;
+          localStorage.setItem('star_active_tourney', activeTourneyId);
+        }
+        renderAll();
+      });
+
+      db.collection("players").onSnapshot((snapshot) => {
+        players = [];
+        snapshot.forEach((doc) => {
+          players.push({ id: doc.id, ...doc.data() });
+        });
+        renderAll();
+      });
+
+      db.collection("matches").onSnapshot((snapshot) => {
+        matches = [];
+        snapshot.forEach((doc) => {
+          matches.push({ id: doc.id, ...doc.data() });
+        });
+        renderMatches();
+      });
+    }
+
+    function handleCreateTournament(e) {
+      e.preventDefault();
+      const name = document.getElementById('tourneyName').value.trim();
+      const system = document.getElementById('tourneySystem').value;
+      if(!name) return;
+
+      db.collection("tournaments").add({
+        name: name,
+        system: system,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then((docRef) => {
+        if(!activeTourneyId) {
+          activeTourneyId = docRef.id;
+          localStorage.setItem('star_active_tourney', activeTourneyId);
+        }
+        document.getElementById('tourneyName').value = '';
+        alert('تم إنشاء البطولة بنجاح!');
+      });
+    }
+
+    function setActiveTourney(id) {
+      activeTourneyId = id;
+      localStorage.setItem('star_active_tourney', activeTourneyId);
+      renderAll();
+      alert('تم اختيار البطولة بنجاح!');
+    }
+
+    function deleteTourney(id) {
+      db.collection("tournaments").doc(id).delete();
+    }
+
+    // Direct Force Register Helper for Zigaziga_12
+    function forceRegisterMe() {
+      if(!activeTourneyId) {
+        alert('المرجو اختيار بطولة أولاً!');
+        return;
+      }
+      db.collection("players").add({
+        tourneyId: activeTourneyId,
+        name: "Zigaziga_12",
+        team: "France",
+        logo: "https://via.placeholder.com/40",
+        points: 0,
+        goals: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        alert('تم تسجيل Zigaziga_12 بنجاح في البطولة!');
+      }).catch((error) => {
+        alert('خطأ: ' + error.message);
+      });
+    }
+
+    // Reset All Players
+    function resetAllPlayers() {
+      if(confirm('هل أنت متأكد من مسح جميع اللاعبين وبدء صفحة جديدة؟')) {
+        db.collection("players").get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            db.collection("players").doc(doc.id).delete();
+          });
+          alert('تم مسح جميع اللاعبين بنجاح!');
+        });
+      }
+    }
+
+    // Safe image compression / handling preventing size overflow
+    function handleRegisterPlayer(e) {
+      e.preventDefault();
+      if(!activeTourneyId) {
+        alert('المرجو اختيار أو إنشاء بطولة نشطة أولاً!');
+        return;
+      }
+
+      const playerName = document.getElementById('playerName').value.trim();
+      const teamName = document.getElementById('teamName').value.trim();
+      const fileInput = document.getElementById('teamLogoFile');
+
+      let logoUrl = 'https://via.placeholder.com/40';
+      if(fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 100;
+            const MAX_HEIGHT = 100;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+            savePlayerFinal(playerName, teamName, dataUrl);
+          };
+          img.onerror = function() {
+            savePlayerFinal(playerName, teamName, logoUrl);
+          };
+          img.src = uploadEvent.target.result;
+        };
+        reader.onerror = function() {
+          savePlayerFinal(playerName, teamName, logoUrl);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        savePlayerFinal(playerName, teamName, logoUrl);
+      }
+    }
+
+    function savePlayerFinal(name, team, logo) {
+      db.collection("players").add({
+        tourneyId: activeTourneyId,
+        name: name,
+        team: team,
+        logo: logo,
+        points: 0,
+        goals: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        alert('تم تسجيل اللاعب بنجاح ودون مشاكل الحجم!');
+      }).catch((error) => {
+        alert('خطأ في التسجيل: ' + error.message);
+      });
+    }
+
+    function deletePlayer(id) {
+      if(confirm('هل أنت متأكد من حذف هذا اللاعب؟')) {
+        db.collection("players").doc(id).delete();
+      }
+    }
+
+    function openEditPlayer(id, name, team, points) {
+      document.getElementById('editPlayerId').value = id;
+      document.getElementById('editPlayerName').value = name;
+      document.getElementById('editPlayerTeam').value = team;
+      document.getElementById('editPlayerPoints').value = points;
+      document.getElementById('editPlayerModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editPlayerModal').classList.add('hidden');
+    }
+
+    function saveEditedPlayer() {
+      const id = document.getElementById('editPlayerId').value;
+      const name = document.getElementById('editPlayerName').value.trim();
+      const team = document.getElementById('editPlayerTeam').value.trim();
+      const points = parseInt(document.getElementById('editPlayerPoints').value) || 0;
+
+      db.collection("players").doc(id).update({
+        name: name,
+        team: team,
+        points: points
+      }).then(() => {
+        closeEditModal();
+        alert('تم تعديل البيانات بنجاح!');
+      });
+    }
+
+    function showPlayerProfile(name, team, logo, points, goals) {
+      document.getElementById('profilePlayerName').innerText = name;
+      document.getElementById('profilePlayerTeam').innerText = team;
+      document.getElementById('profilePlayerLogo').src = logo;
+      document.getElementById('profilePlayerPoints').innerText = points || 0;
+      document.getElementById('profilePlayerGoals').innerText = goals || 0;
+      document.getElementById('playerProfileModal').classList.remove('hidden');
+    }
+
+    function closePlayerProfile() {
+      document.getElementById('playerProfileModal').classList.add('hidden');
+    }
+
+    // Generate Automatic Matches
+    function generateAutomaticMatches() {
+      if(!activeTourneyId) {
+        alert('اختر بطولة أولاً!');
+        return;
+      }
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      if(currentTourneyPlayers.length < 2) {
+        alert('لا يوجد عدد كاف من اللاعبين لتوليد المباريات (على الأقل 2).');
+        return;
+      }
+
+      let generatedCount = 0;
+      for (let i = 0; i < currentTourneyPlayers.length; i++) {
+        for (let j = i + 1; j < currentTourneyPlayers.length; j++) {
+          db.collection("matches").add({
+            tourneyId: activeTourneyId,
+            player1: currentTourneyPlayers[i].name,
+            player2: currentTourneyPlayers[j].name,
+            team1: currentTourneyPlayers[i].team,
+            team2: currentTourneyPlayers[j].team,
+            scheduledTime: 'لم يُحدد بعد',
+            messages: [],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          generatedCount++;
+        }
+      }
+      alert(`تم توليد ${generatedCount} مباراة بنجاح! انتقل لقسم المباريات.`);
+    }
+
+    // Chat / Match Time Scheduling
+    function sendMatchMessage(matchId) {
+      const input = document.getElementById('msg-input-' + matchId);
+      const text = input.value.trim();
+      if(!text) return;
+
+      const matchObj = matches.find(m => m.id === matchId);
+      if(!matchObj) return;
+
+      const updatedMessages = matchObj.messages || [];
+      updatedMessages.push({
+        sender: 'Zigaziga_12',
+        text: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      db.collection("matches").doc(matchId).update({
+        messages: updatedMessages
+      }).then(() => {
+        input.value = '';
+      });
+    }
+
+    function updateMatchTime(matchId) {
+      const timeInput = document.getElementById('time-input-' + matchId);
+      const newTime = timeInput.value.trim();
+      if(!newTime) return;
+
+      db.collection("matches").doc(matchId).update({
+        scheduledTime: newTime
+      }).then(() => {
+        alert('تم تحديث وتثبيت توقيت الماتش بنجاح!');
+      });
+    }
+
+    function renderMatches() {
+      const container = document.getElementById('matchesContainer');
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
+
+      if(tourneyMatches.length === 0) {
+        container.innerHTML = '<p class="text-sm text-brand-muted">لا توجد مباريات مجدولة لهذه البطولة حالياً. قم بتوليدها من لوحة الأدمن.</p>';
+        return;
+      }
+
+      container.innerHTML = tourneyMatches.map(m => `
+        <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl">
+          <div class="flex justify-between items-center border-b border-brand-border pb-3">
+            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">مباراة رسمية</span>
+            <span class="text-xs text-brand-accent font-bold"><i class="fa-solid fa-clock"></i> ${m.scheduledTime || 'لم يُحدد بعد'}</span>
+          </div>
+
+          <div class="flex justify-around items-center text-center py-2">
+            <div>
+              <p class="font-bold text-white text-base">${m.player1}</p>
+              <p class="text-xs text-brand-muted">${m.team1 || 'فرقة 1'}</p>
+            </div>
+            <span class="text-xl font-black text-brand-secondary">VS</span>
+            <div>
+              <p class="font-bold text-white text-base">${m.player2}</p>
+              <p class="text-xs text-brand-muted">${m.team2 || 'فرقة 2'}</p>
+            </div>
+          </div>
+
+          <!-- Time Selector -->
+          <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
+            <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد الوقت</button>
+          </div>
+
+          <!-- Chat Box -->
+          <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
+            <p class="text-xs font-bold text-brand-primary flex items-center gap-1"><i class="fa-solid fa-comments"></i> شات الاتفاق بين اللاعبين:</p>
+            <div class="max-h-32 overflow-y-auto space-y-1.5 pr-1 text-xs">
+              ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد. ابدأ النقاش لتحديد الوقت!</p>' : 
+                m.messages.map(msg => `
+                  <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
+                    <div class="flex justify-between text-[10px] text-brand-muted mb-0.5">
+                      <span class="font-bold text-brand-accent">${msg.sender}</span>
+                      <span>${msg.time}</span>
+                    </div>
+                    <p class="text-white">${msg.text}</p>
+                  </div>
+                `).join('')}
+            </div>
+            <div class="flex gap-2 pt-1">
+              <input type="text" id="msg-input-${m.id}" placeholder="اكتب رسالة لخصمك..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+              <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">إرسال</button>
+            </div>
+          </div>
+
+        </div>
+      `).join('');
+    }
+
+    function openDesignModal() {
+      renderPreviewDesign();
+      document.getElementById('designModal').classList.remove('hidden');
+    }
+
+    function closeDesignModal() {
+      document.getElementById('designModal').classList.add('hidden');
+    }
+
+    function setDesignTheme(theme) {
+      currentTheme = theme;
+      const card = document.getElementById('previewDesignCard');
+      const btnViking = document.getElementById('theme-viking');
+      const btnNeon = document.getElementById('theme-neon');
+
+      if(theme === 'viking') {
+        card.className = "p-6 rounded-2xl space-y-4 transition shadow-2xl bg-gradient-to-br from-[#0a1118] via-[#121d28] to-[#1a2b3c] border border-cyan-500/50 text-white";
+        btnViking.className = "p-3 rounded-xl border border-brand-primary bg-brand-primary/10 text-brand-primary font-bold text-sm text-center transition";
+        btnNeon.className = "p-3 rounded-xl border border-brand-border bg-brand-dark text-white font-bold text-sm text-center transition";
+      } else {
+        card.className = "p-6 rounded-2xl space-y-4 transition shadow-2xl bg-gradient-to-br from-[#1a0b2e] via-[#241241] to-[#3b1454] border border-fuchsia-500/50 text-white";
+        btnNeon.className = "p-3 rounded-xl border border-fuchsia-500 bg-fuchsia-500/10 text-fuchsia-400 font-bold text-sm text-center transition";
+        btnViking.className = "p-3 rounded-xl border border-brand-border bg-brand-dark text-white font-bold text-sm text-center transition";
+      }
+      renderPreviewDesign();
+    }
+
+    function renderPreviewDesign() {
+      const activeObj = tournaments.find(t => t.id === activeTourneyId);
+      document.getElementById('previewTourneyName').innerText = activeObj ? activeObj.name : 'STAR LEAGUE';
+
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      const sorted = [...currentTourneyPlayers].sort((a,b) => (b.points || 0) - (a.points || 0));
+      
+      const rowsCont = document.getElementById('previewTableRows');
+      if(sorted.length === 0) {
+        rowsCont.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">لا توجد بيانات للاعبين.</p>';
+      } else {
+        rowsCont.innerHTML = sorted.map((p, index) => `
+          <div class="flex items-center justify-between bg-black/30 p-2.5 rounded-xl border border-white/10">
+            <div class="flex items-center gap-3">
+              <span class="font-black text-sm w-5 text-cyan-400">${index + 1}</span>
+              <img src="${p.logo}" class="w-7 h-7 rounded-full object-cover border border-white/20">
+              <div>
+                <p class="font-bold text-xs text-white">${p.name}</p>
+                <p class="text-[10px] text-gray-400">${p.team}</p>
+              </div>
+            </div>
+            <span class="font-black text-sm text-cyan-300 bg-cyan-500/10 px-2.5 py-1 rounded-lg">${p.points || 0} pts</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderAll() {
+      document.getElementById('stat-tourneys').innerText = tournaments.length;
+      document.getElementById('stat-players').innerText = players.length;
+      document.getElementById('stat-matches').innerText = matches.filter(m => m.tourneyId === activeTourneyId).length;
+
+      const activeObj = tournaments.find(t => t.id === activeTourneyId);
+      const nameDisp = activeObj ? activeObj.name : 'لا توجد بطولة مختارة';
+      document.getElementById('currentTourneyNameDisp').innerText = nameDisp;
+      document.getElementById('regTargetTourneyName').innerText = nameDisp;
+      document.getElementById('adminCurrentTourneyLabel').innerText = nameDisp;
+      document.getElementById('standingsTourneyDisplay').innerText = nameDisp;
+
+      const tourneysCont = document.getElementById('tournamentsListContainer');
+      const activeTourneysContainer = document.getElementById('activeTourneysContainer');
+      
+      if(tournaments.length === 0) {
+        tourneysCont.innerHTML = '<p class="text-sm text-brand-muted">لا توجد بطولات مسجلة بعد.</p>';
+        activeTourneysContainer.innerHTML = '<p class="text-sm text-brand-muted">لا توجد بطولات بعد.</p>';
+      } else {
+        tourneysCont.innerHTML = tournaments.map(t => `
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-white">${t.name}</h4>
+              <p class="text-xs text-brand-muted">النظام: ${t.system}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="setActiveTourney('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${t.id === activeTourneyId ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">اختيار</button>
+              <button onclick="deleteTourney('${t.id}')" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold">حذف</button>
+            </div>
+          </div>
+        `).join('');
+
+        activeTourneysContainer.innerHTML = tournaments.map(t => `
+          <div onclick="setActiveTourney('${t.id}')" class="cursor-pointer bg-brand-dark p-4 rounded-xl border ${t.id === activeTourneyId ? 'border-brand-primary bg-brand-primary/10' : 'border-brand-border'} transition hover:border-brand-primary">
+            <h4 class="font-bold text-white">${t.name}</h4>
+            <p class="text-xs text-brand-muted mt-1">النظام: ${t.system}</p>
+          </div>
+        `).join('');
+      }
+
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+
+      const adminPlayersList = document.getElementById('adminPlayersList');
+      if(currentTourneyPlayers.length === 0) {
+        adminPlayersList.innerHTML = '<p class="text-sm text-brand-muted">لا توجد لاعبين مسجلين في هذه البطولة.</p>';
+      } else {
+        adminPlayersList.innerHTML = currentTourneyPlayers.map(p => `
+          <div onclick="showPlayerProfile('${p.name}', '${p.team}', '${p.logo}', ${p.points || 0}, ${p.goals || 0})" class="cursor-pointer bg-brand-dark p-3 rounded-lg border border-brand-border flex items-center justify-between hover:border-brand-primary transition">
+            <div class="flex items-center gap-3">
+              <img src="${p.logo}" class="w-8 h-8 rounded-full object-cover">
+              <div>
+                <p class="font-bold text-sm text-white">${p.name}</p>
+                <p class="text-xs text-brand-muted">${p.team} | النقاط: ${p.points || 0}</p>
+              </div>
+            </div>
+            <div class="flex gap-2" onclick="event.stopPropagation()">
+              <button onclick="openEditPlayer('${p.id}', '${p.name}', '${p.team}', ${p.points || 0})" class="text-brand-primary text-xs bg-brand-primary/10 px-2.5 py-1 rounded">تعديل</button>
+              <button onclick="deletePlayer('${p.id}')" class="text-red-400 text-xs bg-red-500/10 px-2.5 py-1 rounded">حذف</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const playersTable = document.getElementById('playersTable');
+      if(currentTourneyPlayers.length === 0) {
+        playersTable.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-brand-muted">لا توجد بيانات لعرضها حالياً.</td></tr>';
+      } else {
+        const sorted = [...currentTourneyPlayers].sort((a,b) => (b.points || 0) - (a.points || 0));
+        playersTable.innerHTML = sorted.map((p, index) => `
+          <tr onclick="showPlayerProfile('${p.name}', '${p.team}', '${p.logo}', ${p.points || 0}, ${p.goals || 0})" class="cursor-pointer border-b border-brand-border/30 hover:bg-brand-dark/60 transition">
+            <td class="p-3 font-bold text-brand-primary">${index + 1}</td>
+            <td class="p-3 flex items-center gap-2">
+              <img src="${p.logo}" class="w-7 h-7 rounded-full object-cover">
+              <span class="font-semibold text-white">${p.name}</span>
+            </td>
+            <td class="p-3 text-brand-muted">${p.team}</td>
+            <td class="p-3 text-center font-bold text-brand-primary">${p.points || 0}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    window.onload = function() {
+      fetchRealtimeData();
+    };
+  </script>
+</body>
+</html>

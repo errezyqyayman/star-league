@@ -1,0 +1,647 @@
+index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STAR LEAGUE - منصة البطولات المتعددة</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1b2a">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- html2canvas library for direct image download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0a1118',
+              card: '#121d28',
+              border: '#1e2d3d',
+              primary: '#00c4d6',
+              secondary: '#29b6f6',
+              accent: '#38bdf8',
+              text: '#f8fafc',
+              muted: '#94a3b8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0a1118;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #00c4d6 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #00c4d6 0%, #0284c7 100%);
+    }
+    .tab-active {
+      background-color: rgba(0, 196, 214, 0.15);
+      color: #00c4d6;
+      border-bottom: 2px solid #00c4d6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header / Navigation -->
+  <header class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      
+      <div class="flex items-center space-x-3 space-x-reverse">
+        <!-- اللوغو الجديد بدون خلفية -->
+        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain flex-shrink-0">
+        <div>
+          <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
+          <p class="text-xs text-brand-muted" data-i18n="subtitle">منصة البطولات المتعددة والذكية</p>
+        </div>
+      </div>
+
+      <!-- Language Selector & Active Tournament Indicator -->
+      <div class="flex items-center gap-3">
+        <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
+          <i class="fa-solid fa-trophy"></i>
+          <span id="currentTourneyNameDisp">لا توجد بطولة مختارة</span>
+        </div>
+
+        <div class="relative">
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+            <option value="ar">العربية 🇲🇦</option>
+            <option value="fr">Français 🇫🇷</option>
+            <option value="en">English 🇬🇧</option>
+            <option value="es">Español 🇪🇸</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-chart-pie"></i> <span data-i18n="navHome">الرئيسية</span>
+      </button>
+      <button onclick="switchTab('tournaments')" id="tab-tournaments" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-sitemap"></i> <span data-i18n="navTourneys">إدارة البطولات</span>
+      </button>
+      <button onclick="switchTab('register')" id="tab-register" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-user-plus"></i> <span data-i18n="navRegister">تسجيل لاعب</span>
+      </button>
+      <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-list-ol"></i> <span data-i18n="navStandings">الترتيب والهدافيين</span>
+      </button>
+      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="navMatches">المباريات والدردشة</span>
+      </button>
+      <button onclick="switchTab('proof')" id="tab-proof" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-camera"></i> <span data-i18n="navProof">إرسال النتيجة</span>
+      </button>
+      <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
+        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="navAdmin">لوحة الأدمن</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+
+    <!-- TAB 1: DASHBOARD -->
+    <section id="sec-dashboard" class="space-y-6">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+        <div class="space-y-2 text-right rtl:text-right ltr:text-left">
+          <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold">STAR LEAGUE</span>
+          <h2 class="text-3xl font-extrabold" data-i18n="dashTitle">منصة البطولات الاحترافية</h2>
+          <p class="text-brand-muted text-sm" data-i18n="dashDesc">أنشئ عدة بطولات نشطة في نفس الأسبوع، حدد نظامها وتابع المباريات والتقويم.</p>
+        </div>
+        <div class="flex gap-4">
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px]">
+            <span class="text-2xl font-bold text-brand-primary" id="stat-tourneys">0</span>
+            <p class="text-xs text-brand-muted" data-i18n="statTourneys">البطولات</p>
+          </div>
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px]">
+            <span class="text-2xl font-bold text-brand-secondary" id="stat-players">0</span>
+            <p class="text-xs text-brand-muted" data-i18n="statPlayers">اللاعبين</p>
+          </div>
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border text-center min-w-[90px]">
+            <span class="text-2xl font-bold text-brand-accent" id="stat-matches">0</span>
+            <p class="text-xs text-brand-muted" data-i18n="statMatches">المباريات</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Tourneys Selector Box -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-list-check"></i> <span data-i18n="selectActiveTourney">البطولات النشطة هذا الأسبوع (اختر لمتابعتها)</span>
+        </h3>
+        <div id="activeTourneysContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TOURNAMENTS CREATION & MANAGEMENT -->
+    <section id="sec-tournaments" class="hidden space-y-6 max-w-3xl mx-auto">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-sitemap"></i> <span data-i18n="tourneyCreatorTitle">إنشاء بطولة جديدة وتحديد نظامها</span>
+        </h3>
+        
+        <form id="tournamentForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="tourneyNameLabel">اسم البطولة (مثال: Star League, Champions Legend)</label>
+            <input type="text" id="tourneyName" required placeholder="Star League 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none focus:border-brand-primary">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="tourneySystemLabel">نظام البطولة (Format)</label>
+            <select id="tourneySystem" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none focus:border-brand-primary cursor-pointer">
+              <option value="league" data-i18n="sysLeague">بطولة عادية بنظام الترتيب (الدوري / League)</option>
+              <option value="group_knockout" data-i18n="sysGroupKO">مجموعات ثم إقصائيات (Group Stage + Knockout)</option>
+              <option value="knockout" data-i18n="sysKO">إقصائيات مباشرة / خروج المغلوب (Knockout)</option>
+            </select>
+          </div>
+          <button type="submit" id="saveTourneyBtn" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition" data-i18n="createTourneyBtn">
+            إضافة وإنشاء البطولة
+          </button>
+        </form>
+      </div>
+
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-secondary flex items-center gap-2">
+          <i class="fa-solid fa-database"></i> <span data-i18n="allTourneysList">جميع البطولات المُنشأة في المنصة</span>
+        </h3>
+        <div id="tournamentsListContainer" class="space-y-3">
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: REGISTER PLAYER -->
+    <section id="sec-register" class="hidden max-w-xl mx-auto">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-user-plus"></i> <span data-i18n="regTitle">تسجيل لاعب جديد في البطولة النشطة</span>
+        </h3>
+        
+        <div class="bg-brand-dark p-3 rounded-lg border border-brand-primary/35 text-xs text-brand-primary flex items-center justify-between">
+          <span>البطولة المستهدفة: <strong id="regTargetTourneyName" class="text-white">لم تختار بطولة</strong></span>
+        </div>
+
+        <form id="playerForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="regIdLabel">الـ ID (اسمك في اللعبة)</label>
+            <input type="text" id="playerName" required placeholder="Star League Player" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none focus:border-brand-primary">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="regTeamLabel">اسم الفريق / المنتخب</label>
+            <input type="text" id="teamName" required placeholder="Manchester United" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none focus:border-brand-primary">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="regLogoLabel">صورة لوغو الفريق / العلم (Logo)</label>
+            <input type="file" id="teamLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
+          </div>
+          <button type="submit" id="savePlayerBtn" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition" data-i18n="regBtn">
+            تسجيل الان
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 4: STANDINGS & TOP SCORERS -->
+    <section id="sec-standings" class="hidden space-y-8">
+      <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-brand-primary" id="standingsTourneyDisplay">البطولة الحالية</h3>
+          <p class="text-xs text-brand-muted" id="standingsSystemDisplay">النظام: -</p>
+        </div>
+      </div>
+
+      <!-- Standings Table -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+            <i class="fa-solid fa-trophy"></i> <span data-i18n="standingsTitle">جدول الترتيب الرسمي</span>
+          </h3>
+          <button onclick="downloadElementAsImage('standingsCardContainer', 'star-league-standings.png')" class="bg-brand-primary/20 hover:bg-brand-primary/30 text-brand-primary text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-2">
+            <i class="fa-solid fa-download"></i> تحميل الترتيب (Instagram)
+          </button>
+        </div>
+
+        <div id="standingsCardContainer" class="bg-brand-card p-2 rounded-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse rtl:text-right ltr:text-left">
+              <thead>
+                <tr class="border-b border-brand-border text-brand-muted text-sm">
+                  <th class="p-3" data-i18n="thRank">المركز</th>
+                  <th class="p-3" data-i18n="thPlayer">اللوغو والـ ID</th>
+                  <th class="p-3" data-i18n="thTeam">الفريق / المنتخب</th>
+                  <th class="p-3 text-center" data-i18n="thPts">النقاط</th>
+                </tr>
+              </thead>
+              <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Scorers Table -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl">
+        <h3 class="text-xl font-bold text-brand-secondary mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-futbol"></i> <span data-i18n="scorersTitle">ترتيب الهدافين</span>
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-right border-collapse rtl:text-right ltr:text-left">
+            <thead>
+              <tr class="border-b border-brand-border text-brand-muted text-sm">
+                <th class="p-3" data-i18n="thRank">المركز</th>
+                <th class="p-3" data-i18n="thPlayer">الـ ID (اللاعب)</th>
+                <th class="p-3" data-i18n="thTeam">اسم الفريق / المنتخب</th>
+                <th class="p-3 text-center" data-i18n="thGoals">الأهداف (Buts)</th>
+              </tr>
+            </thead>
+            <tbody id="scorersTable" class="divide-y divide-brand-border/50 text-sm">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SCHEDULE & CHAT -->
+    <section id="sec-schedule" class="hidden space-y-6">
+      <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="text-xl font-bold text-brand-primary" data-i18n="schedTitle">المباريات والاتفاق على التوقيت</h3>
+          <p class="text-xs text-brand-muted" data-i18n="schedDesc">اختر التوقيت وتواصل عبر الشات، وأضف الماتش لتقويم هاتفك بضغطة زر، وحمّل النتيجة كصورة لإنستغرام.</p>
+        </div>
+      </div>
+
+      <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      </div>
+    </section>
+
+    <!-- TAB 6: PROOF SUBMISSION -->
+    <section id="sec-proof" class="hidden max-w-xl mx-auto space-y-6">
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-camera"></i> <span data-i18n="proofTitle">إرسال سكرين شوت النتيجة</span>
+        </h3>
+        
+        <form id="matchProofForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="proofYourId">اسمك (ID)</label>
+            <input type="text" id="matchPlayer" required placeholder="Star League Player" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm text-brand-muted mb-1" data-i18n="proofOpponent">اسم الخصم</label>
+              <input type="text" id="matchOpponent" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-sm text-brand-muted mb-1" data-i18n="proofScore">النتيجة والأهداف المسجلة</label>
+              <input type="text" id="matchScore" required placeholder="3 - 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1" data-i18n="proofImg">صورة السكرين شوت</label>
+            <input type="file" id="matchImage" accept="image/*" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
+          </div>
+          <button type="submit" id="submitProofBtn" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition" data-i18n="proofBtn">
+            إرسال النتيجة للأدمن
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 7: ADMIN PANEL -->
+    <section id="sec-admin" class="hidden space-y-6">
+      
+      <!-- Groups Management Box -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-layer-group"></i> <span data-i18n="adminGroupsTitle">إدارة المجموعات (خاصة بالنظام المختلط)</span>
+        </h3>
+        <div class="flex gap-2">
+          <input type="text" id="newGroupName" placeholder="مجموعة A" class="bg-brand-dark border border-brand-border rounded-lg p-3 text-white flex-grow focus:outline-none">
+          <button onclick="createGroup()" class="gradient-bg text-brand-dark font-bold px-5 rounded-lg hover:opacity-90 transition text-sm" data-i18n="adminAddGroupBtn">إضافة مجموعة</button>
+        </div>
+        <div id="groupsListContainer" class="flex flex-wrap gap-3 pt-2"></div>
+      </div>
+
+      <!-- Generator & Players Management Box -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-brand-border pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved"></i> <span data-i18n="adminPlayersTitle">إدارة اللاعبين وتوليد المباريات للبطولة النشطة</span>
+            </h3>
+            <p class="text-xs text-brand-muted mt-1">البطولة الحالية: <span id="adminCurrentTourneyLabel" class="text-white font-bold">-</span></p>
+          </div>
+          <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-4 py-2 rounded-lg font-bold text-sm shadow hover:opacity-90 transition flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="adminGenBtn">توليد المباريات أوتوماتيكياً</span>
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="text-sm font-semibold text-brand-muted" data-i18n="adminRegPlayers">اللاعبون المسجلون في هذه البطولة:</h4>
+          <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Image Download Helper Script using html2canvas -->
+  <script>
+    function downloadElementAsImage(elementId, filename = 'star-league-result.png') {
+      const targetElement = document.getElementById(elementId);
+      if (!targetElement) return;
+
+      html2canvas(targetElement, {
+        backgroundColor: '#121d28',
+        scale: 2
+      }).then(canvas => {
+        const imageURL = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageURL;
+        downloadLink.download = filename;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      }).catch(err => {
+        console.error("Error generating image:", err);
+      });
+    }
+  </script>
+
+  <!-- i18n Translations Dictionary & Handler -->
+  <script>
+    const translations = {
+      ar: {
+        subtitle: "منصة البطولات المتعددة والذكية",
+        installApp: "تحميل التطبيق",
+        navHome: "الرئيسية",
+        navTourneys: "إدارة البطولات",
+        navRegister: "تسجيل لاعب",
+        navStandings: "الترتيب والهدافيين",
+        navMatches: "المباريات والدردشة",
+        navProof: "إرسال النتيجة",
+        navAdmin: "لوحة الأدمن",
+        dashTitle: "منصة البطولات الاحترافية",
+        dashDesc: "أنشئ عدة بطولات نشطة في نفس الأسبوع، حدد نظامها وتابع المباريات والتقويم.",
+        statTourneys: "البطولات",
+        statPlayers: "اللاعبين",
+        statMatches: "المباريات",
+        selectActiveTourney: "البطولات النشطة هذا الأسبوع (اختر لمتابعتها)",
+        tourneyCreatorTitle: "إنشاء بطولة جديدة وتحديد نظامها",
+        tourneyNameLabel: "اسم البطولة (مثال: Star League, Champions Legend)",
+        tourneySystemLabel: "نظام البطولة (Format)",
+        sysLeague: "بطولة عادية بنظام الترتيب (الدوري / League)",
+        sysGroupKO: "مجموعات ثم إقصائيات (Group Stage + Knockout)",
+        sysKO: "إقصائيات مباشرة / خروج المغلوب (Knockout)",
+        createTourneyBtn: "إضافة وإنشاء البطولة",
+        allTourneysList: "جميع البطولات المُنشأة في المنصة",
+        regTitle: "تسجيل لاعب جديد في البطولة النشطة",
+        regIdLabel: "الـ ID (اسمك في اللعبة)",
+        regTeamLabel: "اسم الفريق / المنتخب",
+        regLogoLabel: "صورة لوغو الفريق / العلم (Logo)",
+        regBtn: "تسجيل الان",
+        standingsTitle: "جدول الترتيب الرسمي",
+        scorersTitle: "ترتيب الهدافين",
+        thRank: "المركز",
+        thPlayer: "اللوغو والـ ID",
+        thTeam: "الفريق / المنتخب",
+        thPts: "النقاط",
+        thGoals: "الأهداف (Buts)",
+        schedTitle: "المباريات والاتفاق على التوقيت",
+        schedDesc: "اختر التوقيت وتواصل عبر الشات، وأضف الماتش لتقويم هاتفك بضغطة زر.",
+        proofTitle: "إرسال سكرين شوت النتيجة",
+        proofYourId: "اسمك (ID)",
+        proofOpponent: "اسم الخصم",
+        proofScore: "النتيجة والأهداف المسجلة",
+        proofImg: "صورة السكرين شوت",
+        proofBtn: "إرسال النتيجة للأدمن",
+        adminGroupsTitle: "إدارة المجموعات (خاصة بالنظام المختلط)",
+        adminAddGroupBtn: "إضافة مجموعة",
+        adminPlayersTitle: "إدارة اللاعبين وتوليد المباريات للبطولة النشطة",
+        adminGenBtn: "توليد المباريات أوتوماتيكياً",
+        adminRegPlayers: "اللاعبون المسجلون في هذه البطولة:",
+        deleteBtn: "حذف",
+        setMatchTime: "تحديد الوقت وتأكيد الحضور",
+        addToCalendar: "إضافة لتقويم الهاتف 📅",
+        placeholderTime: "تاريخ ووقت المباراة...",
+        placeholderYourName: "اسمك (ID)",
+        placeholderMsg: "اكتب رسالتك...",
+        noMessages: "لا توجد رسائل بعد..."
+      },
+      fr: {
+        subtitle: "Plateforme Multi-Tournois Intelligente",
+        installApp: "Télécharger l'app",
+        navHome: "Accueil",
+        navTourneys: "Gérer Tournois",
+        navRegister: "Inscription",
+        navStandings: "Classement & Buteurs",
+        navMatches: "Matchs & Chat",
+        navProof: "Envoyer Résultat",
+        navAdmin: "Panneau Admin",
+        dashTitle: "Plateforme de Tournois Pro",
+        dashDesc: "Créez plusieurs tournois actifs cette semaine, gérez le format et suivez les matchs.",
+        statTourneys: "Tournois",
+        statPlayers: "Joueurs",
+        statMatches: "Matchs",
+        selectActiveTourney: "Tournois actifs de la semaine",
+        tourneyCreatorTitle: "Créer un nouveau tournoi",
+        tourneyNameLabel: "Nom du tournoi (ex: Star League, Champions Legend)",
+        tourneySystemLabel: "Format du tournoi",
+        sysLeague: "Championnat / Ligue normale",
+        sysGroupKO: "Phase de groupes + Élimination directe",
+        sysKO: "Élimination directe / Knockout",
+        createTourneyBtn: "Créer le tournoi",
+        allTourneysList: "Tous les tournois créés",
+        regTitle: "Inscrire un joueur au tournoi actif",
+        regIdLabel: "ID (Nom en jeu)",
+        regTeamLabel: "Nom de l'équipe",
+        regLogoLabel: "Logo de l'équipe",
+        regBtn: "S'inscrire maintenant",
+        standingsTitle: "Classement Officiel",
+        scorersTitle: "Classement des Buteurs",
+        thRank: "Rang",
+        thPlayer: "Logo & ID",
+        thTeam: "Équipe",
+        thPts: "Points",
+        thGoals: "Buts",
+        schedTitle: "Planning des matchs & Horaires",
+        schedDesc: "Proposez l'heure, discutez et ajoutez le match à votre calendrier.",
+        proofTitle: "Envoyer une capture d'écran",
+        proofYourId: "Votre ID",
+        proofOpponent: "ID de l'adversaire",
+        proofScore: "Score Final",
+        proofImg: "Image du résultat",
+        proofBtn: "Envoyer à l'Admin",
+        adminGroupsTitle: "Gestion des Groupes",
+        adminAddGroupBtn: "Ajouter Groupe",
+        adminPlayersTitle: "Gestion Joueurs & Matchs (Tournoi actif)",
+        adminGenBtn: "Générer les matchs",
+        adminRegPlayers: "Joueurs inscrits :",
+        deleteBtn: "Supprimer",
+        setMatchTime: "Fixer l'heure & Présence",
+        addToCalendar: "Ajouter au calendrier 📅",
+        placeholderTime: "Date/Heure...",
+        placeholderYourName: "Votre ID",
+        placeholderMsg: "Votre message...",
+        noMessages: "Aucun message..."
+      },
+      en: {
+        subtitle: "Multi-Tournament Esport Hub",
+        installApp: "Download App",
+        navHome: "Home",
+        navTourneys: "Manage Tournaments",
+        navRegister: "Register Player",
+        navStandings: "Standings & Scorers",
+        navMatches: "Matches & Chat",
+        navProof: "Submit Score",
+        navAdmin: "Admin Panel",
+        dashTitle: "Pro Tournament Platform",
+        dashDesc: "Create active tournaments this week, manage formats and track competition.",
+        statTourneys: "Tourneys",
+        statPlayers: "Players",
+        statMatches: "Matches",
+        selectActiveTourney: "Active Tournaments This Week",
+        tourneyCreatorTitle: "Create New Tournament & Format",
+        tourneyNameLabel: "Tournament Name",
+        tourneySystemLabel: "Tournament Format",
+        sysLeague: "Regular League",
+        sysGroupKO: "Group Stage + Knockout",
+        sysKO: "Single Elimination / Knockout",
+        createTourneyBtn: "Create Tournament",
+        allTourneysList: "All Created Tournaments",
+        regTitle: "Register Player to Active Tournament",
+        regIdLabel: "In-Game ID",
+        regTeamLabel: "Team Name",
+        regLogoLabel: "Team Logo",
+        regBtn: "Register Now",
+        standingsTitle: "Official Leaderboard",
+        scorersTitle: "Top Scorers",
+        thRank: "Rank",
+        thPlayer: "Logo & ID",
+        thTeam: "Team",
+        thPts: "Points",
+        thGoals: "Goals",
+        schedTitle: "Match Schedule & Chat",
+        schedDesc: "Agree on times and add matches directly to your phone calendar.",
+        proofTitle: "Submit Result Screenshot",
+        proofYourId: "Your ID",
+        proofOpponent: "Opponent ID",
+        proofScore: "Final Score",
+        proofImg: "Screenshot Image",
+        proofBtn: "Submit to Admin",
+        adminGroupsTitle: "Groups Management",
+        adminAddGroupBtn: "Add Group",
+        adminPlayersTitle: "Players & Match Generator (Active Tourney)",
+        adminGenBtn: "Generate Matches Automatically",
+        adminRegPlayers: "Registered Players:",
+        deleteBtn: "Delete",
+        setMatchTime: "Set Time & Check-in",
+        addToCalendar: "Add to Calendar 📅",
+        placeholderTime: "Match Date/Time...",
+        placeholderYourName: "Your ID",
+        placeholderMsg: "Write a message...",
+        noMessages: "No messages yet..."
+      },
+      es: {
+        subtitle: "Plataforma de Torneos Múltiples",
+        installApp: "Descargar App",
+        navHome: "Inicio",
+        navTourneys: "Gestionar Torneos",
+        navRegister: "Registrar Jugador",
+        navStandings: "Clasificación y Goleadores",
+        navMatches: "Partidos y Chat",
+        navProof: "Enviar Resultado",
+        navAdmin: "Panel de Admin",
+        dashTitle: "Plataforma de Torneos Pro",
+        dashDesc: "Crea torneos activos esta semana, elige formato y sigue los partidos.",
+        statTourneys: "Torneos",
+        statPlayers: "Jugadores",
+        statMatches: "Partidos",
+        selectActiveTourney: "Torneos Activos de la Semana",
+        tourneyCreatorTitle: "Crear Nuevo Torneo y Formato",
+        tourneyNameLabel: "Nombre del Torneo",
+        tourneySystemLabel: "Formato del Torneo",
+        sysLeague: "Liga Regular",
+        sysGroupKO: "Fase de Grupos + Eliminatorias",
+        sysKO: "Eliminatoria Directa / Knockout",
+        createTourneyBtn: "Crear Torneo",
+        allTourneysList: "Todos los Torneos",
+        regTitle: "Registrar Jugador en Torneo Activo",
+        regIdLabel: "ID del Juego",
+        regTeamLabel: "Nombre del Equipo",
+        regLogoLabel: "Escudo del Equipo",
+        regBtn: "Registrarse Ahora",
+        standingsTitle: "Tabla de Clasificación Oficial",
+        scorersTitle: "Máximos Goleadores",
+        thRank: "Posición",
+        thPlayer: "Escudo e ID",
+        thTeam: "Equipo",
+        thPts: "Puntos",
+        thGoals: "Goles",
+        schedTitle: "Calendario de Partidos y Chat",
+        schedDesc: "Acuerda la hora y añade el partido a tu calendario fácilmente.",
+        proofTitle: "Enviar Captura de Pantalla",
+        proofYourId: "Tu ID",
+        proofOpponent: "ID del Rival",
+        proofScore: "Resultado Final",
+        proofImg: "Imagen del Resultado",
+        proofBtn: "Enviar al Admin",
+        adminGroupsTitle: "Gestión de Grupos",
+        adminAddGroupBtn: "Añadir Grupo",
+        adminPlayersTitle: "Jugadores y Generador (Torneo Activo)",
+        adminGenBtn: "Generar Partidos Automáticamente",
+        adminRegPlayers: "Jugadores Registrados:",
+        deleteBtn: "Eliminar",
+        setMatchTime: "Fijar Hora y Check-in",
+        addToCalendar: "Añadir al Calendario 📅",
+        placeholderTime: "Fecha/Hora...",
+        placeholderYourName: "Tu ID",
+        placeholderMsg: "Escribe un mensaje...",
+        noMessages: "No hay mensajes..."
+      }
+    };
+  </script>
+</body>
+</html>.changeLanguage = function(lang) {
+      currentLang = lang;
+      const html = document.getElementById('htmlTag');
+      if (lang === 'ar') {
+        html.setAttribute('dir', 'rtl');
+        html.setAttribute('lang', 'ar');
+      } else {
+        html.setAttribute('dir', 'ltr');
+        html.setAttribute('lang', lang);
+      }
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          element.innerText = translations[lang][key];
+        }
+      });
+    };
+  </script>
+</body>
+</html>
