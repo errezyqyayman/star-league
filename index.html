@@ -4,7 +4,7 @@ index.html
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STAR LEAGUE - Platform</title>
+  <title>STAR LEAGUE - منصة البطولات الذكية</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#120428">
@@ -78,12 +78,12 @@ index.html
         <img src="logo-star-league.png" alt="Logo" class="w-10 h-10 object-contain flex-shrink-0">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
-          <p class="text-xs text-brand-muted" data-i18n="subtitle">Manasa l-botolat l-mota3addida</p>
+          <p class="text-xs text-brand-muted" data-i18n="subtitle">منصة البطولات الذكية</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- Zir l-notifications -->
+        <!-- زر الإشعارات -->
         <div class="relative">
           <button onclick="toggleNotificationsModal()" class="relative bg-brand-dark border border-brand-border p-2.5 rounded-lg text-brand-primary hover:bg-brand-border/50 transition">
             <i class="fa-solid fa-bell text-sm"></i>
@@ -93,10 +93,10 @@ index.html
 
         <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
           <i class="fa-solid fa-trophy"></i>
-          <span id="currentTourneyNameDisp">La towjada botola</span>
+          <span id="currentTourneyNameDisp">لا توجد بطولة</span>
         </div>
 
-        <!-- Selection d Lughat -->
+        <!-- اختيار اللغات -->
         <div class="relative">
           <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
             <option value="ar">العربية 🇲🇦</option>
@@ -112,22 +112,22 @@ index.html
     <!-- Navigation Tabs -->
     <nav class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-chart-pie"></i> <span data-i18n="nav_dashboard">Ra'isiya</span>
+        <i class="fa-solid fa-chart-pie"></i> <span data-i18n="nav_dashboard">الرئيسية</span>
       </button>
       <button onclick="switchTab('tournaments')" id="tab-tournaments" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-sitemap"></i> <span data-i18n="nav_tournaments">Idarat l-botolat</span>
+        <i class="fa-solid fa-sitemap"></i> <span data-i18n="nav_tournaments">إدارة البطولات</span>
       </button>
       <button onclick="switchTab('register')" id="tab-register" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-user-plus"></i> <span data-i18n="nav_register">Tasjil la3ib</span>
+        <i class="fa-solid fa-user-plus"></i> <span data-i18n="nav_register">تسجيل لاعب</span>
       </button>
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-list-ol"></i> <span data-i18n="nav_standings">At-tartib w l-hadafin</span>
+        <i class="fa-solid fa-list-ol"></i> <span data-i18n="nav_standings">الترتيب والهدافيين</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="nav_schedule">Al-mobarayat w chat</span>
+        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="nav_schedule">المباريات والشات</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
-        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="nav_admin">Lowhat l-admin</span>
+        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="nav_admin">لوحة الأدمن</span>
       </button>
     </nav>
   </header>
@@ -137,36 +137,95 @@ index.html
 
     <!-- TAB 1: DASHBOARD -->
     <section id="sec-dashboard" class="space-y-6">
-      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
-        <div class="space-y-2 text-right rtl:text-right">
-          <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold">STAR LEAGUE</span>
-          <h2 class="text-3xl font-extrabold" data-i18n="dash_title">Manasa l-botolat l-ihtirafiya</h2>
-          <p class="text-brand-muted text-sm" data-i18n="dash_desc">Onši botolatak, sajl l-fariq, w taba3 at-tartib.</p>
+      
+      <!-- مرحباً بكم مع اللوجو -->
+      <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
+          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-[0_0_15px_rgba(0,255,204,0.3)]">
+          <div class="space-y-2">
+            <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
+            <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
+            <p class="text-brand-muted text-sm max-w-xl">
+              المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة. تابع الترتيب، المباريات، والأخبار أول بأول!
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2 w-full md:w-auto">
+          <div onclick="switchTab('tournaments')" class="cursor-pointer bg-brand-dark px-5 py-3 rounded-xl border border-brand-border text-center hover:border-brand-primary transition">
+            <span class="text-xl font-bold text-brand-primary" id="stat-tourneys-count">0</span>
+            <p class="text-[11px] text-brand-muted mt-0.5">البطولات النشطة</p>
+          </div>
         </div>
       </div>
+
+      <!-- قسم الأخبار والقوانين -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- الأخبار الجديدة -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-brand-border pb-3">
+            <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
+              <i class="fa-solid fa-bullhorn"></i> أخبار الدوري والإعلانات
+            </h3>
+            <span class="text-[10px] bg-brand-secondary/10 text-brand-secondary px-2 py-0.5 rounded font-bold">جديد</span>
+          </div>
+          <div class="space-y-3 text-sm text-brand-muted">
+            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
+              <span class="text-xs font-bold text-brand-accent">🔥 انطلاق البطولة الجديدة</span>
+              <p class="text-white text-xs">التسجيل مفتوح لجميع اللاعبين والفرق. اختر فريقك وبدأ المنافسة بقوة!</p>
+            </div>
+            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
+              <span class="text-xs font-bold text-brand-primary">💡 نصيحة للمشاركين</span>
+              <p class="text-white text-xs">تواصل مباشرة مع خصمك في شات المباريات لتحديد وقت اللعب المتفق عليه.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- قوانين البطولة -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-brand-border pb-3">
+            <h3 class="text-lg font-bold text-brand-secondary flex items-center gap-2">
+              <i class="fa-solid fa-gavel"></i> قوانين وشروط البطولة
+            </h3>
+            <span class="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded font-bold">مهم</span>
+          </div>
+          <ul class="space-y-2 text-xs text-brand-muted list-disc list-inside bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
+            <li><strong class="text-white">الاحترام المتبادل:</strong> الروح الرياضية واجبة بين جميع المشاركين في الشات والمباريات.</li>
+            <li><strong class="text-white">التوقيت:</strong> الالتزام بالوقت المحددة لكل مباراة تفادياً لأي انسحاب.</li>
+            <li><strong class="text-white">النتائج:</strong> في حال حدوث أي نزاع، يرجى إرسال لقطة شاشة (Screenshot) للأدمن للفصل في الأمر.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- البطولات النشطة -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-list-check"></i> <span data-i18n="active_tourneys_title">Al-botolat an-nachita</span>
+          <i class="fa-solid fa-list-check"></i> <span data-i18n="active_tourneys_title">البطولات النشطة (اختر بطولة للمتابعة)</span>
         </h3>
         <div id="activeTourneysContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <p class="text-sm text-brand-muted">La towjada botolat.</p>
+          <p class="text-sm text-brand-muted">لا توجد بطولات بعد.</p>
         </div>
       </div>
+
     </section>
 
     <!-- TAB 2: TOURNAMENTS -->
     <section id="sec-tournaments" class="hidden space-y-6 max-w-3xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-sitemap"></i> <span>Inša' botola jadida w ikhtiyar ath-thim</span>
+          <i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة وثيم خاص بها</span>
         </h3>
         <form id="tournamentForm" class="space-y-4" onsubmit="handleCreateTournament(event)">
           <div>
-            <label class="block text-sm text-brand-muted mb-1">Ism l-botola</label>
+            <label class="block text-sm text-brand-muted mb-1">اسم البطولة</label>
             <input type="text" id="tourneyName" required placeholder="Star League 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
-            <label class="block text-sm text-brand-muted mb-1">Thim l-botola (Theme / Color)</label>
+            <label class="block text-sm text-brand-muted mb-1">ثيم البطولة (Theme)</label>
             <select id="tourneyTheme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none cursor-pointer">
               <option value="purple">بنفسجي ملكي / Premier League (#120428)</option>
               <option value="dark">أزرق داكن / Dark Neon (#0a1118)</option>
@@ -174,13 +233,13 @@ index.html
               <option value="crimson">أحمر حماسي / Crimson (#2a0808)</option>
             </select>
           </div>
-          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">Idafa w inša' l-botola</button>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">إضافة وإنشاء البطولة</button>
         </form>
       </div>
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
-        <h3 class="text-xl font-bold text-brand-secondary">Jammi3 l-botolat</h3>
+        <h3 class="text-xl font-bold text-brand-secondary">جميع البطولات</h3>
         <div id="tournamentsListContainer" class="space-y-3">
-          <p class="text-sm text-brand-muted">La towjada botolat.</p>
+          <p class="text-sm text-brand-muted">لا توجد بطولات.</p>
         </div>
       </div>
     </section>
@@ -189,26 +248,26 @@ index.html
     <section id="sec-register" class="hidden max-w-xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-user-plus"></i> <span>Tasjil la3ib / fariq jadid</span>
+          <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب أو فريق جديد</span>
         </h3>
         <form id="playerForm" class="space-y-4" onsubmit="handleRegisterPlayer(event)">
           <div>
-            <label class="block text-sm text-brand-muted mb-1">ID (Ismak f l-lo3ba wela l-fariq)</label>
+            <label class="block text-sm text-brand-muted mb-1">اسم اللاعب (ID)</label>
             <input type="text" id="playerName" value="Arsenal" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
-            <label class="block text-sm text-brand-muted mb-1">Ism l-fariq / Montaxab</label>
+            <label class="block text-sm text-brand-muted mb-1">اسم الفريق / المنتخب</label>
             <input type="text" id="teamName" value="Arsenal FC" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
-            <label class="block text-sm text-brand-muted mb-1">Lowgo l-fariq / Sswira (Logo)</label>
+            <label class="block text-sm text-brand-muted mb-1">صورة الشعار (Logo)</label>
             <input type="file" id="teamLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
           </div>
           <div>
-            <label class="block text-sm text-brand-muted mb-1">3adad l-ahdaf (Goals)</label>
+            <label class="block text-sm text-brand-muted mb-1">عدد الأهداف (Goals)</label>
             <input type="number" id="playerGoals" value="0" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
-          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">Tasjil daba</button>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">تسجيل الان</button>
         </form>
       </div>
     </section>
@@ -217,21 +276,21 @@ index.html
     <section id="sec-standings" class="hidden space-y-8">
       <div class="flex items-center justify-between bg-brand-card p-4 rounded-xl border border-brand-border">
         <div>
-          <h3 class="text-lg font-bold text-brand-primary" id="standingsTourneyDisplay">Al-botola al-haliya</h3>
-          <p class="text-xs text-brand-muted" id="standingsThemeDisplay">Thim: -</p>
+          <h3 class="text-lg font-bold text-brand-primary" id="standingsTourneyDisplay">البطولة الحالية</h3>
+          <p class="text-xs text-brand-muted" id="standingsThemeDisplay">الثيم: افتراضي</p>
         </div>
       </div>
 
       <div class="flex gap-3 border-b border-brand-border pb-4">
-        <button onclick="switchSubTab('table')" id="subtab-table" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition">Table (At-tartib)</button>
-        <button onclick="switchSubTab('scorers')" id="subtab-scorers" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition">Scorers (Al-hadafin)</button>
+        <button onclick="switchSubTab('table')" id="subtab-table" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition">جدول الترتيب (Table)</button>
+        <button onclick="switchSubTab('scorers')" id="subtab-scorers" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition">قائمة الهدافين (Scorers)</button>
       </div>
 
       <!-- TABLE VIEW -->
       <div id="view-table" class="space-y-6">
         <div class="bg-brand-card rounded-2xl border border-brand-border shadow-xl overflow-hidden">
-          <div class="p-4 border-b border-brand-border flex items-center justify-between">
-            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> Jadwal at-tartib ar-rasmi</h3>
+          <div class="p-4 border-b border-brand-border">
+            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب الرسمي</h3>
           </div>
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse min-w-[700px]">
@@ -250,7 +309,7 @@ index.html
                 </tr>
               </thead>
               <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
-                <tr><td colspan="10" class="p-6 text-center text-brand-muted">La towjada bayanatan.</td></tr>
+                <tr><td colspan="10" class="p-6 text-center text-brand-muted">لا توجد بيانات.</td></tr>
               </tbody>
             </table>
           </div>
@@ -261,12 +320,12 @@ index.html
       <div id="view-scorers" class="hidden space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-            <i class="fa-solid fa-futbol text-brand-secondary"></i> Scorers (Al-Hadafin)
+            <i class="fa-solid fa-futbol text-brand-secondary"></i> قائمة الهدافين
           </h3>
           <span class="text-xs text-brand-muted" id="scorersCountDisp">0 Players</span>
         </div>
         <div id="scorersListContainer" class="space-y-3">
-          <p class="text-sm text-brand-muted text-center py-6">La towjada ahdaf mosajjala ba3d.</p>
+          <p class="text-sm text-brand-muted text-center py-6">لا توجد أهداف مسجلة.</p>
         </div>
       </div>
     </section>
@@ -274,10 +333,10 @@ index.html
     <!-- TAB 5: SCHEDULE & CHAT -->
     <section id="sec-schedule" class="hidden space-y-6">
       <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
-        <h3 class="text-xl font-bold text-brand-primary">Al-mobarayat w chat</h3>
+        <h3 class="text-xl font-bold text-brand-primary">المباريات والشات المباشر</h3>
       </div>
       <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <p class="text-sm text-brand-muted">La towjada mobarayat.</p>
+        <p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>
       </div>
     </section>
 
@@ -285,14 +344,14 @@ index.html
     <section id="sec-admin" class="hidden space-y-6">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <div class="flex justify-between items-center border-b border-brand-border pb-4">
-          <h3 class="text-xl font-bold text-brand-primary">Idarat al-la3abin w tawlid al-mobarayat</h3>
+          <h3 class="text-xl font-bold text-brand-primary">لوحة الأدمن وتوليد المباريات</h3>
           <div class="flex gap-2">
-            <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-3 py-2 rounded-lg font-bold text-xs">Tawlid al-mobarayat (Qor3a)</button>
-            <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-3 py-2 rounded-lg font-bold text-xs">Masaḥ jami3 al-la3abin</button>
+            <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-3 py-2 rounded-lg font-bold text-xs">توليد المباريات (قرعة)</button>
+            <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-3 py-2 rounded-lg font-bold text-xs">مسح جميع اللاعبين</button>
           </div>
         </div>
         <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto">
-          <p class="text-sm text-brand-muted">La towjada la3abin.</p>
+          <p class="text-sm text-brand-muted">لا توجد بيانات.</p>
         </div>
       </div>
     </section>
@@ -302,27 +361,27 @@ index.html
   <!-- Edit Player Modal -->
   <div id="editPlayerModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-      <h3 class="text-lg font-bold text-brand-primary">Ta3dil bayanatan al-la3ib</h3>
+      <h3 class="text-lg font-bold text-brand-primary">تعديل بيانات اللاعب</h3>
       <input type="hidden" id="editPlayerId">
       <div>
-        <label class="block text-sm text-brand-muted mb-1">Ism al-la3ib (ID)</label>
+        <label class="block text-sm text-brand-muted mb-1">اسم اللاعب (ID)</label>
         <input type="text" id="editPlayerName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
       </div>
       <div>
-        <label class="block text-sm text-brand-muted mb-1">Ism al-fariq / Montaxab</label>
+        <label class="block text-sm text-brand-muted mb-1">اسم الفريق / المنتخب</label>
         <input type="text" id="editPlayerTeam" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
       </div>
       <div>
-        <label class="block text-sm text-brand-muted mb-1">Ta3dil an-nuqat</label>
+        <label class="block text-sm text-brand-muted mb-1">تعديل النقاط</label>
         <input type="number" id="editPlayerPoints" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
       </div>
       <div>
-        <label class="block text-sm text-brand-muted mb-1">Ta3dil al-ahdaf</label>
+        <label class="block text-sm text-brand-muted mb-1">تعديل الأهداف</label>
         <input type="number" id="editPlayerGoals" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
       </div>
       <div class="flex gap-3 pt-2">
-        <button onclick="saveEditedPlayer()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90">Hifd</button>
-        <button onclick="closeEditModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg">Ilghaa'</button>
+        <button onclick="saveEditedPlayer()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90">حفظ</button>
+        <button onclick="closeEditModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg">إلغاء</button>
       </div>
     </div>
   </div>
@@ -332,14 +391,14 @@ index.html
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl relative">
       <div class="flex justify-between items-center border-b border-brand-border pb-3">
         <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-bell"></i> Markaz al-isharat
+          <i class="fa-solid fa-bell"></i> مركز الإشعارات والتنبيهات
         </h3>
         <button onclick="toggleNotificationsModal()" class="text-brand-muted hover:text-white text-lg font-bold">&times;</button>
       </div>
       <div id="notificationsListContainer" class="space-y-2 max-h-80 overflow-y-auto">
-        <p class="text-sm text-brand-muted text-center py-4">La towjada isharaat jadida.</p>
+        <p class="text-sm text-brand-muted text-center py-4">لا توجد إشعارات جديدة حالياً.</p>
       </div>
-      <button onclick="clearNotifications()" class="w-full bg-brand-border text-white px-4 py-2 rounded-lg text-xs font-bold">Masaḥ jami3 al-isharat</button>
+      <button onclick="clearNotifications()" class="w-full bg-brand-border text-white px-4 py-2 rounded-lg text-xs font-bold">مسح جميع الإشعارات</button>
     </div>
   </div>
 
@@ -375,8 +434,8 @@ index.html
         nav_schedule: "المباريات والشات",
         nav_admin: "لوحة الأدمن",
         dash_title: "منصة البطولات الاحترافية",
-        dash_desc: "أنشئ بطولتك، سجل في الفريق، حدد مواعيد المباريات وتتبع الترتيب.",
-        active_tourneys_title: "البطولات النشطة هذا الأسبوع"
+        dash_desc: "أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.",
+        active_tourneys_title: "البطولات النشطة"
       },
       fr: {
         subtitle: "Plateforme de tournois intelligente",
@@ -517,7 +576,7 @@ index.html
         `).join('');
       } else {
         badge.classList.add('hidden');
-        container.innerHTML = '<p class="text-sm text-brand-muted text-center py-4">La towjada isharaat jadida.</p>';
+        container.innerHTML = '<p class="text-sm text-brand-muted text-center py-4">لا توجد إشعارات جديدة حالياً.</p>';
       }
     }
 
@@ -531,6 +590,7 @@ index.html
           activeTourneyId = tournaments[0].id;
           localStorage.setItem('star_active_tourney', activeTourneyId);
         }
+        document.getElementById('stat-tourneys-count').innerText = tournaments.length;
         renderAll();
       });
 
@@ -563,8 +623,8 @@ index.html
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         document.getElementById('tourneyName').value = '';
-        addNotification(`Tam inša' botola jadida: "${name}" 🏆`);
-        alert('Tam inša\' al-botola binajaḥ!');
+        addNotification(`تم إنشاء بطولة جديدة: "${name}" 🏆`);
+        alert('تم إنشاء البطولة بنجاح!');
       });
     }
 
@@ -572,7 +632,7 @@ index.html
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', activeTourneyId);
       renderAll();
-      alert('Tam ikhtiyar al-botola!');
+      alert('تم اختيار البطولة بنجاح!');
     }
 
     function deleteTourney(id) {
@@ -582,7 +642,7 @@ index.html
     function handleRegisterPlayer(e) {
       e.preventDefault();
       if(!activeTourneyId) {
-        alert('Ikhtar botola awwalan!');
+        alert('المرجو اختيار بطولة أولاً!');
         return;
       }
       const playerName = document.getElementById('playerName').value.trim();
@@ -613,13 +673,13 @@ index.html
         pl: 10, w: 7, d: 2, l: 1, gf: goals, ga: 10, gd: goals - 10,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        addNotification(`Anḍama al-la3ib "${name}" (${team}) l l-botola! ⚽`);
-        alert('Tam tasjil al-la3ib binajaḥ!');
+        addNotification(`انضم اللاعب "${name}" (${team}) إلى البطولة! ⚽`);
+        alert('تم تسجيل اللاعب بنجاح!');
       });
     }
 
     function deletePlayer(id) {
-      if(confirm('Wach mta\'akad bġiti tmsaḥ had al-la3ib?')) {
+      if(confirm('هل أنت متأكد من حذف هذا اللاعب؟')) {
         db.collection("players").doc(id).delete();
       }
     }
@@ -651,30 +711,30 @@ index.html
         goals: goals
       }).then(() => {
         closeEditModal();
-        alert('Tam ta3dil bayanat al-la3ib binajaḥ!');
+        alert('تم تعديل بيانات اللاعب بنجاح!');
       });
     }
 
     function resetAllPlayers() {
-      if(confirm('Wach mta\'akad bġiti tmsaḥ jami3 al-la3abin?')) {
+      if(confirm('هل أنت متأكد من مسح جميع اللاعبين؟')) {
         db.collection("players").get().then((snapshot) => {
           snapshot.forEach((doc) => {
             db.collection("players").doc(doc.id).delete();
           });
-          addNotification('Tam masḥ jami3 al-la3abin.');
-          alert('Tam masḥ al-la3abin!');
+          addNotification('تم مسح جميع اللاعبين.');
+          alert('تم مسح اللاعبين!');
         });
       }
     }
 
     function generateAutomaticMatches() {
       if(!activeTourneyId) {
-        alert('Ikhtar botola awwalan!');
+        alert('اختر بطولة أولاً!');
         return;
       }
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       if(currentTourneyPlayers.length < 2) {
-        alert('Khass 3la l-aqall la3ibayn litawlid al-mobarayat.');
+        alert('يلزم على الأقل لاعبين اثنين لتوليد المباريات.');
         return;
       }
 
@@ -689,15 +749,15 @@ index.html
             team2: currentTourneyPlayers[j].team,
             logo1: currentTourneyPlayers[i].logo,
             logo2: currentTourneyPlayers[j].logo,
-            scheduledTime: 'Lam yohadad ba3d',
+            scheduledTime: 'لم يُحدد بعد',
             messages: [],
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
           count++;
         }
       }
-      addNotification(`Tam tawlid ${count} mobara rasmiya! 🎮`);
-      alert(`Tam tawlid ${count} mobara binajaḥ!`);
+      addNotification(`تم توليد ${count} مباراة رسمية جديدة! 🎮`);
+      alert(`تم توليد ${count} مباراة بنجاح!`);
     }
 
     function deleteMatch(id) {
@@ -714,7 +774,7 @@ index.html
 
       const updatedMsgs = matchObj.messages || [];
       updatedMsgs.push({
-        sender: 'Admin/User',
+        sender: 'الأدمن/اللاعب',
         text: text,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
@@ -730,8 +790,8 @@ index.html
       if(!newTime) return;
 
       db.collection("matches").doc(matchId).update({ scheduledTime: newTime }).then(() => {
-        addNotification(`Tam tahdit tawgit mobara ila: ${newTime} ⏰`);
-        alert('Tam tahdit at-tawgit!');
+        addNotification(`تم تحديث توقيت إحدى المباريات إلى: ${newTime} ⏰`);
+        alert('تم تحديث التوقيت بنجاح!');
       });
     }
 
@@ -740,17 +800,17 @@ index.html
       const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
 
       if(tourneyMatches.length === 0) {
-        container.innerHTML = '<p class="text-sm text-brand-muted">La towjada mobarayat.</p>';
+        container.innerHTML = '<p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>';
         return;
       }
 
       container.innerHTML = tourneyMatches.map(m => `
         <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl relative">
-          <button onclick="deleteMatch('${m.id}')" class="absolute top-4 left-4 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">Hadaf</button>
+          <button onclick="deleteMatch('${m.id}')" class="absolute top-4 left-4 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">حذف</button>
           
           <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-16">
-            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">Mobara rasmiya</span>
-            <span class="text-xs text-brand-accent font-bold"><i class="fa-solid fa-clock"></i> ${m.scheduledTime || 'Lam yohadad'}</span>
+            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">مباراة رسمية</span>
+            <span class="text-xs text-brand-accent font-bold"><i class="fa-solid fa-clock"></i> ${m.scheduledTime || 'لم يُحدد'}</span>
           </div>
 
           <div class="flex justify-around items-center text-center py-2">
@@ -768,14 +828,14 @@ index.html
           </div>
 
           <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
-            <input type="text" id="time-input-${m.id}" placeholder="Mithal: Ghadan 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
-            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">Tahdid</button>
+            <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد</button>
           </div>
 
           <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
-            <p class="text-xs font-bold text-brand-primary"><i class="fa-solid fa-comments"></i> Chat l-mobara:</p>
+            <p class="text-xs font-bold text-brand-primary"><i class="fa-solid fa-comments"></i> شات المباراة:</p>
             <div class="max-h-28 overflow-y-auto space-y-1.5 text-xs">
-              ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">La towjada risa2il ba3d.</p>' :
+              ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد.</p>' :
                 m.messages.map(msg => `
                   <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
                     <div class="flex justify-between text-[10px] text-brand-muted mb-0.5">
@@ -787,8 +847,8 @@ index.html
                 `).join('')}
             </div>
             <div class="flex gap-2 pt-1">
-              <input type="text" id="msg-input-${m.id}" placeholder="Oktob risala..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
-              <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">Isal</button>
+              <input type="text" id="msg-input-${m.id}" placeholder="اكتب رسالة..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+              <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">إرسال</button>
             </div>
           </div>
         </div>
@@ -803,25 +863,25 @@ index.html
       if(activeObj) {
         document.getElementById('currentTourneyNameDisp').innerText = activeObj.name;
         document.getElementById('standingsTourneyDisplay').innerText = activeObj.name;
-        document.getElementById('standingsThemeDisplay').innerText = "Thim: " + (activeObj.theme || 'purple');
+        document.getElementById('standingsThemeDisplay').innerText = "الثيم: " + (activeObj.theme || 'purple');
         applyTournamentTheme(activeObj.theme);
       } else {
-        document.getElementById('currentTourneyNameDisp').innerText = "La towjada botola";
+        document.getElementById('currentTourneyNameDisp').innerText = "لا توجد بطولة";
       }
 
       if(tournaments.length === 0) {
-        tourneysCont.innerHTML = '<p class="text-sm text-brand-muted">La towjada botolat.</p>';
-        activeTourneysContainer.innerHTML = '<p class="text-sm text-brand-muted">La towjada botolat.</p>';
+        tourneysCont.innerHTML = '<p class="text-sm text-brand-muted">لا توجد بطولات.</p>';
+        activeTourneysContainer.innerHTML = '<p class="text-sm text-brand-muted">لا توجد بطولات.</p>';
       } else {
         tourneysCont.innerHTML = tournaments.map(t => `
           <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between">
             <div>
               <h4 class="font-bold text-white">${t.name}</h4>
-              <p class="text-xs text-brand-muted">Thim: ${t.theme || 'purple'}</p>
+              <p class="text-xs text-brand-muted">الثيم: ${t.theme || 'purple'}</p>
             </div>
             <div class="flex gap-2">
-              <button onclick="setActiveTourney('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${t.id === activeTourneyId ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">Ikhtar</button>
-              <button onclick="deleteTourney('${t.id}')" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold">Hadaf</button>
+              <button onclick="setActiveTourney('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${t.id === activeTourneyId ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">اختيار</button>
+              <button onclick="deleteTourney('${t.id}')" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold">حذف</button>
             </div>
           </div>
         `).join('');
@@ -829,7 +889,7 @@ index.html
         activeTourneysContainer.innerHTML = tournaments.map(t => `
           <div onclick="setActiveTourney('${t.id}')" class="cursor-pointer bg-brand-dark p-4 rounded-xl border ${t.id === activeTourneyId ? 'border-brand-primary bg-brand-primary/10' : 'border-brand-border'} transition hover:border-brand-primary">
             <h4 class="font-bold text-white">${t.name}</h4>
-            <p class="text-xs text-brand-muted mt-1">Thim: ${t.theme || 'purple'}</p>
+            <p class="text-xs text-brand-muted mt-1">الثيم: ${t.theme || 'purple'}</p>
           </div>
         `).join('');
       }
@@ -839,7 +899,7 @@ index.html
       // Table Render
       const playersTable = document.getElementById('playersTable');
       if(currentTourneyPlayers.length === 0) {
-        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">La towjada bayanatan.</td></tr>';
+        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">لا توجد بيانات.</td></tr>';
       } else {
         const sorted = [...currentTourneyPlayers].sort((a,b) => (b.points || 0) - (a.points || 0));
         playersTable.innerHTML = sorted.map((p, index) => {
@@ -879,7 +939,7 @@ index.html
       document.getElementById('scorersCountDisp').innerText = currentTourneyPlayers.length + " Players";
 
       if(currentTourneyPlayers.length === 0) {
-        scorersCont.innerHTML = '<p class="text-sm text-brand-muted text-center py-6">La towjada ahdaf mosajjala ba3d.</p>';
+        scorersCont.innerHTML = '<p class="text-sm text-brand-muted text-center py-6">لا توجد أهداف مسجلة.</p>';
       } else {
         const sortedScorers = [...currentTourneyPlayers].sort((a,b) => (b.goals || 0) - (a.goals || 0));
         scorersCont.innerHTML = sortedScorers.map((p, index) => {
@@ -905,10 +965,10 @@ index.html
         }).join('');
       }
 
-      // Admin Players List (Biholwalat Ta3dil w Hadaf)
+      // Admin Players List
       const adminList = document.getElementById('adminPlayersList');
       if(currentTourneyPlayers.length === 0) {
-        adminList.innerHTML = '<p class="text-sm text-brand-muted">La towjada la3abin.</p>';
+        adminList.innerHTML = '<p class="text-sm text-brand-muted">لا توجد لاعبين مسجلين.</p>';
       } else {
         adminList.innerHTML = currentTourneyPlayers.map(p => `
           <div class="bg-brand-dark p-3 rounded-lg border border-brand-border flex items-center justify-between">
@@ -916,12 +976,12 @@ index.html
               <img src="${p.logo}" class="w-8 h-8 rounded-full object-cover">
               <div>
                 <p class="font-bold text-sm text-white">${p.name}</p>
-                <p class="text-xs text-brand-muted">${p.team} | Nuqat: ${p.points || 0} | Ahdaf: ${p.goals || 0}</p>
+                <p class="text-xs text-brand-muted">${p.team} | النقاط: ${p.points || 0} | الأهداف: ${p.goals || 0}</p>
               </div>
             </div>
             <div class="flex gap-2">
-              <button onclick="openEditPlayer('${p.id}', '${p.name}', '${p.team}', ${p.points || 0}, ${p.goals || 0})" class="text-brand-primary text-xs bg-brand-primary/10 px-2.5 py-1 rounded">Ta3dil</button>
-              <button onclick="deletePlayer('${p.id}')" class="text-red-400 text-xs bg-red-500/10 px-2.5 py-1 rounded">Hadaf</button>
+              <button onclick="openEditPlayer('${p.id}', '${p.name}', '${p.team}', ${p.points || 0}, ${p.goals || 0})" class="text-brand-primary text-xs bg-brand-primary/10 px-2.5 py-1 rounded">تعديل</button>
+              <button onclick="deletePlayer('${p.id}')" class="text-red-400 text-xs bg-red-500/10 px-2.5 py-1 rounded">حذف</button>
             </div>
           </div>
         `).join('');
