@@ -83,7 +83,7 @@ index.html
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- زر جرس الإشعارات (الخطوة 1) -->
+        <!-- زر الإشعارات -->
         <div class="relative">
           <button onclick="toggleNotificationsModal()" class="relative bg-brand-dark border border-brand-border p-2.5 rounded-lg text-brand-primary hover:bg-brand-border/50 transition">
             <i class="fa-solid fa-bell text-sm"></i>
@@ -114,7 +114,7 @@ index.html
         <i class="fa-solid fa-list-ol"></i> <span>الترتيب والهدافيين</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span>المباريات</span>
+        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
@@ -131,7 +131,7 @@ index.html
         <div class="space-y-2 text-right rtl:text-right">
           <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold">STAR LEAGUE</span>
           <h2 class="text-3xl font-extrabold">منصة البطولات الاحترافية</h2>
-          <p class="text-brand-muted text-sm">أنشئ بطولتك، سجل فريقك، وتابع الترتيب والإشعارات أول بأول.</p>
+          <p class="text-brand-muted text-sm">أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.</p>
         </div>
       </div>
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
@@ -261,21 +261,26 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 5: SCHEDULE -->
+    <!-- TAB 5: SCHEDULE & CHAT -->
     <section id="sec-schedule" class="hidden space-y-6">
       <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
-        <h3 class="text-xl font-bold text-brand-primary">المباريات</h3>
+        <h3 class="text-xl font-bold text-brand-primary">المباريات والشات المباشر</h3>
       </div>
       <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <p class="text-sm text-brand-muted">لا توجد مباريات.</p>
+        <p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>
       </div>
     </section>
 
     <!-- TAB 6: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
-        <h3 class="text-xl font-bold text-brand-primary">لوحة الأدمن لإدارة اللاعبين</h3>
-        <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-4 py-2 rounded-lg font-bold text-xs">مسح جميع اللاعبين</button>
+        <div class="flex justify-between items-center border-b border-brand-border pb-4">
+          <h3 class="text-xl font-bold text-brand-primary">لوحة الأدمن وتوليد المباريات</h3>
+          <div class="flex gap-2">
+            <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-3 py-2 rounded-lg font-bold text-xs">توليد المباريات (قرعة)</button>
+            <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-3 py-2 rounded-lg font-bold text-xs">مسح جميع اللاعبين</button>
+          </div>
+        </div>
         <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto">
           <p class="text-sm text-brand-muted">لا توجد بيانات.</p>
         </div>
@@ -284,7 +289,7 @@ index.html
 
   </main>
 
-  <!-- نافذة عرض الإشعارات (Modal) -->
+  <!-- نافذة عرض الإشعارات -->
   <div id="notificationsModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl relative">
       <div class="flex justify-between items-center border-b border-brand-border pb-3">
@@ -296,7 +301,7 @@ index.html
       <div id="notificationsListContainer" class="space-y-2 max-h-80 overflow-y-auto">
         <p class="text-sm text-brand-muted text-center py-4">لا توجد إشعارات جديدة حالياً.</p>
       </div>
-      <button onclick="clearNotifications()" class="w-full bg-brand-border text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-brand-border/80 transition">مسح جميع الإشعارات</button>
+      <button onclick="clearNotifications()" class="w-full bg-brand-border text-white px-4 py-2 rounded-lg text-xs font-bold">مسح جميع الإشعارات</button>
     </div>
   </div>
 
@@ -317,6 +322,7 @@ index.html
     let tournaments = [];
     let activeTourneyId = localStorage.getItem('star_active_tourney') || null;
     let players = [];
+    let matches = [];
     let notifications = JSON.parse(localStorage.getItem('star_notifications') || '[]');
     let currentSubTab = 'table';
 
@@ -363,7 +369,6 @@ index.html
       }
     }
 
-    // إضافة إشعار جديد وتخزينه
     function addNotification(text) {
       const newNotif = {
         text: text,
@@ -371,7 +376,7 @@ index.html
         date: new Date().toLocaleDateString()
       };
       notifications.unshift(newNotif);
-      if(notifications.length > 20) notifications.pop(); // الحفاظ على آخر 20 إشعار
+      if(notifications.length > 20) notifications.pop();
       localStorage.setItem('star_notifications', JSON.stringify(notifications));
       updateNotificationsUI();
     }
@@ -427,6 +432,14 @@ index.html
         });
         renderAll();
       });
+
+      db.collection("matches").onSnapshot((snapshot) => {
+        matches = [];
+        snapshot.forEach((doc) => {
+          matches.push({ id: doc.id, ...doc.data() });
+        });
+        renderMatches();
+      });
     }
 
     function handleCreateTournament(e) {
@@ -441,7 +454,7 @@ index.html
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         document.getElementById('tourneyName').value = '';
-        addNotification(`تم إنشاء بطولة جديدة: "${name}" بنجاح! 🏆`);
+        addNotification(`تم إنشاء بطولة جديدة: "${name}" 🏆`);
         alert('تم إنشاء البطولة بنجاح!');
       });
     }
@@ -454,15 +467,13 @@ index.html
     }
 
     function deleteTourney(id) {
-      db.collection("tournaments").doc(id).delete().then(() => {
-        addNotification(`تم حذف بطولة من المنصة.`);
-      });
+      db.collection("tournaments").doc(id).delete();
     }
 
     function handleRegisterPlayer(e) {
       e.preventDefault();
       if(!activeTourneyId) {
-        alert('المرجو اختيار بطولة أولاً!');
+        alert('اختر بطولة أولاً!');
         return;
       }
       const playerName = document.getElementById('playerName').value.trim();
@@ -493,7 +504,7 @@ index.html
         pl: 10, w: 7, d: 2, l: 1, gf: goals, ga: 10, gd: goals - 10,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        addNotification(`انضم اللاعب "${name}" (${team}) إلى البطولة! ⚽`);
+        addNotification(`انضم اللاعب "${name}" (${team}) للبطولة! ⚽`);
         alert('تم تسجيل اللاعب بنجاح!');
       });
     }
@@ -504,10 +515,138 @@ index.html
           snapshot.forEach((doc) => {
             db.collection("players").doc(doc.id).delete();
           });
-          addNotification('تم تصفير وإفراغ جميع لاعبي البطولة.');
+          addNotification('تم مسح جميع اللاعبين.');
           alert('تم مسح اللاعبين!');
         });
       }
+    }
+
+    function generateAutomaticMatches() {
+      if(!activeTourneyId) {
+        alert('اختر بطولة أولاً!');
+        return;
+      }
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      if(currentTourneyPlayers.length < 2) {
+        alert('يلزم على الأقل لاعبين اثنين لتوليد المباريات.');
+        return;
+      }
+
+      let count = 0;
+      for (let i = 0; i < currentTourneyPlayers.length; i++) {
+        for (let j = i + 1; j < currentTourneyPlayers.length; j++) {
+          db.collection("matches").add({
+            tourneyId: activeTourneyId,
+            player1: currentTourneyPlayers[i].name,
+            player2: currentTourneyPlayers[j].name,
+            team1: currentTourneyPlayers[i].team,
+            team2: currentTourneyPlayers[j].team,
+            logo1: currentTourneyPlayers[i].logo,
+            logo2: currentTourneyPlayers[j].logo,
+            scheduledTime: 'لم يُحدد بعد',
+            messages: [],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          count++;
+        }
+      }
+      addNotification(`تم توليد ${count} مباراة رسمية جديدة! 🎮`);
+      alert(`تم توليد ${count} مباراة بنجاح!`);
+    }
+
+    function deleteMatch(id) {
+      db.collection("matches").doc(id).delete();
+    }
+
+    function sendMatchMessage(matchId) {
+      const input = document.getElementById('msg-input-' + matchId);
+      const text = input.value.trim();
+      if(!text) return;
+
+      const matchObj = matches.find(m => m.id === matchId);
+      if(!matchObj) return;
+
+      const updatedMsgs = matchObj.messages || [];
+      updatedMsgs.push({
+        sender: 'المدير/اللاعب',
+        text: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      db.collection("matches").doc(matchId).update({ messages: updatedMsgs }).then(() => {
+        input.value = '';
+      });
+    }
+
+    function updateMatchTime(matchId) {
+      const timeInput = document.getElementById('time-input-' + matchId);
+      const newTime = timeInput.value.trim();
+      if(!newTime) return;
+
+      db.collection("matches").doc(matchId).update({ scheduledTime: newTime }).then(() => {
+        addNotification(`تم تحديث توقيت إحدى المباريات إلى: ${newTime} ⏰`);
+        alert('تم تحديث التوقيت بنجاح!');
+      });
+    }
+
+    function renderMatches() {
+      const container = document.getElementById('matchesContainer');
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
+
+      if(tourneyMatches.length === 0) {
+        container.innerHTML = '<p class="text-sm text-brand-muted">لا توجد مباريات مجدولة. قم بتوليدها من لوحة الأدمن.</p>';
+        return;
+      }
+
+      container.innerHTML = tourneyMatches.map(m => `
+        <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl relative">
+          <button onclick="deleteMatch('${m.id}')" class="absolute top-4 left-4 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">حذف</button>
+          
+          <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-16">
+            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">مباراة رسمية</span>
+            <span class="text-xs text-brand-accent font-bold"><i class="fa-solid fa-clock"></i> ${m.scheduledTime || 'لم يُحدد'}</span>
+          </div>
+
+          <div class="flex justify-around items-center text-center py-2">
+            <div class="flex flex-col items-center space-y-1">
+              <img src="${m.logo1 || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
+              <p class="font-bold text-white text-sm">${m.player1}</p>
+              <p class="text-[11px] text-brand-muted">${m.team1 || ''}</p>
+            </div>
+            <span class="text-xl font-black text-brand-secondary">VS</span>
+            <div class="flex flex-col items-center space-y-1">
+              <img src="${m.logo2 || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
+              <p class="font-bold text-white text-sm">${m.player2}</p>
+              <p class="text-[11px] text-brand-muted">${m.team2 || ''}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
+            <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد الوقت</button>
+          </div>
+
+          <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
+            <p class="text-xs font-bold text-brand-primary"><i class="fa-solid fa-comments"></i> شات الماتش:</p>
+            <div class="max-h-28 overflow-y-auto space-y-1.5 text-xs">
+              ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد.</p>' :
+                m.messages.map(msg => `
+                  <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
+                    <div class="flex justify-between text-[10px] text-brand-muted mb-0.5">
+                      <span class="font-bold text-brand-accent">${msg.sender}</span>
+                      <span>${msg.time}</span>
+                    </div>
+                    <p class="text-white">${msg.text}</p>
+                  </div>
+                `).join('')}
+            </div>
+            <div class="flex gap-2 pt-1">
+              <input type="text" id="msg-input-${m.id}" placeholder="اكتب رسالة..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+              <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">إرسال</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
 
     function renderAll() {
@@ -619,6 +758,26 @@ index.html
           `;
         }).join('');
       }
+
+      // Admin Players List
+      const adminList = document.getElementById('adminPlayersList');
+      if(currentTourneyPlayers.length === 0) {
+        adminList.innerHTML = '<p class="text-sm text-brand-muted">لا توجد لاعبين مسجلين.</p>';
+      } else {
+        adminList.innerHTML = currentTourneyPlayers.map(p => `
+          <div class="bg-brand-dark p-3 rounded-lg border border-brand-border flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <img src="${p.logo}" class="w-8 h-8 rounded-full object-cover">
+              <div>
+                <p class="font-bold text-sm text-white">${p.name}</p>
+                <p class="text-xs text-brand-muted">${p.team} | النقاط: ${p.points || 0}</p>
+              </div>
+            </div>
+            <button onclick="db.collection('players').doc('${p.id}').delete()" class="text-red-400 text-xs bg-red-500/10 px-2.5 py-1 rounded">حذف</button>
+          </div>
+        `).join('');
+      }
+
       updateNotificationsUI();
     }
 
