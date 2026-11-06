@@ -4,7 +4,7 @@ index.html
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STAR LEAGUE - منصة البطولات المتعددة</title>
+  <title>STAR LEAGUE - Platform</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#120428">
@@ -78,7 +78,7 @@ index.html
         <img src="logo-star-league.png" alt="Logo" class="w-10 h-10 object-contain flex-shrink-0">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
-          <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
+          <p class="text-xs text-brand-muted" data-i18n="subtitle">منصة البطولات الذكية</p>
         </div>
       </div>
 
@@ -95,6 +95,16 @@ index.html
           <i class="fa-solid fa-trophy"></i>
           <span id="currentTourneyNameDisp">لا توجد بطولة</span>
         </div>
+
+        <!-- اختيار اللغات -->
+        <div class="relative">
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+            <option value="ar">العربية 🇲🇦</option>
+            <option value="fr">Français 🇫🇷</option>
+            <option value="en">English 🇬🇧</option>
+            <option value="es">Español 🇪🇸</option>
+          </select>
+        </div>
       </div>
 
     </div>
@@ -102,22 +112,22 @@ index.html
     <!-- Navigation Tabs -->
     <nav class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-chart-pie"></i> <span>الرئيسية</span>
+        <i class="fa-solid fa-chart-pie"></i> <span data-i18n="nav_dashboard">الرئيسية</span>
       </button>
       <button onclick="switchTab('tournaments')" id="tab-tournaments" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-sitemap"></i> <span>إدارة البطولات</span>
+        <i class="fa-solid fa-sitemap"></i> <span data-i18n="nav_tournaments">إدارة البطولات</span>
       </button>
       <button onclick="switchTab('register')" id="tab-register" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب</span>
+        <i class="fa-solid fa-user-plus"></i> <span data-i18n="nav_register">تسجيل لاعب</span>
       </button>
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والهدافيين</span>
+        <i class="fa-solid fa-list-ol"></i> <span data-i18n="nav_standings">الترتيب والهدافيين</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
+        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="nav_schedule">المباريات والشات</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
-        <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
+        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="nav_admin">لوحة الأدمن</span>
       </button>
     </nav>
   </header>
@@ -130,13 +140,13 @@ index.html
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
         <div class="space-y-2 text-right rtl:text-right">
           <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold">STAR LEAGUE</span>
-          <h2 class="text-3xl font-extrabold">منصة البطولات الاحترافية</h2>
-          <p class="text-brand-muted text-sm">أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.</p>
+          <h2 class="text-3xl font-extrabold" data-i18n="dash_title">منصة البطولات الاحترافية</h2>
+          <p class="text-brand-muted text-sm" data-i18n="dash_desc">أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.</p>
         </div>
       </div>
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-list-check"></i> <span>البطولات النشطة</span>
+          <i class="fa-solid fa-list-check"></i> <span data-i18n="active_tourneys_title">البطولات النشطة</span>
         </h3>
         <div id="activeTourneysContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <p class="text-sm text-brand-muted">لا توجد بطولات.</p>
@@ -289,7 +299,7 @@ index.html
 
   </main>
 
-  <!-- نافذة عرض الإشعارات -->
+  <!-- نافذة الإشعارات -->
   <div id="notificationsModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl relative">
       <div class="flex justify-between items-center border-b border-brand-border pb-3">
@@ -324,7 +334,78 @@ index.html
     let players = [];
     let matches = [];
     let notifications = JSON.parse(localStorage.getItem('star_notifications') || '[]');
+    let currentLang = localStorage.getItem('star_lang') || 'ar';
     let currentSubTab = 'table';
+
+    const translations = {
+      ar: {
+        subtitle: "منصة البطولات المتعددة والذكية",
+        nav_dashboard: "الرئيسية",
+        nav_tournaments: "إدارة البطولات",
+        nav_register: "تسجيل لاعب",
+        nav_standings: "الترتيب والهدافيين",
+        nav_schedule: "المباريات والشات",
+        nav_admin: "لوحة الأدمن",
+        dash_title: "منصة البطولات الاحترافية",
+        dash_desc: "أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.",
+        active_tourneys_title: "البطولات النشطة"
+      },
+      fr: {
+        subtitle: "Plateforme de tournois intelligente",
+        nav_dashboard: "Accueil",
+        nav_tournaments: "Tournois",
+        nav_register: "Inscription",
+        nav_standings: "Classement",
+        nav_schedule: "Matchs & Chat",
+        nav_admin: "Admin",
+        dash_title: "Plateforme Professionnelle",
+        dash_desc: "Créez votre tournoi, inscrivez votre équipe, planifiez les matchs.",
+        active_tourneys_title: "Tournois actifs"
+      },
+      en: {
+        subtitle: "Smart Multi-Tournament Platform",
+        nav_dashboard: "Dashboard",
+        nav_tournaments: "Tournaments",
+        nav_register: "Register Player",
+        nav_standings: "Standings",
+        nav_schedule: "Matches & Chat",
+        nav_admin: "Admin Panel",
+        dash_title: "Professional Tournaments Platform",
+        dash_desc: "Create your tournament, register your team, schedule matches.",
+        active_tourneys_title: "Active Tournaments"
+      },
+      es: {
+        subtitle: "Plataforma de Torneos Inteligente",
+        nav_dashboard: "Inicio",
+        nav_tournaments: "Torneos",
+        nav_register: "Registro",
+        nav_standings: "Clasificación",
+        nav_schedule: "Partidos y Chat",
+        nav_admin: "Panel Admin",
+        dash_title: "Plataforma de Torneos",
+        dash_desc: "Crea tu torneo, registra tu equipo, programa partidos.",
+        active_tourneys_title: "Torneos Activos"
+      }
+    };
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('star_lang', lang);
+      const htmlTag = document.getElementById('htmlTag');
+      if (lang === 'ar') {
+        htmlTag.setAttribute('lang', 'ar');
+        htmlTag.setAttribute('dir', 'rtl');
+      } else {
+        htmlTag.setAttribute('lang', lang);
+        htmlTag.setAttribute('dir', 'ltr');
+      }
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          el.innerText = translations[lang][key];
+        }
+      });
+    }
 
     function applyTournamentTheme(themeName) {
       const body = document.getElementById('appBody');
@@ -568,7 +649,7 @@ index.html
 
       const updatedMsgs = matchObj.messages || [];
       updatedMsgs.push({
-        sender: 'المدير/اللاعب',
+        sender: 'Admin/User',
         text: text,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
@@ -594,7 +675,7 @@ index.html
       const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
 
       if(tourneyMatches.length === 0) {
-        container.innerHTML = '<p class="text-sm text-brand-muted">لا توجد مباريات مجدولة. قم بتوليدها من لوحة الأدمن.</p>';
+        container.innerHTML = '<p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>';
         return;
       }
 
@@ -623,7 +704,7 @@ index.html
 
           <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
             <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
-            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد الوقت</button>
+            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد</button>
           </div>
 
           <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
@@ -782,6 +863,8 @@ index.html
     }
 
     window.onload = function() {
+      document.getElementById('langSelect').value = currentLang;
+      changeLanguage(currentLang);
       fetchRealtimeData();
       updateNotificationsUI();
     };
