@@ -917,7 +917,6 @@ index.html
       }
     }
 
-    // Match Control Functions: Delete Single Match, Delete All Matches, Add Manual Match, Edit Match
     function deleteMatch(matchId) {
       if(confirm('هل أنت متأكد من حذف هذه المباراة؟')) {
         db.collection("matches").doc(matchId).delete().then(() => {
@@ -1161,6 +1160,8 @@ index.html
             player2: currentTourneyPlayers[j].name,
             team1: currentTourneyPlayers[i].team,
             team2: currentTourneyPlayers[j].team,
+            logo1: currentTourneyPlayers[i].logo || 'https://via.placeholder.com/40',
+            logo2: currentTourneyPlayers[j].logo || 'https://via.placeholder.com/40',
             scheduledTime: 'لم يُحدد بعد',
             messages: [],
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1214,60 +1215,71 @@ index.html
         return;
       }
 
-      container.innerHTML = tourneyMatches.map(m => `
-        <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl relative">
-          <!-- Admin Control Buttons inside each Match Card -->
-          <div class="absolute top-4 left-4 flex gap-2">
-            <button onclick="openEditMatchModal('${m.id}', '${m.player1}', '${m.player2}', '${m.scheduledTime}')" class="text-brand-primary text-xs bg-brand-primary/10 px-2 py-1 rounded hover:bg-brand-primary/20"><i class="fa-solid fa-pen"></i> تعديل</button>
-            <button onclick="deleteMatch('${m.id}')" class="text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded hover:bg-red-500/20"><i class="fa-solid fa-trash"></i> حذف</button>
-          </div>
+      container.innerHTML = tourneyMatches.map(m => {
+        // البحث عن اللوغو الحقيقي للاعبين من جدول اللاعبين لتحديثه تلقائياً
+        const p1Obj = players.find(p => p.name === m.player1 && p.tourneyId === activeTourneyId);
+        const p2Obj = players.find(p => p.name === m.player2 && p.tourneyId === activeTourneyId);
+        const l1 = p1Obj ? p1Obj.logo : (m.logo1 || 'https://via.placeholder.com/40');
+        const l2 = p2Obj ? p2Obj.logo : (m.logo2 || 'https://via.placeholder.com/40');
+        const t1 = p1Obj ? p1Obj.team : (m.team1 || 'الفريق 1');
+        const t2 = p2Obj ? p2Obj.team : (m.team2 || 'الفريق 2');
 
-          <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-24">
-            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">مباراة رسمية</span>
-            <span class="text-xs text-brand-accent font-bold"><i class="fa-solid fa-clock"></i> ${m.scheduledTime || 'لم يُحدد بعد'}</span>
-          </div>
-
-          <div class="flex justify-around items-center text-center py-2">
-            <div>
-              <p class="font-bold text-white text-base">${m.player1}</p>
-              <p class="text-xs text-brand-muted">${m.team1 || 'فرقة 1'}</p>
+        return `
+          <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl relative">
+            <div class="absolute top-4 left-4 flex gap-2">
+              <button onclick="openEditMatchModal('${m.id}', '${m.player1}', '${m.player2}', '${m.scheduledTime}')" class="text-brand-primary text-xs bg-brand-primary/10 px-2 py-1 rounded hover:bg-brand-primary/20"><i class="fa-solid fa-pen"></i> تعديل</button>
+              <button onclick="deleteMatch('${m.id}')" class="text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded hover:bg-red-500/20"><i class="fa-solid fa-trash"></i> حذف</button>
             </div>
-            <span class="text-xl font-black text-brand-secondary">VS</span>
-            <div>
-              <p class="font-bold text-white text-base">${m.player2}</p>
-              <p class="text-xs text-brand-muted">${m.team2 || 'فرقة 2'}</p>
+
+            <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-24">
+              <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">مباراة رسمية</span>
+              <span class="text-xs text-brand-accent font-bold"><i class="fa-solid fa-clock"></i> ${m.scheduledTime || 'لم يُحدد بعد'}</span>
             </div>
-          </div>
 
-          <!-- Time Selector -->
-          <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
-            <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
-            <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد الوقت</button>
-          </div>
+            <div class="flex justify-around items-center text-center py-2">
+              <div class="flex flex-col items-center space-y-1">
+                <img src="${l1}" class="w-10 h-10 rounded-full object-cover border border-brand-primary shadow">
+                <p class="font-bold text-white text-sm">${m.player1}</p>
+                <p class="text-[11px] text-brand-muted">${t1}</p>
+              </div>
+              <span class="text-xl font-black text-brand-secondary">VS</span>
+              <div class="flex flex-col items-center space-y-1">
+                <img src="${l2}" class="w-10 h-10 rounded-full object-cover border border-brand-primary shadow">
+                <p class="font-bold text-white text-sm">${m.player2}</p>
+                <p class="text-[11px] text-brand-muted">${t2}</p>
+              </div>
+            </div>
 
-          <!-- Chat Box -->
-          <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
-            <p class="text-xs font-bold text-brand-primary flex items-center gap-1"><i class="fa-solid fa-comments"></i> شات الاتفاق بين اللاعبين:</p>
-            <div class="max-h-32 overflow-y-auto space-y-1.5 pr-1 text-xs">
-              ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد. ابدأ النقاش لتحديد الوقت!</p>' : 
-                m.messages.map(msg => `
-                  <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
-                    <div class="flex justify-between text-[10px] text-brand-muted mb-0.5">
-                      <span class="font-bold text-brand-accent">${msg.sender}</span>
-                      <span>${msg.time}</span>
+            <!-- Time Selector -->
+            <div class="flex gap-2 bg-brand-card p-2 rounded-xl border border-brand-border">
+              <input type="text" id="time-input-${m.id}" placeholder="مثال: غداً 21:00" class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+              <button onclick="updateMatchTime('${m.id}')" class="gradient-bg text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">تحديد الوقت</button>
+            </div>
+
+            <!-- Chat Box -->
+            <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
+              <p class="text-xs font-bold text-brand-primary flex items-center gap-1"><i class="fa-solid fa-comments"></i> شات الاتفاق بين اللاعبين:</p>
+              <div class="max-h-32 overflow-y-auto space-y-1.5 pr-1 text-xs">
+                ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد. ابدأ النقاش لتحديد الوقت!</p>' : 
+                  m.messages.map(msg => `
+                    <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
+                      <div class="flex justify-between text-[10px] text-brand-muted mb-0.5">
+                        <span class="font-bold text-brand-accent">${msg.sender}</span>
+                        <span>${msg.time}</span>
+                      </div>
+                      <p class="text-white">${msg.text}</p>
                     </div>
-                    <p class="text-white">${msg.text}</p>
-                  </div>
-                `).join('')}
+                  `).join('')}
+              </div>
+              <div class="flex gap-2 pt-1">
+                <input type="text" id="msg-input-${m.id}" placeholder="اكتب رسالة لخصمك..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+                <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">إرسال</button>
+              </div>
             </div>
-            <div class="flex gap-2 pt-1">
-              <input type="text" id="msg-input-${m.id}" placeholder="اكتب رسالة لخصمك..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
-              <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">إرسال</button>
-            </div>
-          </div>
 
-        </div>
-      `).join('');
+          </div>
+        `;
+      }).join('');
     }
 
     function openDesignModal() {
@@ -1386,6 +1398,7 @@ index.html
         `).join('');
       }
 
+      // جدول الترتيب الرسمي مع اللوغو بجانب اسم كل لاعب
       const playersTable = document.getElementById('playersTable');
       if(currentTourneyPlayers.length === 0) {
         playersTable.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-brand-muted" data-i18n="no_data">لا توجد بيانات لعرضها حالياً.</td></tr>';
@@ -1394,8 +1407,8 @@ index.html
         playersTable.innerHTML = sorted.map((p, index) => `
           <tr onclick="showPlayerProfile('${p.name}', '${p.team}', '${p.logo}', ${p.points || 0}, ${p.goals || 0})" class="cursor-pointer border-b border-brand-border/30 hover:bg-brand-dark/60 transition">
             <td class="p-3 font-bold text-brand-primary">${index + 1}</td>
-            <td class="p-3 flex items-center gap-2">
-              <img src="${p.logo}" class="w-7 h-7 rounded-full object-cover">
+            <td class="p-3 flex items-center gap-3">
+              <img src="${p.logo}" class="w-8 h-8 rounded-full object-cover border border-brand-primary/40 shadow-sm">
               <span class="font-semibold text-white">${p.name}</span>
             </td>
             <td class="p-3 text-brand-muted">${p.team}</td>
