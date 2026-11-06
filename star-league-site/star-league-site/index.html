@@ -250,16 +250,14 @@ index.html
 
         let currentLang = 'ar';
 
-        // دالة تغيير اللغة وتحديث النصوص واتجاه الصفحة (RTL / LTR)
+        // ربط الدوال بالـ window باش يخدمو مزيان في HTML
         window.changeLanguage = function(lang) {
             currentLang = lang;
             const t = translations[lang];
             
-            // تغيير اتجاه الصفحة حسب اللغة (العربية اليمين لليسار، الباقي العكس)
             document.getElementById('htmlRoot').setAttribute('lang', lang);
             document.getElementById('htmlRoot').setAttribute('dir', t.dir);
 
-            // تغيير النصوص في الصفحة
             document.getElementById('lblLanguage').innerText = t.lblLanguage;
             document.getElementById('mainTitle').innerText = t.mainTitle;
             document.getElementById('mainSubtitle').innerText = t.mainSubtitle;
@@ -271,7 +269,7 @@ index.html
             
             document.getElementById('adminsHeader').innerText = t.adminsHeader;
             document.getElementById('adminsDesc').innerText = t.adminsDesc;
-            document.getElementById('lblAdminEmail').innerText = t.lblAdminEmail;
+            document.getElementById('lblAdminEmail').innerText, document.getElementById('lblAdminEmail').innerText = t.lblAdminEmail;
             document.getElementById('adminEmail').placeholder = t.placeholderAdmin;
             document.getElementById('btnAddAdmin').innerText = t.btnAddAdmin;
             document.getElementById('loadingAdmins').innerText = t.loadingAdmins;
