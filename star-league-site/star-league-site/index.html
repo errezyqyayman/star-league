@@ -1,0 +1,361 @@
+index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAR LEAGUE - إدارة البطولة الرسمية</title>
+    <style>
+        :root {
+            --primary-color: #f39c12;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --border-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        }
+        .lang-selector {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .lang-selector select {
+            width: auto;
+            padding: 8px 12px;
+            background: #2c2c2c;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            background: #2c2c2c;
+            color: #fff;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            background: var(--primary-color);
+            color: #121212;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #e67e22;
+        }
+        .list-container {
+            margin-top: 15px;
+            background: #181818;
+            padding: 15px;
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .item-row {
+            padding: 8px 0;
+            border-bottom: 1px solid #282828;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- اختيار اللغات -->
+        <div class="lang-selector">
+            <label for="langSwitch" style="display:inline-block; margin-left: 10px;" id="lblLanguage">اللغة / Language:</label>
+            <select id="langSwitch" onchange="changeLanguage(this.value)">
+                <option value="ar">العربية</option>
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
+
+        <h1 id="mainTitle">منصة STAR LEAGUE لإدارة البطولات</h1>
+        <p style="text-align: center; color: #aaa;" id="mainSubtitle">منصتك المتكاملة لتسيير الفرق، النتائج، والمشرفين بكل سهولة</p>
+
+        <!-- قسم إضافة الفرق والمشاركين -->
+        <div class="section">
+            <h2 id="teamsHeader">إدارة الفرق والمشاركين</h2>
+            <div class="form-group">
+                <label for="teamName" id="lblTeamName">اسم الفريق أو اللاعب:</label>
+                <input type="text" id="teamName" placeholder="أدخل اسم الفريق هنا...">
+            </div>
+            <button onclick="addTeam()" id="btnAddTeam">إضافة الفريق للبطولة</button>
+            <div class="list-container" id="teamsList">
+                <span style="color: #777;" id="loadingTeams">جاري تحميل الفرق...</span>
+            </div>
+        </div>
+
+        <!-- قسم إضافة المشرفين الجدد -->
+        <div class="section">
+            <h2 id="adminsHeader">إدارة المشرفين والصلاحيات</h2>
+            <p style="font-size: 14px; color: #ccc;" id="adminsDesc">يمكنك إضافة مشرفين جدد للمنصة لكي يتمكنوا من الدخول والمساعدة في التسيير:</p>
+            <div class="form-group">
+                <label for="adminEmail" id="lblAdminEmail">البريد الإلكتروني للمشرف الجديد:</label>
+                <input type="email" id="adminEmail" placeholder="admin@example.com">
+            </div>
+            <button onclick="addAdmin()" id="btnAddAdmin">منح صلاحية الإشراف</button>
+            <div class="list-container" id="adminsList">
+                <span style="color: #777;" id="loadingAdmins">جاري تحميل قائمة المشرفين...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase والترجمات -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // قاموس الترجمات للغات الأربع
+        const translations = {
+            ar: {
+                dir: "rtl",
+                lblLanguage: "اللغة:",
+                mainTitle: "منصة STAR LEAGUE لإدارة البطولات",
+                mainSubtitle: "منصتك المتكاملة لتسيير الفرق، النتائج، والمشرفين بكل سهولة",
+                teamsHeader: "إدارة الفرق والمشاركين",
+                lblTeamName: "اسم الفريق أو اللاعب:",
+                placeholderTeam: "أدخل اسم الفريق هنا...",
+                btnAddTeam: "إضافة الفريق للبطولة",
+                loadingTeams: "جاري تحميل الفرق...",
+                adminsHeader: "إدارة المشرفين والصلاحيات",
+                adminsDesc: "يمكنك إضافة مشرفين جدد للمنصة لكي يتمكنوا من الدخول والمساعدة في التسيير:",
+                lblAdminEmail: "البريد الإلكتروني للمشرف الجديد:",
+                placeholderAdmin: "admin@example.com",
+                btnAddAdmin: "منح صلاحية الإشراف",
+                loadingAdmins: "جاري تحميل قائمة المشرفين...",
+                teamAdded: "تمت إضافة الفريق بنجاح!",
+                adminAdded: "تمت إضافة المشرف بنجاح وتفعيل حسابه!",
+                noTeams: "لا توجد أي فرق مسجلة حالياً.",
+                noAdmins: "لا يوجد مشرفون إضافيون مسجلون حالياً."
+            },
+            fr: {
+                dir: "ltr",
+                lblLanguage: "Langue:",
+                mainTitle: "Plateforme STAR LEAGUE - Gestion des Tournois",
+                mainSubtitle: "Votre plateforme intégrée pour gérer les équipes, résultats et administrateurs",
+                teamsHeader: "Gestion des Équipes",
+                lblTeamName: "Nom de l'équipe ou du joueur:",
+                placeholderTeam: "Entrez le nom de l'équipe ici...",
+                btnAddTeam: "Ajouter l'équipe",
+                loadingTeams: "Chargement des équipes...",
+                adminsHeader: "Gestion des Administrateurs",
+                adminsDesc: "Ajoutez de nouveaux administrateurs pour vous aider dans la gestion:",
+                lblAdminEmail: "E-mail du nouvel administrateur:",
+                placeholderAdmin: "admin@example.com",
+                btnAddAdmin: "Ajouter l'administrateur",
+                loadingAdmins: "Chargement des administrateurs...",
+                teamAdded: "Équipe ajoutée avec succès!",
+                adminAdded: "Administrateur ajouté avec succès!",
+                noTeams: "Aucune équipe enregistrée pour le moment.",
+                noAdmins: "Aucun administrateur supplémentaire."
+            },
+            en: {
+                dir: "ltr",
+                lblLanguage: "Language:",
+                mainTitle: "STAR LEAGUE Tournament Management",
+                mainSubtitle: "Your integrated platform to manage teams, results, and admins easily",
+                teamsHeader: "Teams Management",
+                lblTeamName: "Team or Player Name:",
+                placeholderTeam: "Enter team name here...",
+                btnAddTeam: "Add Team to Tournament",
+                loadingTeams: "Loading teams...",
+                adminsHeader: "Admins Management",
+                adminsDesc: "Add new admins to the platform to help with management:",
+                lblAdminEmail: "New Admin Email:",
+                placeholderAdmin: "admin@example.com",
+                btnAddAdmin: "Grant Admin Access",
+                loadingAdmins: "Loading admins list...",
+                teamAdded: "Team added successfully!",
+                adminAdded: "Admin added successfully!",
+                noTeams: "No teams registered yet.",
+                noAdmins: "No additional admins registered."
+            },
+            es: {
+                dir: "ltr",
+                lblLanguage: "Idioma:",
+                mainTitle: "Plataforma STAR LEAGUE - Gestión de Torneos",
+                mainSubtitle: "Tu plataforma integrada para gestionar equipos, resultados y administradores",
+                teamsHeader: "Gestión de Equipos",
+                lblTeamName: "Nombre del equipo o jugador:",
+                placeholderTeam: "Introduce el nombre del equipo...",
+                btnAddTeam: "Añadir equipo al torneo",
+                loadingTeams: "Cargando equipos...",
+                adminsHeader: "Gestión de Administradores",
+                adminsDesc: "Añade nuevos administradores para ayudar en la gestión:",
+                lblAdminEmail: "Correo electrónico del nuevo administrador:",
+                placeholderAdmin: "admin@example.com",
+                btnAddAdmin: "Conceder acceso de administrador",
+                loadingAdmins: "Cargando administradores...",
+                teamAdded: "¡Equipo añadido con éxito!",
+                adminAdded: "¡Administrador añadido con éxito!",
+                noTeams: "No hay equipos registrados todavía.",
+                noAdmins: "No hay administradores adicionales."
+            }
+        };
+
+        let currentLang = 'ar';
+
+        // دالة تغيير اللغة وتحديث النصوص واتجاه الصفحة (RTL / LTR)
+        window.changeLanguage = function(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            // تغيير اتجاه الصفحة حسب اللغة (العربية اليمين لليسار، الباقي العكس)
+            document.getElementById('htmlRoot').setAttribute('lang', lang);
+            document.getElementById('htmlRoot').setAttribute('dir', t.dir);
+
+            // تغيير النصوص في الصفحة
+            document.getElementById('lblLanguage').innerText = t.lblLanguage;
+            document.getElementById('mainTitle').innerText = t.mainTitle;
+            document.getElementById('mainSubtitle').innerText = t.mainSubtitle;
+            document.getElementById('teamsHeader').innerText = t.teamsHeader;
+            document.getElementById('lblTeamName').innerText = t.lblTeamName;
+            document.getElementById('teamName').placeholder = t.placeholderTeam;
+            document.getElementById('btnAddTeam').innerText = t.btnAddTeam;
+            document.getElementById('loadingTeams').innerText = t.loadingTeams;
+            
+            document.getElementById('adminsHeader').innerText = t.adminsHeader;
+            document.getElementById('adminsDesc').innerText = t.adminsDesc;
+            document.getElementById('lblAdminEmail').innerText = t.lblAdminEmail;
+            document.getElementById('adminEmail').placeholder = t.placeholderAdmin;
+            document.getElementById('btnAddAdmin').innerText = t.btnAddAdmin;
+            document.getElementById('loadingAdmins').innerText = t.loadingAdmins;
+
+            loadTeams();
+            loadAdmins();
+        }
+
+        window.addTeam = async function() {
+            const teamName = document.getElementById('teamName').value.trim();
+            const t = translations[currentLang];
+            if (!teamName) {
+                alert(currentLang === 'ar' ? 'المرجو إدخال اسم الفريق أولاً!' : 'Please enter team name first!');
+                return;
+            }
+            try {
+                await addDoc(collection(db, "teams"), { name: teamName, createdAt: new Date() });
+                alert(t.teamAdded);
+                document.getElementById('teamName').value = '';
+                loadTeams();
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        window.addAdmin = async function() {
+            const adminEmail = document.getElementById('adminEmail').value.trim();
+            const t = translations[currentLang];
+            if (!adminEmail) {
+                alert(currentLang === 'ar' ? 'المرجو إدخال البريد الإلكتروني للمشرف!' : 'Please enter admin email!');
+                return;
+            }
+            try {
+                await addDoc(collection(db, "admins"), { email: adminEmail, addedAt: new Date() });
+                alert(t.adminAdded);
+                document.getElementById('adminEmail').value = '';
+                loadAdmins();
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        async function loadTeams() {
+            const listEl = document.getElementById('teamsList');
+            const t = translations[currentLang];
+            try {
+                const querySnapshot = await getDocs(collection(db, "teams"));
+                listEl.innerHTML = '';
+                if (querySnapshot.empty) {
+                    listEl.innerHTML = `<span style="color: #777;">${t.noTeams}</span>`;
+                    return;
+                }
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    listEl.innerHTML += `<div class="item-row"><span>🎮 ${data.name}</span><span style="color: #f39c12; font-size: 12px;">OK</span></div>`;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadAdmins() {
+            const listEl = document.getElementById('adminsList');
+            const t = translations[currentLang];
+            try {
+                const querySnapshot = await getDocs(collection(db, "admins"));
+                listEl.innerHTML = '';
+                if (querySnapshot.empty) {
+                    listEl.innerHTML = `<span style="color: #777;">${t.noAdmins}</span>`;
+                    return;
+                }
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    listEl.innerHTML += `<div class="item-row"><span>🛡️ ${data.email}</span><span style="color: #2ecc71; font-size: 12px;">Admin</span></div>`;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.onload = function() {
+            loadTeams();
+            loadAdmins();
+        };
+    </script>
+</body>
+</html>
