@@ -87,7 +87,7 @@ index.html
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       
       <div class="flex items-center space-x-3 space-x-reverse">
-        <img src="logo-star-league.png" alt="Logo" class="w-10 h-10 object-contain flex-shrink-0">
+        <img id="headerTourneyLogo" src="logo-star-league.png" alt="Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
           <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
@@ -106,16 +106,6 @@ index.html
         <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
           <i class="fa-solid fa-trophy"></i>
           <span id="currentTourneyNameDisp">لا توجد بطولة</span>
-        </div>
-
-        <!-- اختيار اللغات -->
-        <div class="relative">
-          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
-            <option value="ar">العربية 🇲🇦</option>
-            <option value="fr">Français 🇫🇷</option>
-            <option value="en">English 🇬🇧</option>
-            <option value="es">Español 🇪🇸</option>
-          </select>
         </div>
       </div>
 
@@ -152,7 +142,7 @@ index.html
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-[0_0_15px_rgba(0,255,204,0.3)]">
+          <img id="dashboardTourneyLogo" src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40 drop-shadow-[0_0_15px_rgba(0,255,204,0.3)]">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
@@ -213,13 +203,18 @@ index.html
     <!-- TAB 2: TOURNAMENTS -->
     <section id="sec-tournaments" class="hidden space-y-6 max-w-3xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
-        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة وثيم خاص بها</span>
+        <h3 id="tourneyFormTitle" class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة أو تعديلها</span>
         </h3>
-        <form id="tournamentForm" class="space-y-4" onsubmit="handleCreateTournament(event)">
+        <form id="tournamentForm" class="space-y-4" onsubmit="handleSaveTournament(event)">
+          <input type="hidden" id="editingTourneyId">
           <div>
             <label class="block text-sm text-brand-muted mb-1">اسم البطولة</label>
             <input type="text" id="tourneyName" required placeholder="Star League 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">لوغو البطولة (Logo)</label>
+            <input type="file" id="tourneyLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
           </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">ثيم البطولة (Theme)</label>
@@ -230,11 +225,15 @@ index.html
               <option value="crimson">أحمر حماسي / Crimson (#2a0808)</option>
             </select>
           </div>
-          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">إضافة وإنشاء البطولة</button>
+          <div class="flex gap-2">
+            <button type="submit" id="tourneySubmitBtn" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">حفظ وإنشاء البطولة</button>
+            <button type="button" onclick="resetTourneyForm()" id="tourneyCancelBtn" class="hidden bg-brand-border text-white px-4 py-3 rounded-lg text-sm">إلغاء التعديل</button>
+          </div>
         </form>
       </div>
+
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
-        <h3 class="text-xl font-bold text-brand-secondary">جميع البطولات</h3>
+        <h3 class="text-xl font-bold text-brand-secondary">جميع البطولات (إدارة وتعديل)</h3>
         <div id="tournamentsListContainer" class="space-y-3">
           <p class="text-sm text-brand-muted">لا توجد بطولات.</p>
         </div>
@@ -358,7 +357,7 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN -->
+    <!-- TAB 6: ADMIN (تم إضافة خانة كتابة عدد الجولات بحرية تامة) -->
     <section id="sec-admin" class="hidden space-y-6">
       
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
@@ -381,16 +380,8 @@ index.html
             </select>
           </div>
           <div>
-            <label class="block text-xs text-brand-muted mb-1">عدد الجولات (GameWeeks / Rounds):</label>
-            <select id="adminNumRounds" class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none cursor-pointer">
-              <option value="1">جولة واحدة (Round 1)</option>
-              <option value="2">جولتان (Round 1, 2)</option>
-              <option value="3">3 جولات</option>
-              <option value="4" selected>4 جولات</option>
-              <option value="6">6 جولات</option>
-              <option value="8">8 جولات</option>
-              <option value="10">10 جولات</option>
-            </select>
+            <label class="block text-xs text-brand-muted mb-1">اكتب عدد الجولات (GameWeeks) المطلوبة:</label>
+            <input type="number" id="adminNumRoundsInput" value="38" min="1" max="100" class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs text-white font-bold text-center focus:outline-none">
           </div>
           <div>
             <label class="block text-xs text-brand-muted mb-1">نظام المباريات:</label>
@@ -722,6 +713,7 @@ index.html
       });
     }
 
+    // توليد المباريات أوتوماتيكياً وتوزيعها على عدد الجولات المكتوب بحرية
     function generateAutomaticMatches() {
       if(!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -739,7 +731,7 @@ index.html
         return;
       }
 
-      const numRounds = parseInt(document.getElementById('adminNumRounds').value) || 4;
+      const numRounds = parseInt(document.getElementById('adminNumRoundsInput').value) || 38;
       const matchType = document.getElementById('adminMatchType').value;
       let count = 0;
       const batch = db.batch();
@@ -810,8 +802,8 @@ index.html
       });
 
       batch.commit().then(() => {
-        addNotification(`تم توليد ${count} مباراة موزعة على ${numRounds} جولات بنجاح! 🎮`);
-        alert(`تم توليد ${count} مباراة بنجاح على ${numRounds} جولات!`);
+        addNotification(`تم توليد ${count} مباراة موزعة على ${numRounds} جولة بنجاح! 🎮`);
+        alert(`تم توليد ${count} مباراة بنجاح على ${numRounds} جولة!`);
       });
     }
 
@@ -889,21 +881,67 @@ index.html
       });
     }
 
-    function handleCreateTournament(e) {
+    function handleSaveTournament(e) {
       e.preventDefault();
+      const tourneyId = document.getElementById('editingTourneyId').value;
       const name = document.getElementById('tourneyName').value.trim();
       const theme = document.getElementById('tourneyTheme').value;
+      const fileInput = document.getElementById('tourneyLogoFile');
+
       if(!name) return;
 
-      db.collection("tournaments").add({
-        name: name,
-        theme: theme,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        document.getElementById('tourneyName').value = '';
-        addNotification(`تم إنشاء بطولة جديدة: "${name}" 🏆`);
-        alert('تم إنشاء البطولة بنجاح!');
-      });
+      const proceedWithLogo = (logoUrl) => {
+        if(tourneyId) {
+          const updateData = { name: name, theme: theme };
+          if(logoUrl) updateData.logo = logoUrl;
+
+          db.collection("tournaments").doc(tourneyId).update(updateData).then(() => {
+            resetTourneyForm();
+            addNotification(`تم تعديل البطولة: "${name}" بنجاح 🏆`);
+            alert('تم تعديل البطولة بنجاح!');
+          });
+        } else {
+          db.collection("tournaments").add({
+            name: name,
+            theme: theme,
+            logo: logoUrl || 'logo-star-league.png',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(() => {
+            resetTourneyForm();
+            addNotification(`تم إنشاء بطولة جديدة: "${name}" 🏆`);
+            alert('تم إنشاء البطولة بنجاح!');
+          });
+        }
+      };
+
+      if(fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          proceedWithLogo(e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        proceedWithLogo(null);
+      }
+    }
+
+    function editTournament(id, currentName, currentTheme) {
+      document.getElementById('editingTourneyId').value = id;
+      document.getElementById('tourneyName').value = currentName;
+      document.getElementById('tourneyTheme').value = currentTheme || 'purple';
+      document.getElementById('tourneyFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> <span>تعديل معلومات البطولة</span>';
+      document.getElementById('tourneySubmitBtn').innerText = 'تعديل البطولة';
+      document.getElementById('tourneyCancelBtn').classList.remove('hidden');
+      switchTab('tournaments');
+    }
+
+    function resetTourneyForm() {
+      document.getElementById('editingTourneyId').value = '';
+      document.getElementById('tourneyName').value = '';
+      document.getElementById('tourneyLogoFile').value = '';
+      document.getElementById('tourneyFormTitle').innerHTML = '<i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة أو تعديلها</span>';
+      document.getElementById('tourneySubmitBtn').innerText = 'حفظ وإنشاء البطولة';
+      document.getElementById('tourneyCancelBtn').classList.add('hidden');
     }
 
     function setActiveTourney(id) {
@@ -915,7 +953,9 @@ index.html
     }
 
     function deleteTourney(id) {
-      db.collection("tournaments").doc(id).delete();
+      if(confirm('هل أنت متأكد من حذف هذه البطولة؟')) {
+        db.collection("tournaments").doc(id).delete();
+      }
     }
 
     function handleRegisterPlayer(e) {
@@ -942,7 +982,6 @@ index.html
       }
     }
 
-    // هنا ضبطنا الحفظ باش ديما أي لاعب تسجل يكون في مجموعة "غير مقسم بعد" حصرياً
     function savePlayerFinal(tourneyId, name, team, logo) {
       db.collection("players").add({
         tourneyId: tourneyId,
@@ -1206,6 +1245,12 @@ index.html
         document.getElementById('currentTourneyNameDisp').innerText = activeObj.name;
         document.getElementById('standingsTourneyDisplay').innerText = activeObj.name;
         document.getElementById('standingsThemeDisplay').innerText = "الثيم: " + (activeObj.theme || 'purple');
+        
+        if(activeObj.logo) {
+          document.getElementById('headerTourneyLogo').src = activeObj.logo;
+          document.getElementById('dashboardTourneyLogo').src = activeObj.logo;
+        }
+
         applyTournamentTheme(activeObj.theme);
       } else {
         document.getElementById('currentTourneyNameDisp').innerText = "لا توجد بطولة";
@@ -1216,22 +1261,29 @@ index.html
         activeTourneysContainer.innerHTML = '<p class="text-sm text-brand-muted">لا توجد بطولات.</p>';
       } else {
         tourneysCont.innerHTML = tournaments.map(t => `
-          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between">
-            <div>
-              <h4 class="font-bold text-white">${t.name}</h4>
-              <p class="text-xs text-brand-muted">الثيم: ${t.theme || 'purple'}</p>
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <img src="${t.logo || 'logo-star-league.png'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
+              <div>
+                <h4 class="font-bold text-white">${t.name}</h4>
+                <p class="text-xs text-brand-muted">الثيم: ${t.theme || 'purple'}</p>
+              </div>
             </div>
             <div class="flex gap-2">
               <button onclick="setActiveTourney('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${t.id === activeTourneyId ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">اختيار</button>
+              <button onclick="editTournament('${t.id}', '${t.name}', '${t.theme}')" class="bg-brand-accent/20 text-brand-accent px-3 py-1.5 rounded-lg text-xs font-bold">تعديل</button>
               <button onclick="deleteTourney('${t.id}')" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold">حذف</button>
             </div>
           </div>
         `).join('');
 
         activeTourneysContainer.innerHTML = tournaments.map(t => `
-          <div onclick="setActiveTourney('${t.id}')" class="cursor-pointer bg-brand-dark p-4 rounded-xl border ${t.id === activeTourneyId ? 'border-brand-primary bg-brand-primary/10' : 'border-brand-border'} transition hover:border-brand-primary">
-            <h4 class="font-bold text-white">${t.name}</h4>
-            <p class="text-xs text-brand-muted mt-1">الثيم: ${t.theme || 'purple'}</p>
+          <div onclick="setActiveTourney('${t.id}')" class="cursor-pointer bg-brand-dark p-4 rounded-xl border ${t.id === activeTourneyId ? 'border-brand-primary bg-brand-primary/10' : 'border-brand-border'} transition hover:border-brand-primary flex items-center gap-3">
+            <img src="${t.logo || 'logo-star-league.png'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
+            <div>
+              <h4 class="font-bold text-white">${t.name}</h4>
+              <p class="text-xs text-brand-muted mt-0.5">الثيم: ${t.theme || 'purple'}</p>
+            </div>
           </div>
         `).join('');
       }
@@ -1239,7 +1291,6 @@ index.html
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       document.getElementById('stat-players-count').innerText = currentTourneyPlayers.length;
 
-      // هنا فلترة المجموعات: لن تظهر إلا المجموعات الحقيقية بعد إجراء القرعة
       const groupFilter = document.getElementById('selectedGroupFilter');
       const uniqueGroups = [...new Set(currentTourneyPlayers.map(p => p.group).filter(g => g && g !== 'غير مقسم بعد'))];
       
