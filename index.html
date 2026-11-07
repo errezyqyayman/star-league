@@ -95,7 +95,7 @@ index.html
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- زر الإشعارات -->
+        <!-- زر الإشعارات الحية -->
         <div class="relative">
           <button onclick="toggleNotificationsModal()" class="relative bg-brand-dark border border-brand-border p-2.5 rounded-lg text-brand-primary hover:bg-brand-border/50 transition">
             <i class="fa-solid fa-bell text-sm"></i>
@@ -136,7 +136,7 @@ index.html
         <i class="fa-solid fa-list-ol"></i> <span>الترتيب والمجموعات</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والأدوار</span>
+        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
@@ -241,7 +241,7 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 3: REGISTER PLAYER (اختر البطولة اللي بغى يلعبه فيها) -->
+    <!-- TAB 3: REGISTER PLAYER -->
     <section id="sec-register" class="hidden max-w-xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
@@ -251,7 +251,7 @@ index.html
           <div>
             <label class="block text-sm text-brand-muted mb-1">اختر البطولة التي تريد المشاركة فيها</label>
             <select id="registerTourneySelect" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none cursor-pointer">
-              <!-- كيتعمرو أوتوماتيكياً بالبطولات المتاحة -->
+              <!-- كيتعمرو أوتوماتيكياً -->
             </select>
           </div>
           <div>
@@ -336,10 +336,10 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 5: SCHEDULE & CHAT -->
+    <!-- TAB 5: SCHEDULE & MATCHES (مع زر إضافة التقويم وتذكير الهاتف) -->
     <section id="sec-schedule" class="hidden space-y-6">
       <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex justify-between items-center">
-        <h3 class="text-xl font-bold text-brand-primary">المباريات والأدوار الإقصائية</h3>
+        <h3 class="text-xl font-bold text-brand-primary">المباريات والشات الخاص بالتوقيت ورفع النتائج</h3>
         <div id="knockoutStatusBadge" class="text-xs bg-brand-secondary/20 text-brand-secondary px-3 py-1 rounded-full font-bold">مرحلة المجموعات</div>
       </div>
       <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -347,10 +347,9 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN (التحكم الكامل والقرعة المتقدمة) -->
+    <!-- TAB 6: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
-      <!-- إعدادات القرعة والمجموعات -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
           <i class="fa-solid fa-wand-magic-sparkles"></i> لوحة تحكم القرعة والأدوار
@@ -386,7 +385,6 @@ index.html
         </div>
       </div>
 
-      <!-- نافذة مراجعة اللاعبين قبل القرعة -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary">اللاعبون المسجلون حالياً في البطولة (جاهزون للقرعة)</h3>
         <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto">
@@ -427,10 +425,10 @@ index.html
     </div>
   </footer>
 
-  <!-- Modal تعديل نتيجة أو مباراة -->
+  <!-- Modal تعديل النتيجة من الأدمن -->
   <div id="editMatchModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <h3 class="text-lg font-bold text-brand-primary">تسجيل نتيجة المباراة</h3>
+      <h3 class="text-lg font-bold text-brand-primary">تأكيد نتيجة المباراة (الأدمن)</h3>
       <input type="hidden" id="editMatchId">
       <div class="flex items-center justify-between gap-2">
         <div class="text-center flex-1">
@@ -444,7 +442,7 @@ index.html
         </div>
       </div>
       <div class="flex gap-3 pt-2">
-        <button onclick="saveMatchScore()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90">حفظ النتيجة</button>
+        <button onclick="saveMatchScore()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90">اعتماد النتيجة</button>
         <button onclick="closeMatchModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg">إلغاء</button>
       </div>
     </div>
@@ -455,7 +453,7 @@ index.html
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl relative">
       <div class="flex justify-between items-center border-b border-brand-border pb-3">
         <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-bell"></i> مركز الإشعارات والتنبيهات
+          <i class="fa-solid fa-bell"></i> مركز الإشعارات والتنبيهات الحية
         </h3>
         <button onclick="toggleNotificationsModal()" class="text-brand-muted hover:text-white text-lg font-bold">&times;</button>
       </div>
@@ -535,7 +533,7 @@ index.html
         date: new Date().toLocaleDateString()
       };
       notifications.unshift(newNotif);
-      if(notifications.length > 20) notifications.pop();
+      if(notifications.length > 25) notifications.pop();
       localStorage.setItem('star_notifications', JSON.stringify(notifications));
       updateNotificationsUI();
     }
@@ -571,6 +569,9 @@ index.html
       }
     }
 
+    // تتبع التغيرات أوتوماتيكياً (Realtime) وتوليد الإشعارات الحية فور تسجيل لاعب جديد
+    let previousPlayersCount = null;
+
     function fetchRealtimeData() {
       db.collection("settings").doc("site_content").onSnapshot((doc) => {
         if (doc.exists) {
@@ -597,7 +598,6 @@ index.html
         }
         document.getElementById('stat-tourneys-count').innerText = tournaments.length;
         
-        // تعبئة قائمة اختيار البطولات في صفحة التسجيل
         const regSelect = document.getElementById('registerTourneySelect');
         if(regSelect) {
           regSelect.innerHTML = tournaments.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
@@ -606,10 +606,19 @@ index.html
       });
 
       db.collection("players").onSnapshot((snapshot) => {
-        players = [];
+        let newPlayersList = [];
         snapshot.forEach((doc) => {
-          players.push({ id: doc.id, ...doc.data() });
+          newPlayersList.push({ id: doc.id, ...doc.data() });
         });
+
+        // إذا كان هناك لاعب جديد انضم، نقوم بإضافة إشعار حي تلقائياً
+        if (previousPlayersCount !== null && newPlayersList.length > previousPlayersCount) {
+          const latestPlayer = newPlayersList[newPlayersList.length - 1];
+          addNotification(`انضم اللاعب "${latestPlayer.name}" (${latestPlayer.team}) إلى البطولة بنجاح! ⚽`);
+        }
+        previousPlayersCount = newPlayersList.length;
+
+        players = newPlayersList;
         renderAll();
       });
 
@@ -623,7 +632,18 @@ index.html
       });
     }
 
-    // معاينة اللاعبين وإجراء القرعة الأوتوماتيكية مع اختيار عدد المجموعات
+    // خاصية إضافة الماتش لتقويم الهاتف (Google Calendar / Apple Calendar Reminder)
+    function addToCalendar(player1, player2, stage) {
+      const title = encodeURIComponent(`مباراة Star League: ${player1} ضد ${player2}`);
+      const details = encodeURIComponent(`مباراة رسمية في منصة ستار ليج للبطولات (${stage}). لا تنسى التفاهم على التوقيت ورفع السكرين!`);
+      const now = new Date();
+      now.setHours(now.getHours() + 2); // مثال للتوقيت الافتراضي
+      const eventTime = now.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      
+      const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${eventTime}/${eventTime}`;
+      window.open(googleCalendarUrl, '_blank');
+    }
+
     function previewAndDrawGroups() {
       if (!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -661,7 +681,6 @@ index.html
       });
     }
 
-    // توليد المباريات (مع دعم ذهاب أو ذهاب وإياب)
     function generateAutomaticMatches() {
       if(!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -679,11 +698,10 @@ index.html
         return;
       }
 
-      const matchType = document.getElementById('adminMatchType').value; // aller أو aller-retour
+      const matchType = document.getElementById('adminMatchType').value;
       let count = 0;
       const batch = db.batch();
 
-      // تجميع اللاعبين حسب المجموعات
       const groupsMap = {};
       currentTourneyPlayers.forEach(p => {
         const g = p.group || 'المجموعة أ';
@@ -695,7 +713,6 @@ index.html
         const groupPlayers = groupsMap[groupName];
         for (let i = 0; i < groupPlayers.length; i++) {
           for (let j = i + 1; j < groupPlayers.length; j++) {
-            // مباراة الذهاب
             const matchRef1 = db.collection("matches").doc();
             batch.set(matchRef1, {
               tourneyId: activeTourneyId,
@@ -710,11 +727,12 @@ index.html
               score1: null,
               score2: null,
               played: false,
+              messages: [],
+              proofScreenshot: '',
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             count++;
 
-            // إذا كان النظام ذهاب وإياب
             if(matchType === 'aller-retour') {
               const matchRef2 = db.collection("matches").doc();
               batch.set(matchRef2, {
@@ -730,6 +748,8 @@ index.html
                 score1: null,
                 score2: null,
                 played: false,
+                messages: [],
+                proofScreenshot: '',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
               });
               count++;
@@ -739,7 +759,7 @@ index.html
       });
 
       batch.commit().then(() => {
-        addNotification(`تم توليد ${count} مباراة بنجاح (${matchType === 'aller' ? 'ذهاب' : 'ذهاب وإياب'})! 🎮`);
+        addNotification(`تم توليد ${count} مباراة رسمية بنجاح (${matchType === 'aller' ? 'ذهاب' : 'ذهاب وإياب'})! 🎮`);
         alert(`تم توليد ${count} مباراة بنجاح!`);
       });
     }
@@ -818,7 +838,6 @@ index.html
       db.collection("tournaments").doc(id).delete();
     }
 
-    // تسجيل اللاعب مع اختيار البطولة التي يريد المشاركة فيها
     function handleRegisterPlayer(e) {
       e.preventDefault();
       const tourneyId = document.getElementById('registerTourneySelect').value;
@@ -846,7 +865,7 @@ index.html
     function savePlayerFinal(tourneyId, name, team, logo) {
       db.collection("players").add({
         tourneyId: tourneyId,
-        group: 'غير مقسم بعد', // يبقاو خاوين حتى يتم إجراء القرعة
+        group: 'غير مقسم بعد',
         name: name,
         team: team,
         logo: logo,
@@ -855,7 +874,6 @@ index.html
         pl: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        addNotification(`انضم اللاعب "${name}" إلى البطولة بنجاح! ⚽`);
         alert('تم تسجيل اللاعب بنجاح في البطولة المطلوبة!');
       });
     }
@@ -864,6 +882,50 @@ index.html
       if(confirm('هل أنت متأكد من حذف هذا اللاعب؟')) {
         db.collection("players").doc(id).delete();
       }
+    }
+
+    function sendMatchMessage(matchId) {
+      const input = document.getElementById('msg-input-' + matchId);
+      const senderInput = document.getElementById('msg-sender-' + matchId);
+      const text = input.value.trim();
+      const sender = senderInput ? senderInput.value.trim() : 'لاعب';
+
+      if(!text || !sender) {
+        alert('المرجو كتابة اسمك والرسالة للتفاهم على التوقيت!');
+        return;
+      }
+
+      const matchObj = matches.find(m => m.id === matchId);
+      if(!matchObj) return;
+
+      const updatedMsgs = matchObj.messages || [];
+      updatedMsgs.push({
+        sender: sender,
+        text: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      db.collection("matches").doc(matchId).update({ messages: updatedMsgs }).then(() => {
+        input.value = '';
+      });
+    }
+
+    function uploadMatchProof(matchId) {
+      const fileInput = document.getElementById('proof-file-' + matchId);
+      if(!fileInput.files || !fileInput.files[0]) {
+        alert('المرجو اختيار صورة السكرين أولاً!');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Image = e.target.result;
+        db.collection("matches").doc(matchId).update({ proofScreenshot: base64Image }).then(() => {
+          addNotification('تم رفع سكرين النتيجة بنجاح في إحدى المباريات 📸');
+          alert('تم رفع سكرين النتيجة بنجاح! سيراجعها الأدمن قريباً.');
+        });
+      };
+      reader.readAsDataURL(fileInput.files[0]);
     }
 
     function openScoreModal(matchId, p1, p2, s1, s2) {
@@ -879,7 +941,6 @@ index.html
       document.getElementById('editMatchModal').classList.add('hidden');
     }
 
-    // حفظ نتيجة المباراة وتحديث الترتيب أوتوماتيكياً
     function saveMatchScore() {
       const matchId = document.getElementById('editMatchId').value;
       const s1 = parseInt(document.getElementById('modalScore1').value) || 0;
@@ -895,29 +956,25 @@ index.html
       }).then(() => {
         updatePlayerStatsAfterMatch(matchObj, s1, s2);
         closeMatchModal();
-        alert('تم حفظ النتيجة وتحديث جدول الترتيب بنجاح!');
+        alert('تم اعتماد النتيجة وتحديث جدول الترتيب بنجاح!');
       });
     }
 
-    // تحديث احصائيات اللاعبين في قاعدة البيانات بناء على النتيجة
     function updatePlayerStatsAfterMatch(match, s1, s2) {
       const tId = match.tourneyId;
       const p1Name = match.player1;
       const p2Name = match.player2;
 
-      // البحث عن اللاعبين في نفس البطولة
       const allP = players.filter(p => p.tourneyId === tId);
       const player1Obj = allP.find(p => p.name === p1Name);
       const player2Obj = allP.find(p => p.name === p2Name);
 
       if(player1Obj && player2Obj) {
-        // حساب التغييرات البسيطة للثلاث نقاط
         let p1Pts = player1Obj.points || 0;
         let p2Pts = player2Obj.points || 0;
         let p1W = player1Obj.w || 0, p1D = player1Obj.d || 0, p1L = player1Obj.l || 0;
         let p2W = player2Obj.w || 0, p2D = player2Obj.d || 0, p2L = player2Obj.l || 0;
 
-        // إعادة ضبط الحسابات البسيطة للمباريات
         p1W = s1 > s2 ? p1W + 1 : p1W;
         p2W = s2 > s1 ? p2W + 1 : p2W;
         p1D = s1 === s2 ? p1D + 1 : p1D;
@@ -980,8 +1037,14 @@ index.html
           <button onclick="deleteMatch('${m.id}')" class="absolute top-4 left-4 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">حذف</button>
           
           <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-16">
-            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">${m.stage || 'مباراة رسمية'} (${m.group || 'مجموعة'})</span>
-            <span class="text-xs text-brand-accent font-bold">${m.played ? 'منتهية ✅' : 'في الانتظار ⏳'}</span>
+            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">${m.stage || 'مباراة'} (${m.group || 'مجموعة'})</span>
+            <div class="flex items-center gap-2">
+              <!-- زر إضافة المباراة لتقويم الهاتف وتذكير اللاعب -->
+              <button onclick="addToCalendar('${m.player1}', '${m.player2}', '${m.stage}')" class="bg-brand-accent/20 text-brand-accent px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1">
+                <i class="fa-solid fa-calendar-plus"></i> تذكير التقويم
+              </button>
+              <span class="text-xs text-brand-accent font-bold">${m.played ? 'منتهية ✅' : 'في الانتظار ⏳'}</span>
+            </div>
           </div>
 
           <div class="flex justify-around items-center text-center py-2">
@@ -1002,8 +1065,50 @@ index.html
             </div>
           </div>
 
-          <div class="flex justify-end pt-2">
-            <button onclick="openScoreModal('${m.id}', '${m.player1}', '${m.player2}', ${m.score1}, ${m.score2})" class="gradient-bg text-brand-dark px-4 py-1.5 rounded-lg text-xs font-bold">تسجيل / تعديل النتيجة</button>
+          <!-- شات التفاهم على التوقيت -->
+          <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
+            <p class="text-xs font-bold text-brand-primary"><i class="fa-solid fa-comments"></i> شات التفاهم على التوقيت بين اللاعبين:</p>
+            <div class="max-h-28 overflow-y-auto space-y-1.5 text-xs">
+              ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد. تفاهم هنا مع خصمك على التوقيت!</p>' :
+                m.messages.map(msg => `
+                  <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
+                    <div class="flex justify-between text-[10px] text-brand-muted mb-0.5">
+                      <span class="font-bold text-brand-accent">${msg.sender}</span>
+                      <span>${msg.time}</span>
+                    </div>
+                    <p class="text-white">${msg.text}</p>
+                  </div>
+                `).join('')}
+            </div>
+            <div class="flex flex-col gap-2 pt-1">
+              <input type="text" id="msg-sender-${m.id}" placeholder="اسمك المستعار (مثال: Arsenal)" class="bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+              <div class="flex gap-2">
+                <input type="text" id="msg-input-${m.id}" placeholder="اكتب رسالة لتحديد وقت المباراة..." class="flex-1 bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+                <button onclick="sendMatchMessage('${m.id}')" class="bg-brand-primary text-brand-dark px-3 py-1.5 rounded-lg text-xs font-bold">إرسال</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- رفع سكرين النتيجة (Screenshot) -->
+          <div class="bg-brand-card p-3 rounded-xl border border-brand-border space-y-2">
+            <p class="text-xs font-bold text-brand-secondary"><i class="fa-solid fa-camera"></i> رفع سكرين النهاية (Proof Screenshot):</p>
+            ${m.proofScreenshot ? `
+              <div class="flex items-center gap-3">
+                <a href="${m.proofScreenshot}" target="_blank" class="block w-20 h-16 rounded-lg overflow-hidden border border-brand-primary">
+                  <img src="${m.proofScreenshot}" class="w-full h-full object-cover">
+                </a>
+                <span class="text-xs text-brand-primary">تم رفع السكرين بنجاح! ينتظر اعتماد الأدمن.</span>
+              </div>
+            ` : ''}
+            <div class="flex gap-2 items-center">
+              <input type="file" id="proof-file-${m.id}" accept="image/*" class="flex-1 bg-brand-dark border border-brand-border rounded-lg p-1 text-[11px] text-brand-muted">
+              <button onclick="uploadMatchProof('${m.id}')" class="bg-brand-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold">رفع السكرين</button>
+            </div>
+          </div>
+
+          <!-- زر تحكم الأدمن في النتيجة -->
+          <div class="flex justify-end pt-1">
+            <button onclick="openScoreModal('${m.id}', '${m.player1}', '${m.player2}', ${m.score1}, ${m.score2})" class="gradient-bg text-brand-dark px-4 py-1.5 rounded-lg text-xs font-bold">اعتماد النتيجة (أدمن)</button>
           </div>
         </div>
       `).join('');
@@ -1051,7 +1156,6 @@ index.html
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       document.getElementById('stat-players-count').innerText = currentTourneyPlayers.length;
 
-      // تحديث خيارات المجموعات المتاحة تلقائياً في صفحة الترتيب بناءً على المجموعات الموجودة حقاً
       const groupFilter = document.getElementById('selectedGroupFilter');
       const uniqueGroups = [...new Set(currentTourneyPlayers.map(p => p.group).filter(g => g && g !== 'غير مقسم بعد'))];
       
@@ -1066,7 +1170,6 @@ index.html
 
       const filteredByGroup = currentTourneyPlayers.filter(p => p.group === selectedGroup);
       
-      // Table Render (لا يظهر شيء إذا لم يتم إجراء القرعة بعد)
       const playersTable = document.getElementById('playersTable');
       if(uniqueGroups.length === 0 || filteredByGroup.length === 0) {
         playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً. يرجى الذهاب إلى لوحة الأدمن وإجراء قرعة المجموعات!</td></tr>';
@@ -1104,7 +1207,6 @@ index.html
         }).join('');
       }
 
-      // Scorers Render
       const scorersCont = document.getElementById('scorersListContainer');
       document.getElementById('scorersCountDisp').innerText = currentTourneyPlayers.length + " لاعبين";
 
@@ -1135,7 +1237,6 @@ index.html
         }).join('');
       }
 
-      // Admin Players List (مع إظهار حالة القرعة لكل لاعب)
       const adminList = document.getElementById('adminPlayersList');
       if(currentTourneyPlayers.length === 0) {
         adminList.innerHTML = '<p class="text-sm text-brand-muted">لا توجد لاعبين مسجلين.</p>';
