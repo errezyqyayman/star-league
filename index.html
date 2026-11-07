@@ -136,7 +136,7 @@ index.html
         <i class="fa-solid fa-list-ol"></i> <span>الترتيب والمجموعات</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
+        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والـ Rounds</span>
       </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
@@ -338,16 +338,27 @@ index.html
 
     <!-- TAB 5: SCHEDULE & MATCHES -->
     <section id="sec-schedule" class="hidden space-y-6">
+      
+      <!-- شريط التنقل بين الجولات -->
+      <div id="roundsNavBar" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+        <!-- كيتعمرو أوتوماتيكياً -->
+      </div>
+
       <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex justify-between items-center">
-        <h3 class="text-xl font-bold text-brand-primary">المباريات والشات الخاص بالتوقيت ورفع النتائج</h3>
+        <div>
+          <h3 class="text-lg font-bold text-brand-primary" id="currentRoundTitleDisp">المباريات الرسمية</h3>
+          <p class="text-xs text-brand-muted">استعرض المباريات، تفاهم مع الخصم على التوقيت، وارفع سكرين النتيجة.</p>
+        </div>
         <div id="knockoutStatusBadge" class="text-xs bg-brand-secondary/20 text-brand-secondary px-3 py-1 rounded-full font-bold">مرحلة المجموعات</div>
       </div>
+
+      <!-- قائمة المباريات -->
       <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN (مُحدث ليضم الاختيارات من 1 حتى 8 مجموعات) -->
+    <!-- TAB 6: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
@@ -355,18 +366,30 @@ index.html
           <i class="fa-solid fa-wand-magic-sparkles"></i> لوحة تحكم القرعة والأدوار
         </h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-brand-dark p-4 rounded-xl border border-brand-border">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-brand-dark p-4 rounded-xl border border-brand-border">
           <div>
-            <label class="block text-xs text-brand-muted mb-1">اختر عدد المجموعات للقرعة (من 1 إلى 8):</label>
+            <label class="block text-xs text-brand-muted mb-1">عدد المجموعات:</label>
             <select id="adminNumGroups" class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none cursor-pointer">
-              <option value="1">مجموعة واحدة (Group A)</option>
-              <option value="2">مجموعتان (Group A & B)</option>
-              <option value="3">3 مجموعات (Group A, B, C)</option>
-              <option value="4" selected>4 مجموعات (Group A, B, C, D)</option>
-              <option value="5">5 مجموعات (Group A እስከ E)</option>
-              <option value="6">6 مجموعات (Group A إلى F)</option>
-              <option value="7">7 مجموعات (Group A إلى G)</option>
-              <option value="8">8 مجموعات (Group A إلى H)</option>
+              <option value="1">مجموعة واحدة (1)</option>
+              <option value="2">مجموعتان (2)</option>
+              <option value="3">3 مجموعات</option>
+              <option value="4" selected>4 مجموعات</option>
+              <option value="5">5 مجموعات</option>
+              <option value="6">6 مجموعات</option>
+              <option value="7">7 مجموعات</option>
+              <option value="8">8 مجموعات</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-brand-muted mb-1">عدد الجولات (GameWeeks / Rounds):</label>
+            <select id="adminNumRounds" class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none cursor-pointer">
+              <option value="1">جولة واحدة (Round 1)</option>
+              <option value="2">جولتان (Round 1, 2)</option>
+              <option value="3">3 جولات</option>
+              <option value="4" selected>4 جولات</option>
+              <option value="6">6 جولات</option>
+              <option value="8">8 جولات</option>
+              <option value="10">10 جولات</option>
             </select>
           </div>
           <div>
@@ -383,7 +406,7 @@ index.html
             <i class="fa-solid fa-dice"></i> مراجعة اللاعبين وإجراء القرعة (Generate Groups)
           </button>
           <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition flex items-center gap-2">
-            <i class="fa-solid fa-gamepad"></i> توليد مباريات المجموعة
+            <i class="fa-solid fa-gamepad"></i> توليد مباريات الجولات أوتوماتيكياً
           </button>
           <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-red-500/30 transition flex items-center gap-2">
             <i class="fa-solid fa-trash"></i> مسح جميع اللاعبين
@@ -489,6 +512,7 @@ index.html
     let players = [];
     let matches = [];
     let notifications = JSON.parse(localStorage.getItem('star_notifications') || '[]');
+    let currentActiveRound = 'Round 1';
 
     function applyTournamentTheme(themeName) {
       const body = document.getElementById('appBody');
@@ -530,6 +554,19 @@ index.html
         viewScorers.classList.remove('hidden');
         viewTable.classList.add('hidden');
       }
+    }
+
+    function setActiveRound(roundName) {
+      currentActiveRound = roundName;
+      document.querySelectorAll('.round-tab-btn').forEach(btn => {
+        btn.className = "round-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs bg-brand-card text-brand-muted border border-brand-border whitespace-nowrap transition";
+      });
+      const activeBtn = document.getElementById('round-btn-' + roundName.replace(/\s+/g, '_'));
+      if(activeBtn) {
+        activeBtn.className = "round-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs bg-brand-primary text-brand-dark shadow-md whitespace-nowrap transition";
+      }
+      document.getElementById('currentRoundTitleDisp').innerText = `المباريات الرسمية - ${roundName}`;
+      renderMatches();
     }
 
     function addNotification(text) {
@@ -631,6 +668,7 @@ index.html
         snapshot.forEach((doc) => {
           matches.push({ id: doc.id, ...doc.data() });
         });
+        renderRoundsNavBar();
         renderMatches();
         renderTickerMatches();
       });
@@ -638,7 +676,7 @@ index.html
 
     function addToCalendar(player1, player2, stage) {
       const title = encodeURIComponent(`مباراة Star League: ${player1} ضد ${player2}`);
-      const details = encodeURIComponent(`مباراة رسمية في منصة ستار ليج للبطولات (${stage}). لا تنسى التفاهم على التوقيت ورفع السكرين!`);
+      const details = encodeURIComponent(`مباراة رسمية في منصة ستار ليج للبطولات (${stage}).`);
       const now = new Date();
       now.setHours(now.getHours() + 2);
       const eventTime = now.toISOString().replace(/-|:|\.\d\d\d/g, "");
@@ -647,7 +685,6 @@ index.html
       window.open(googleCalendarUrl, '_blank');
     }
 
-    // توليد المجموعات ديناميكياً لأي عدد يختاره الأدمن من 1 حتى 8
     function previewAndDrawGroups() {
       if (!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -662,7 +699,7 @@ index.html
 
       const numGroups = parseInt(document.getElementById('adminNumGroups').value) || 4;
       const groupNames = [];
-      const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح']; // تدعم حتى 8 مجموعات (A إلى H)
+      const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح'];
       for(let i = 0; i < numGroups; i++) {
         groupNames.push(`المجموعة ${letters[i] || (i+1)}`);
       }
@@ -702,26 +739,32 @@ index.html
         return;
       }
 
+      const numRounds = parseInt(document.getElementById('adminNumRounds').value) || 4;
       const matchType = document.getElementById('adminMatchType').value;
       let count = 0;
       const batch = db.batch();
 
       const groupsMap = {};
       currentTourneyPlayers.forEach(p => {
-        const g = p.group || 'المجموعة أ';
-        if(!groupsMap[g]) groupsMap[g] = [];
-        groupsMap[g].push(p);
+        const g = p.group || 'غير مقسم بعد';
+        if(g !== 'غير مقسم بعد') {
+          if(!groupsMap[g]) groupsMap[g] = [];
+          groupsMap[g].push(p);
+        }
       });
 
       Object.keys(groupsMap).forEach(groupName => {
         const groupPlayers = groupsMap[groupName];
+        let rIndex = 1;
         for (let i = 0; i < groupPlayers.length; i++) {
           for (let j = i + 1; j < groupPlayers.length; j++) {
+            const assignedRound = `Round ${((rIndex - 1) % numRounds) + 1}`;
             const matchRef1 = db.collection("matches").doc();
             batch.set(matchRef1, {
               tourneyId: activeTourneyId,
               group: groupName,
-              stage: 'مرحلة المجموعات (ذهاب)',
+              round: assignedRound,
+              stage: `GAMEWEEK ${rIndex}`,
               player1: groupPlayers[i].name,
               player2: groupPlayers[j].name,
               team1: groupPlayers[i].team,
@@ -736,13 +779,16 @@ index.html
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             count++;
+            rIndex++;
 
             if(matchType === 'aller-retour') {
+              const assignedRound2 = `Round ${((rIndex - 1) % numRounds) + 1}`;
               const matchRef2 = db.collection("matches").doc();
               batch.set(matchRef2, {
                 tourneyId: activeTourneyId,
                 group: groupName,
-                stage: 'مرحلة المجموعات (إياب)',
+                round: assignedRound2,
+                stage: `GAMEWEEK ${rIndex} (إياب)`,
                 player1: groupPlayers[j].name,
                 player2: groupPlayers[i].name,
                 team1: groupPlayers[j].team,
@@ -757,15 +803,45 @@ index.html
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
               });
               count++;
+              rIndex++;
             }
           }
         }
       });
 
       batch.commit().then(() => {
-        addNotification(`تم توليد ${count} مباراة رسمية بنجاح (${matchType === 'aller' ? 'ذهاب' : 'ذهاب وإياب'})! 🎮`);
-        alert(`تم توليد ${count} مباراة بنجاح!`);
+        addNotification(`تم توليد ${count} مباراة موزعة على ${numRounds} جولات بنجاح! 🎮`);
+        alert(`تم توليد ${count} مباراة بنجاح على ${numRounds} جولات!`);
       });
+    }
+
+    function renderRoundsNavBar() {
+      const navBar = document.getElementById('roundsNavBar');
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
+      
+      const roundsSet = [...new Set(tourneyMatches.map(m => m.round || 'Round 1'))].sort((a,b) => {
+        const numA = parseInt(a.replace(/\D/g, '')) || 0;
+        const numB = parseInt(b.replace(/\D/g, '')) || 0;
+        return numA - numB;
+      });
+
+      if(roundsSet.length === 0) {
+        navBar.innerHTML = '<span class="text-xs text-brand-muted">لا توجد جولات متاحة حالياً. قم بإجراء القرعة وتوليد المباريات من لوحة الأدمن.</span>';
+        return;
+      }
+
+      if(!roundsSet.includes(currentActiveRound)) {
+        currentActiveRound = roundsSet[0];
+      }
+
+      navBar.innerHTML = roundsSet.map(round => {
+        const isActive = round === currentActiveRound;
+        const btnClass = isActive ? 
+          "round-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs bg-brand-primary text-brand-dark shadow-md whitespace-nowrap transition" :
+          "round-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs bg-brand-card text-brand-muted border border-brand-border whitespace-nowrap transition";
+        
+        return `<button onclick="setActiveRound('${round}')" id="round-btn-${round.replace(/\s+/g, '_')}" class="${btnClass}">${round}</button>`;
+      }).join('');
     }
 
     function renderTickerMatches() {
@@ -784,7 +860,7 @@ index.html
           <span class="text-brand-secondary font-black">${m.played ? `${m.score1} - ${m.score2}` : 'ضد'}</span>
           <span class="font-bold text-white">${m.player2}</span>
           <img src="${m.logo2 || ''}" class="w-4 h-4 rounded-full object-cover">
-          <span class="text-[10px] text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded font-bold">${m.stage || 'مباشر'}</span>
+          <span class="text-[10px] text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded font-bold">${m.round || 'مباشر'}</span>
         </span>
       `).join('');
 
@@ -866,6 +942,7 @@ index.html
       }
     }
 
+    // هنا ضبطنا الحفظ باش ديما أي لاعب تسجل يكون في مجموعة "غير مقسم بعد" حصرياً
     function savePlayerFinal(tourneyId, name, team, logo) {
       db.collection("players").add({
         tourneyId: tourneyId,
@@ -878,7 +955,7 @@ index.html
         pl: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        alert('تم تسجيل اللاعب بنجاح في البطولة المطلوبة!');
+        alert('تم تسجيل اللاعب بنجاح في البطولة المطلوبة! (في انتظار القرعة)');
       });
     }
 
@@ -1029,48 +1106,52 @@ index.html
 
     function renderMatches() {
       const container = document.getElementById('matchesContainer');
-      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && (m.round === currentActiveRound || !m.round));
 
       if(tourneyMatches.length === 0) {
-        container.innerHTML = '<p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>';
+        container.innerHTML = '<p class="text-sm text-brand-muted text-center col-span-2 py-8">لا توجد مباريات في هذه الجولة حالياً.</p>';
         return;
       }
 
       container.innerHTML = tourneyMatches.map(m => `
         <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl relative">
-          <button onclick="deleteMatch('${m.id}')" class="absolute top-4 left-4 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">حذف</button>
+          <button onclick="deleteMatch('${m.id}')" class="absolute top-3 left-3 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">حذف</button>
           
-          <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-16">
-            <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">${m.stage || 'مباراة'} (${m.group || 'مجموعة'})</span>
-            <div class="flex items-center gap-2">
-              <button onclick="addToCalendar('${m.player1}', '${m.player2}', '${m.stage}')" class="bg-brand-accent/20 text-brand-accent px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1">
-                <i class="fa-solid fa-calendar-plus"></i> تذكير التقويم
-              </button>
-              <span class="text-xs text-brand-accent font-bold">${m.played ? 'منتهية ✅' : 'في الانتظار ⏳'}</span>
-            </div>
+          <div class="text-center space-y-1 pb-1 border-b border-brand-border/50">
+            <span class="text-[10px] tracking-widest text-brand-muted uppercase block font-bold">${m.stage || 'GAMEWEEK'}</span>
+            <span class="text-xs text-brand-accent font-bold">${m.group || 'مجموعة'}</span>
           </div>
 
           <div class="flex justify-around items-center text-center py-2">
-            <div class="flex flex-col items-center space-y-1">
-              <img src="${m.logo1 || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
+            <div class="flex flex-col items-center space-y-1.5 flex-1">
+              <img src="${m.logo1 || 'https://via.placeholder.com/40'}" class="w-12 h-12 rounded-full object-cover border border-brand-primary shadow">
               <p class="font-bold text-white text-sm">${m.player1}</p>
-              <p class="text-[11px] text-brand-muted">${m.team1 || ''}</p>
+              <p class="text-[10px] text-brand-muted">${m.team1 || ''}</p>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xl font-black text-white bg-black/50 px-3 py-1 rounded-lg">${m.played ? m.score1 : '-'}</span>
-              <span class="text-brand-secondary font-black">VS</span>
-              <span class="text-xl font-black text-white bg-black/50 px-3 py-1 rounded-lg">${m.played ? m.score2 : '-'}</span>
+            
+            <div class="flex flex-col items-center justify-center px-3">
+              <span class="text-lg font-black text-white bg-black/60 px-4 py-1.5 rounded-xl border border-brand-border shadow-inner">${m.played ? `${m.score1} : ${m.score2}` : ':'}</span>
+              <span class="text-[10px] text-brand-secondary font-bold mt-1">${m.played ? 'CLOSED' : 'VS'}</span>
             </div>
-            <div class="flex flex-col items-center space-y-1">
-              <img src="${m.logo2 || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
+
+            <div class="flex flex-col items-center space-y-1.5 flex-1">
+              <img src="${m.logo2 || 'https://via.placeholder.com/40'}" class="w-12 h-12 rounded-full object-cover border border-brand-primary shadow">
               <p class="font-bold text-white text-sm">${m.player2}</p>
-              <p class="text-[11px] text-brand-muted">${m.team2 || ''}</p>
+              <p class="text-[10px] text-brand-muted">${m.team2 || ''}</p>
             </div>
           </div>
 
+          <div class="text-center pt-1 border-t border-brand-border/30 flex items-center justify-between">
+            <span class="text-[10px] text-brand-muted"><i class="fa-regular fa-clock"></i> Sat, 07/11 &bull; 00:00</span>
+            <button onclick="addToCalendar('${m.player1}', '${m.player2}', '${m.stage}')" class="text-[10px] bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded font-bold hover:bg-brand-accent/30 transition">
+              <i class="fa-solid fa-calendar-plus"></i> تذكير
+            </button>
+          </div>
+
+          <!-- شات التفاهم على التوقيت -->
           <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
             <p class="text-xs font-bold text-brand-primary"><i class="fa-solid fa-comments"></i> شات التفاهم على التوقيت بين اللاعبين:</p>
-            <div class="max-h-28 overflow-y-auto space-y-1.5 text-xs">
+            <div class="max-h-24 overflow-y-auto space-y-1.5 text-xs">
               ${(!m.messages || m.messages.length === 0) ? '<p class="text-gray-500 text-[11px]">لا توجد رسائل بعد. تفاهم هنا مع خصمك على التوقيت!</p>' :
                 m.messages.map(msg => `
                   <div class="bg-brand-dark p-2 rounded-lg border border-brand-border">
@@ -1091,14 +1172,15 @@ index.html
             </div>
           </div>
 
+          <!-- رفع سكرين النتيجة (Screenshot) -->
           <div class="bg-brand-card p-3 rounded-xl border border-brand-border space-y-2">
             <p class="text-xs font-bold text-brand-secondary"><i class="fa-solid fa-camera"></i> رفع سكرين النهاية (Proof Screenshot):</p>
             ${m.proofScreenshot ? `
               <div class="flex items-center gap-3">
-                <a href="${m.proofScreenshot}" target="_blank" class="block w-20 h-16 rounded-lg overflow-hidden border border-brand-primary">
+                <a href="${m.proofScreenshot}" target="_blank" class="block w-16 h-12 rounded-lg overflow-hidden border border-brand-primary">
                   <img src="${m.proofScreenshot}" class="w-full h-full object-cover">
                 </a>
-                <span class="text-xs text-brand-primary">تم رفع السكرين بنجاح! ينتظر اعتماد الأدمن.</span>
+                <span class="text-[11px] text-brand-primary">تم رفع السكرين بنجاح! ينتظر اعتماد الأدمن.</span>
               </div>
             ` : ''}
             <div class="flex gap-2 items-center">
@@ -1107,6 +1189,7 @@ index.html
             </div>
           </div>
 
+          <!-- زر تحكم الأدمن في النتيجة -->
           <div class="flex justify-end pt-1">
             <button onclick="openScoreModal('${m.id}', '${m.player1}', '${m.player2}', ${m.score1}, ${m.score2})" class="gradient-bg text-brand-dark px-4 py-1.5 rounded-lg text-xs font-bold">اعتماد النتيجة (أدمن)</button>
           </div>
@@ -1156,13 +1239,14 @@ index.html
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       document.getElementById('stat-players-count').innerText = currentTourneyPlayers.length;
 
+      // هنا فلترة المجموعات: لن تظهر إلا المجموعات الحقيقية بعد إجراء القرعة
       const groupFilter = document.getElementById('selectedGroupFilter');
       const uniqueGroups = [...new Set(currentTourneyPlayers.map(p => p.group).filter(g => g && g !== 'غير مقسم بعد'))];
       
       if(uniqueGroups.length > 0) {
         groupFilter.innerHTML = uniqueGroups.map(g => `<option value="${g}">${g}</option>`).join('');
       } else {
-        groupFilter.innerHTML = '<option value="غير مقسم بعد">الرجاء إجراء القرعة أولاً</option>';
+        groupFilter.innerHTML = '<option value="غير مقسم بعد">الرجاء إجراء القرعة من لوحة الأدمن أولاً</option>';
       }
 
       const selectedGroup = groupFilter.value;
@@ -1172,7 +1256,7 @@ index.html
       
       const playersTable = document.getElementById('playersTable');
       if(uniqueGroups.length === 0 || filteredByGroup.length === 0) {
-        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً. يرجى الذهاب إلى لوحة الأدمن وإجراء قرعة المجموعات!</td></tr>';
+        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً. يرجى الذهاب إلى لوحة الأدمن وإجراء قرعة المجموعات لتظهر الفرق هنا!</td></tr>';
       } else {
         const sorted = [...filteredByGroup].sort((a,b) => (b.points || 0) - (a.points || 0) || (b.gd || 0) - (a.gd || 0));
         playersTable.innerHTML = sorted.map((p, index) => {
