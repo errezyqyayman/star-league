@@ -6,7 +6,7 @@ index.html
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>STAR LEAGUE - منصة البطولات الذكية</title>
   
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json?v=2026">
   <meta name="theme-color" content="#120428">
 
   <!-- Font Awesome Icons -->
@@ -128,6 +128,9 @@ index.html
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-calendar-days"></i> <span>المباريات والـ Rounds</span>
       </button>
+      <button onclick="switchTab('knockout')" id="tab-knockout" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-secondary whitespace-nowrap">
+        <i class="fa-solid fa-fire"></i> <span>الأدوار الإقصائية (Knockout)</span>
+      </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
       </button>
@@ -147,7 +150,7 @@ index.html
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
             <p class="text-brand-muted text-sm max-w-xl">
-              المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة. تابع الترتيب، المجموعات، والمباريات أول بأول!
+              المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة. تابع الترتيب، المجموعات، المباريات، والأدوار الإقصائية أول بأول!
             </p>
           </div>
         </div>
@@ -357,7 +360,44 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN (تم إضافة خانة كتابة عدد الجولات بحرية تامة) -->
+    <!-- TAB 6: KNOCKOUT (مرحلة الإقصاء المباشر الذكية) -->
+    <section id="sec-knockout" class="hidden space-y-6">
+      <div class="bg-brand-card p-6 rounded-2xl border border-brand-border shadow-xl space-y-4">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-brand-border pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-brand-secondary flex items-center gap-2">
+              <i class="fa-solid fa-fire"></i> الأدوار الإقصائية (Smart Knockout Stage)
+            </h3>
+            <p class="text-xs text-brand-muted">حدد شحال من لاعب بغيتي يؤهلو (أو السيت يختارهم أوتوماتيك) وسيعرف الدور المناسب تلقائياً!</p>
+          </div>
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <select id="knockoutCountSelect" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-3 py-2.5 focus:outline-none cursor-pointer">
+              <option value="auto">تلقائي (حسب الأفضل في الترتيب)</option>
+              <option value="32">دور 32 (32 لاعب)</option>
+              <option value="16">دور 16 (16 لاعب)</option>
+              <option value="8">ربع النهائي (8 لاعبين)</option>
+              <option value="4">نصف النهائي (4 لاعبين)</option>
+              <option value="2">النهائي (2 لاعبين)</option>
+            </select>
+            <button onclick="generateSmartKnockoutStage()" class="gradient-bg text-brand-dark px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition whitespace-nowrap">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> توليد الإقصائيات أوتوماتيكياً
+            </button>
+          </div>
+        </div>
+
+        <!-- أزرار اختيار الدور الإقصائي للعرض -->
+        <div id="knockoutTabsNav" class="flex gap-2 pb-2 overflow-x-auto">
+          <!-- كيتعمرو أوتوماتيكياً حسب الأدوار المולدة -->
+        </div>
+
+        <!-- حاوية مباريات الإقصاء -->
+        <div id="knockoutMatchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <p class="text-sm text-brand-muted text-center py-8 col-span-2">لا توجد مباريات إقصائية مجدولة بعد. اختر العدد واضغط توليد!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
@@ -406,7 +446,7 @@ index.html
       </div>
 
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
-        <h3 class="text-xl font-bold text-brand-primary">اللاعبون المسجلون حالياً في البطولة (جاهزون للقرعة)</h3>
+        <h3 class="text-xl font-bold text-brand-primary">اللاعبون المسجلون حالياً في البطولة (جاهزون للقرعة والتعديل)</h3>
         <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto">
           <p class="text-sm text-brand-muted">لا توجد بيانات.</p>
         </div>
@@ -468,6 +508,32 @@ index.html
     </div>
   </div>
 
+  <!-- Modal تعديل معلومات اللاعب -->
+  <div id="editPlayerModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <h3 class="text-lg font-bold text-brand-primary">تعديل معلومات اللاعب</h3>
+      <input type="hidden" id="editPlayerId">
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-brand-muted mb-1">اسم اللاعب الجديد:</label>
+          <input type="text" id="modalPlayerName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs text-brand-muted mb-1">اسم الفريق الجديد:</label>
+          <input type="text" id="modalTeamName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs text-brand-muted mb-1">تغيير الشعار (اختياري):</label>
+          <input type="file" id="modalPlayerLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-xs text-brand-muted">
+        </div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="savePlayerChanges()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg text-xs hover:opacity-90">حفظ التعديلات</button>
+        <button onclick="closeEditPlayerModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg text-xs">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Notifications Modal -->
   <div id="notificationsModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl relative">
@@ -504,6 +570,7 @@ index.html
     let matches = [];
     let notifications = JSON.parse(localStorage.getItem('star_notifications') || '[]');
     let currentActiveRound = 'Round 1';
+    let currentKnockoutRound = '';
 
     function applyTournamentTheme(themeName) {
       const body = document.getElementById('appBody');
@@ -558,6 +625,24 @@ index.html
       }
       document.getElementById('currentRoundTitleDisp').innerText = `المباريات الرسمية - ${roundName}`;
       renderMatches();
+    }
+
+    function setKnockoutRoundFilter(roundName) {
+      currentKnockoutRound = roundName;
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && m.isKnockout);
+      const uniqueStages = [...new Set(tourneyMatches.map(m => m.stage))];
+
+      uniqueStages.forEach(r => {
+        const btn = document.getElementById('k-btn-' + r.replace(/\s+/g, '_'));
+        if(btn) {
+          if(r === roundName) {
+            btn.className = "px-4 py-2 rounded-lg font-bold text-xs bg-brand-primary text-brand-dark transition whitespace-nowrap";
+          } else {
+            btn.className = "px-4 py-2 rounded-lg font-bold text-xs bg-brand-card text-brand-muted border border-brand-border transition whitespace-nowrap";
+          }
+        }
+      });
+      renderKnockoutMatches();
     }
 
     function addNotification(text) {
@@ -661,6 +746,8 @@ index.html
         });
         renderRoundsNavBar();
         renderMatches();
+        renderKnockoutTabs();
+        renderKnockoutMatches();
         renderTickerMatches();
       });
     }
@@ -713,7 +800,6 @@ index.html
       });
     }
 
-    // توليد المباريات أوتوماتيكياً وتوزيعها على عدد الجولات المكتوب بحرية
     function generateAutomaticMatches() {
       if(!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -757,6 +843,7 @@ index.html
               group: groupName,
               round: assignedRound,
               stage: `GAMEWEEK ${rIndex}`,
+              isKnockout: false,
               player1: groupPlayers[i].name,
               player2: groupPlayers[j].name,
               team1: groupPlayers[i].team,
@@ -781,6 +868,7 @@ index.html
                 group: groupName,
                 round: assignedRound2,
                 stage: `GAMEWEEK ${rIndex} (إياب)`,
+                isKnockout: false,
                 player1: groupPlayers[j].name,
                 player2: groupPlayers[i].name,
                 team1: groupPlayers[j].team,
@@ -807,9 +895,109 @@ index.html
       });
     }
 
+    // دالة توليد الإقصائيات بذكاء وأوتوماتيكياً (Smart Knockout)
+    function generateSmartKnockoutStage() {
+      if(!activeTourneyId) {
+        alert('اختر بطولة أولاً!');
+        return;
+      }
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      if(currentTourneyPlayers.length < 2) {
+        alert('العدد غير كافٍ لإنشاء مرحلة إقصائية.');
+        return;
+      }
+
+      const sorted = [...currentTourneyPlayers].sort((a,b) => (b.points || 0) - (a.points || 0) || (b.gd || 0) - (a.gd || 0));
+      
+      const selectVal = document.getElementById('knockoutCountSelect').value;
+      let targetCount = sorted.length;
+
+      if(selectVal !== 'auto') {
+        targetCount = parseInt(selectVal);
+      } else {
+        // حساب أقرب رقم ثنائي أوتوماتيكياً (2, 4, 8, 16, 32)
+        if(sorted.length > 16) targetCount = 32;
+        else if(sorted.length > 8) targetCount = 16;
+        else if(sorted.length > 4) targetCount = 8;
+        else if(sorted.length > 2) targetCount = 4;
+        else targetCount = 2;
+      }
+
+      const selectedPlayers = sorted.slice(0, targetCount);
+
+      // تحديد اسم الدور الحقيقي بذكاء
+      let stageName = 'النهائي';
+      if(selectedPlayers.length >= 32) stageName = 'دور 32';
+      else if(selectedPlayers.length >= 16) stageName = 'دور 16';
+      else if(selectedPlayers.length >= 8) stageName = 'ربع النهائي';
+      else if(selectedPlayers.length >= 4) stageName = 'نصف النهائي';
+
+      const batch = db.batch();
+      let matchCount = 0;
+
+      for(let i = 0; i < selectedPlayers.length; i += 2) {
+        if(i + 1 < selectedPlayers.length) {
+          const p1 = selectedPlayers[i];
+          const p2 = selectedPlayers[i+1];
+          const matchRef = db.collection("matches").doc();
+          batch.set(matchRef, {
+            tourneyId: activeTourneyId,
+            group: stageName,
+            round: stageName,
+            stage: stageName,
+            isKnockout: true,
+            player1: p1.name,
+            player2: p2.name,
+            team1: p1.team,
+            team2: p2.team,
+            logo1: p1.logo,
+            logo2: p2.logo,
+            score1: null,
+            score2: null,
+            played: false,
+            messages: [],
+            proofScreenshot: '',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          matchCount++;
+        }
+      }
+
+      batch.commit().then(() => {
+        addNotification(`تم توليد مباريات (${stageName}) بنجاح (${matchCount} مباريات)! 🔥`);
+        alert(`تم التعرف على الدور بفضله كـ (${stageName}) وتوليد ${matchCount} مباراة بنجاح!`);
+        currentKnockoutRound = stageName;
+        renderKnockoutTabs();
+        renderKnockoutMatches();
+      });
+    }
+
+    function renderKnockoutTabs() {
+      const navContainer = document.getElementById('knockoutTabsNav');
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && m.isKnockout);
+      const uniqueStages = [...new Set(tourneyMatches.map(m => m.stage))];
+
+      if(uniqueStages.length === 0) {
+        navContainer.innerHTML = '<span class="text-xs text-brand-muted">لا توجد أدوار إقصائية بعد. اختر العدد في الأعلى واضغط توليد.</span>';
+        return;
+      }
+
+      if(!uniqueStages.includes(currentKnockoutRound)) {
+        currentKnockoutRound = uniqueStages[0];
+      }
+
+      navContainer.innerHTML = uniqueStages.map(stage => {
+        const isActive = stage === currentKnockoutRound;
+        const btnClass = isActive ? 
+          "px-4 py-2 rounded-lg font-bold text-xs bg-brand-primary text-brand-dark transition whitespace-nowrap" :
+          "px-4 py-2 rounded-lg font-bold text-xs bg-brand-card text-brand-muted border border-brand-border transition whitespace-nowrap";
+        return `<button onclick="setKnockoutRoundFilter('${stage}')" id="k-btn-${stage.replace(/\s+/g, '_')}" class="${btnClass}">${stage}</button>`;
+      }).join('');
+    }
+
     function renderRoundsNavBar() {
       const navBar = document.getElementById('roundsNavBar');
-      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && !m.isKnockout);
       
       const roundsSet = [...new Set(tourneyMatches.map(m => m.round || 'Round 1'))].sort((a,b) => {
         const numA = parseInt(a.replace(/\D/g, '')) || 0;
@@ -818,7 +1006,7 @@ index.html
       });
 
       if(roundsSet.length === 0) {
-        navBar.innerHTML = '<span class="text-xs text-brand-muted">لا توجد جولات متاحة حالياً. قم بإجراء القرعة وتوليد المباريات من لوحة الأدمن.</span>';
+        navBar.innerHTML = '<span class="text-xs text-brand-muted">لا توجد جولات مجموعات متاحة حالياً.</span>';
         return;
       }
 
@@ -1004,6 +1192,48 @@ index.html
       }
     }
 
+    function openEditPlayerModal(id, currentName, currentTeam) {
+      document.getElementById('editPlayerId').value = id;
+      document.getElementById('modalPlayerName').value = currentName;
+      document.getElementById('modalTeamName').value = currentTeam;
+      document.getElementById('modalPlayerLogoFile').value = '';
+      document.getElementById('editPlayerModal').classList.remove('hidden');
+    }
+
+    function closeEditPlayerModal() {
+      document.getElementById('editPlayerModal').classList.add('hidden');
+    }
+
+    function savePlayerChanges() {
+      const playerId = document.getElementById('editPlayerId').value;
+      const newName = document.getElementById('modalPlayerName').value.trim();
+      const newTeam = document.getElementById('modalTeamName').value.trim();
+      const fileInput = document.getElementById('modalPlayerLogoFile');
+
+      if(!newName || !newTeam) {
+        alert('المرجو ملء اسم اللاعب والفريق!');
+        return;
+      }
+
+      const updateData = { name: newName, team: newTeam };
+
+      const executeUpdate = (logoUrl) => {
+        if(logoUrl) updateData.logo = logoUrl;
+        db.collection("players").doc(playerId).update(updateData).then(() => {
+          closeEditPlayerModal();
+          alert('تم تعديل معلومات اللاعب بنجاح! ⚡');
+        });
+      };
+
+      if(fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) { executeUpdate(e.target.result); };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        executeUpdate(null);
+      }
+    }
+
     function sendMatchMessage(matchId) {
       const input = document.getElementById('msg-input-' + matchId);
       const senderInput = document.getElementById('msg-sender-' + matchId);
@@ -1074,9 +1304,11 @@ index.html
         score2: s2,
         played: true
       }).then(() => {
-        updatePlayerStatsAfterMatch(matchObj, s1, s2);
+        if(!matchObj.isKnockout) {
+          updatePlayerStatsAfterMatch(matchObj, s1, s2);
+        }
         closeMatchModal();
-        alert('تم اعتماد النتيجة وتحديث جدول الترتيب بنجاح!');
+        alert('تم اعتماد النتيجة بنجاح!');
       });
     }
 
@@ -1145,14 +1377,30 @@ index.html
 
     function renderMatches() {
       const container = document.getElementById('matchesContainer');
-      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && (m.round === currentActiveRound || !m.round));
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && !m.isKnockout && (m.round === currentActiveRound || !m.round));
 
       if(tourneyMatches.length === 0) {
         container.innerHTML = '<p class="text-sm text-brand-muted text-center col-span-2 py-8">لا توجد مباريات في هذه الجولة حالياً.</p>';
         return;
       }
 
-      container.innerHTML = tourneyMatches.map(m => `
+      container.innerHTML = tourneyMatches.map(m => generateMatchCardHTML(m)).join('');
+    }
+
+    function renderKnockoutMatches() {
+      const container = document.getElementById('knockoutMatchesContainer');
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && m.isKnockout && m.stage === currentKnockoutRound);
+
+      if(tourneyMatches.length === 0) {
+        container.innerHTML = `<p class="text-sm text-brand-muted text-center py-8 col-span-2">لا توجد مباريات مجدولة في مرحلة (${currentKnockoutRound || 'الإقصائيات'}) حالياً.</p>`;
+        return;
+      }
+
+      container.innerHTML = tourneyMatches.map(m => generateMatchCardHTML(m)).join('');
+    }
+
+    function generateMatchCardHTML(m) {
+      return `
         <div class="bg-brand-dark p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl relative">
           <button onclick="deleteMatch('${m.id}')" class="absolute top-3 left-3 text-red-400 text-xs bg-red-500/10 px-2 py-1 rounded">حذف</button>
           
@@ -1233,7 +1481,7 @@ index.html
             <button onclick="openScoreModal('${m.id}', '${m.player1}', '${m.player2}', ${m.score1}, ${m.score2})" class="gradient-bg text-brand-dark px-4 py-1.5 rounded-lg text-xs font-bold">اعتماد النتيجة (أدمن)</button>
           </div>
         </div>
-      `).join('');
+      `;
     }
 
     function renderAll() {
@@ -1386,6 +1634,7 @@ index.html
               </div>
             </div>
             <div class="flex gap-2">
+              <button onclick="openEditPlayerModal('${p.id}', '${p.name}', '${p.team}')" class="bg-brand-accent/20 text-brand-accent text-xs px-2.5 py-1 rounded">تعديل</button>
               <button onclick="deletePlayer('${p.id}')" class="text-red-400 text-xs bg-red-500/10 px-2.5 py-1 rounded">حذف</button>
             </div>
           </div>
