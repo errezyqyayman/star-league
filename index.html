@@ -95,7 +95,7 @@ index.html
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- زر الإشعارات الحية -->
+        <!-- زر الإشعارات -->
         <div class="relative">
           <button onclick="toggleNotificationsModal()" class="relative bg-brand-dark border border-brand-border p-2.5 rounded-lg text-brand-primary hover:bg-brand-border/50 transition">
             <i class="fa-solid fa-bell text-sm"></i>
@@ -336,7 +336,7 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 5: SCHEDULE & MATCHES (مع زر إضافة التقويم وتذكير الهاتف) -->
+    <!-- TAB 5: SCHEDULE & MATCHES -->
     <section id="sec-schedule" class="hidden space-y-6">
       <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex justify-between items-center">
         <h3 class="text-xl font-bold text-brand-primary">المباريات والشات الخاص بالتوقيت ورفع النتائج</h3>
@@ -347,7 +347,7 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN -->
+    <!-- TAB 6: ADMIN (مُحدث ليضم الاختيارات من 1 حتى 8 مجموعات) -->
     <section id="sec-admin" class="hidden space-y-6">
       
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
@@ -357,10 +357,16 @@ index.html
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-brand-dark p-4 rounded-xl border border-brand-border">
           <div>
-            <label class="block text-xs text-brand-muted mb-1">اختر عدد المجموعات للقرعة:</label>
-            <select id="adminNumGroups" class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
+            <label class="block text-xs text-brand-muted mb-1">اختر عدد المجموعات للقرعة (من 1 إلى 8):</label>
+            <select id="adminNumGroups" class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none cursor-pointer">
+              <option value="1">مجموعة واحدة (Group A)</option>
               <option value="2">مجموعتان (Group A & B)</option>
+              <option value="3">3 مجموعات (Group A, B, C)</option>
               <option value="4" selected>4 مجموعات (Group A, B, C, D)</option>
+              <option value="5">5 مجموعات (Group A እስከ E)</option>
+              <option value="6">6 مجموعات (Group A إلى F)</option>
+              <option value="7">7 مجموعات (Group A إلى G)</option>
+              <option value="8">8 مجموعات (Group A إلى H)</option>
             </select>
           </div>
           <div>
@@ -569,7 +575,6 @@ index.html
       }
     }
 
-    // تتبع التغيرات أوتوماتيكياً (Realtime) وتوليد الإشعارات الحية فور تسجيل لاعب جديد
     let previousPlayersCount = null;
 
     function fetchRealtimeData() {
@@ -611,7 +616,6 @@ index.html
           newPlayersList.push({ id: doc.id, ...doc.data() });
         });
 
-        // إذا كان هناك لاعب جديد انضم، نقوم بإضافة إشعار حي تلقائياً
         if (previousPlayersCount !== null && newPlayersList.length > previousPlayersCount) {
           const latestPlayer = newPlayersList[newPlayersList.length - 1];
           addNotification(`انضم اللاعب "${latestPlayer.name}" (${latestPlayer.team}) إلى البطولة بنجاح! ⚽`);
@@ -632,18 +636,18 @@ index.html
       });
     }
 
-    // خاصية إضافة الماتش لتقويم الهاتف (Google Calendar / Apple Calendar Reminder)
     function addToCalendar(player1, player2, stage) {
       const title = encodeURIComponent(`مباراة Star League: ${player1} ضد ${player2}`);
       const details = encodeURIComponent(`مباراة رسمية في منصة ستار ليج للبطولات (${stage}). لا تنسى التفاهم على التوقيت ورفع السكرين!`);
       const now = new Date();
-      now.setHours(now.getHours() + 2); // مثال للتوقيت الافتراضي
+      now.setHours(now.getHours() + 2);
       const eventTime = now.toISOString().replace(/-|:|\.\d\d\d/g, "");
       
       const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${eventTime}/${eventTime}`;
       window.open(googleCalendarUrl, '_blank');
     }
 
+    // توليد المجموعات ديناميكياً لأي عدد يختاره الأدمن من 1 حتى 8
     function previewAndDrawGroups() {
       if (!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -658,7 +662,7 @@ index.html
 
       const numGroups = parseInt(document.getElementById('adminNumGroups').value) || 4;
       const groupNames = [];
-      const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+      const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح']; // تدعم حتى 8 مجموعات (A إلى H)
       for(let i = 0; i < numGroups; i++) {
         groupNames.push(`المجموعة ${letters[i] || (i+1)}`);
       }
@@ -1039,7 +1043,6 @@ index.html
           <div class="flex justify-between items-center border-b border-brand-border pb-3 pr-16">
             <span class="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-1 rounded-full font-bold">${m.stage || 'مباراة'} (${m.group || 'مجموعة'})</span>
             <div class="flex items-center gap-2">
-              <!-- زر إضافة المباراة لتقويم الهاتف وتذكير اللاعب -->
               <button onclick="addToCalendar('${m.player1}', '${m.player2}', '${m.stage}')" class="bg-brand-accent/20 text-brand-accent px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1">
                 <i class="fa-solid fa-calendar-plus"></i> تذكير التقويم
               </button>
@@ -1065,7 +1068,6 @@ index.html
             </div>
           </div>
 
-          <!-- شات التفاهم على التوقيت -->
           <div class="bg-black/40 p-3 rounded-xl border border-brand-border space-y-2">
             <p class="text-xs font-bold text-brand-primary"><i class="fa-solid fa-comments"></i> شات التفاهم على التوقيت بين اللاعبين:</p>
             <div class="max-h-28 overflow-y-auto space-y-1.5 text-xs">
@@ -1089,7 +1091,6 @@ index.html
             </div>
           </div>
 
-          <!-- رفع سكرين النتيجة (Screenshot) -->
           <div class="bg-brand-card p-3 rounded-xl border border-brand-border space-y-2">
             <p class="text-xs font-bold text-brand-secondary"><i class="fa-solid fa-camera"></i> رفع سكرين النهاية (Proof Screenshot):</p>
             ${m.proofScreenshot ? `
@@ -1106,7 +1107,6 @@ index.html
             </div>
           </div>
 
-          <!-- زر تحكم الأدمن في النتيجة -->
           <div class="flex justify-end pt-1">
             <button onclick="openScoreModal('${m.id}', '${m.player1}', '${m.player2}', ${m.score1}, ${m.score2})" class="gradient-bg text-brand-dark px-4 py-1.5 rounded-lg text-xs font-bold">اعتماد النتيجة (أدمن)</button>
           </div>
