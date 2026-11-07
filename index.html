@@ -66,6 +66,19 @@ index.html
       background: #2c1552;
       border-radius: 4px;
     }
+    /* Animation dyal s-smta li kador */
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50%); }
+    }
+    .animate-ticker {
+      display: inline-block;
+      white-space: nowrap;
+      animation: ticker 25s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
   </style>
 </head>
 <body id="appBody" class="min-h-screen flex flex-col transition-colors duration-500">
@@ -133,7 +146,7 @@ index.html
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 pb-16">
 
     <!-- TAB 1: DASHBOARD -->
     <section id="sec-dashboard" class="space-y-6">
@@ -161,7 +174,7 @@ index.html
         </div>
       </div>
 
-      <!-- قسم الأخبار والقوانين (تحديث ديناميكي) -->
+      <!-- قسم الأخبار والقوانين -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- الأخبار الجديدة -->
@@ -331,7 +344,7 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN (محدث فيه زر تعديل الأخبار والقوانين) -->
+    <!-- TAB 6: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
       <!-- قسم تعديل الأخبار والقوانين في الأدمن -->
@@ -368,6 +381,18 @@ index.html
     </section>
 
   </main>
+
+  <!-- SMTA DYAL NATA2IJ (Ticker bar mthbta ltaḥt kador) -->
+  <footer class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
+    <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
+      <i class="fa-solid fa-bolt"></i> Nata2ij Live:
+    </div>
+    <div class="overflow-hidden whitespace-nowrap w-full">
+      <div id="tickerMatchesContainer" class="animate-ticker inline-flex gap-8 text-xs text-brand-muted">
+        <span class="text-white">La towjada mobarayat mntahiya ba3d...</span>
+      </div>
+    </div>
+  </footer>
 
   <!-- Edit Player Modal -->
   <div id="editPlayerModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
@@ -447,62 +472,12 @@ index.html
         dash_title: "منصة البطولات الاحترافية",
         dash_desc: "أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.",
         active_tourneys_title: "البطولات النشطة"
-      },
-      fr: {
-        subtitle: "Plateforme de tournois intelligente",
-        nav_dashboard: "Accueil",
-        nav_tournaments: "Tournois",
-        nav_register: "Inscription",
-        nav_standings: "Classement",
-        nav_schedule: "Matchs & Chat",
-        nav_admin: "Admin",
-        dash_title: "Plateforme Professionnelle",
-        dash_desc: "Créez votre tournoi, inscrivez votre équipe, planifiez les matchs.",
-        active_tourneys_title: "Tournois actifs"
-      },
-      en: {
-        subtitle: "Smart Multi-Tournament Platform",
-        nav_dashboard: "Dashboard",
-        nav_tournaments: "Tournaments",
-        nav_register: "Register Player",
-        nav_standings: "Standings",
-        nav_schedule: "Matches & Chat",
-        nav_admin: "Admin Panel",
-        dash_title: "Professional Tournaments Platform",
-        dash_desc: "Create your tournament, register your team, schedule matches.",
-        active_tourneys_title: "Active Tournaments"
-      },
-      es: {
-        subtitle: "Plataforma de Torneos Inteligente",
-        nav_dashboard: "Inicio",
-        nav_tournaments: "Torneos",
-        nav_register: "Registro",
-        nav_standings: "Clasificación",
-        nav_schedule: "Partidos y Chat",
-        nav_admin: "Panel Admin",
-        dash_title: "Plataforma de Torneos",
-        dash_desc: "Crea tu torneo, registra tu equipo, programa partidos.",
-        active_tourneys_title: "Torneos Activos"
       }
     };
 
     function changeLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('star_lang', lang);
-      const htmlTag = document.getElementById('htmlTag');
-      if (lang === 'ar') {
-        htmlTag.setAttribute('lang', 'ar');
-        htmlTag.setAttribute('dir', 'rtl');
-      } else {
-        htmlTag.setAttribute('lang', lang);
-        htmlTag.setAttribute('dir', 'ltr');
-      }
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-          el.innerText = translations[lang][key];
-        }
-      });
     }
 
     function applyTournamentTheme(themeName) {
@@ -592,38 +567,17 @@ index.html
     }
 
     function fetchRealtimeData() {
-      // جلب الأخبار والقوانين من فايربيز بشكل حي
       db.collection("settings").doc("site_content").onSnapshot((doc) => {
         if (doc.exists) {
           const data = doc.data();
-          document.getElementById('newsContentDisplay').innerHTML = data.news || '<p class="text-white text-xs">لا توجد أخبار حالياً.</p>';
-          document.getElementById('rulesContentDisplay').innerHTML = data.rules || '<p class="text-white text-xs">لا توجد قوانين حالياً.</p>';
+          document.getElementById('newsContentDisplay').innerHTML = data.news || '';
+          document.getElementById('rulesContentDisplay').innerHTML = data.rules || '';
           
           if(document.getElementById('adminNewsInput') && !document.getElementById('adminNewsInput').dataset.loaded) {
             document.getElementById('adminNewsInput').value = data.news || '';
             document.getElementById('adminRulesInput').value = data.rules || '';
             document.getElementById('adminNewsInput').dataset.loaded = "true";
           }
-        } else {
-          // قيم افتراضية أولية إذا لم تكن موجودة
-          const defaultNews = `
-            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
-              <span class="text-xs font-bold text-brand-accent">🔥 انطلاق البطولة الجديدة</span>
-              <p class="text-white text-xs">التسجيل مفتوح لجميع اللاعبين والفرق. اختر فريقك وبدأ المنافسة بقوة!</p>
-            </div>
-            <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border space-y-1">
-              <span class="text-xs font-bold text-brand-primary">💡 نصيحة للمشاركين</span>
-              <p class="text-white text-xs">تواصل مباشرة مع خصمك في شات المباريات لتحديد وقت اللعب المتفق عليه.</p>
-            </div>
-          `;
-          const defaultRules = `
-            <ul class="space-y-2 text-xs text-brand-muted list-disc list-inside leading-relaxed">
-              <li><strong class="text-white">الاحترام المتبادل:</strong> الروح الرياضية واجبة بين جميع المشاركين في الشات والمباريات.</li>
-              <li><strong class="text-white">التوقيت:</strong> الالتزام بالوقت المحددة لكل مباراة تفادياً لأي انسحاب.</li>
-              <li><strong class="text-white">النتائج:</strong> في حال حدوث أي نزاع، يرجى إرسال لقطة شاشة للأدمن للفصل في الأمر.</li>
-            </ul>
-          `;
-          db.collection("settings").doc("site_content").set({ news: defaultNews, rules: defaultRules });
         }
       });
 
@@ -654,10 +608,35 @@ index.html
           matches.push({ id: doc.id, ...doc.data() });
         });
         renderMatches();
+        renderTickerMatches();
       });
     }
 
-    // حفظ الأخبار من الأدمن
+    // Ticker Matches Renderer (Smta ltaḥt)
+    function renderTickerMatches() {
+      const tickerCont = document.getElementById('tickerMatchesContainer');
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
+
+      if(tourneyMatches.length === 0) {
+        tickerCont.innerHTML = '<span class="text-white">Star League - Marḥba bikom f l-botolat al-ihtirafiya! 🎮⚽</span>';
+        return;
+      }
+
+      // Kandiro duplication bash t-ban l-haraka mstyra w m-katsalix b sor3a
+      let itemsHtml = tourneyMatches.map(m => `
+        <span class="inline-flex items-center gap-2 mx-4 bg-brand-dark px-3 py-1 rounded-lg border border-brand-border">
+          <img src="${m.logo1 || ''}" class="w-4 h-4 rounded-full object-cover">
+          <span class="font-bold text-white">${m.player1}</span>
+          <span class="text-brand-secondary font-black">VS</span>
+          <span class="font-bold text-white">${m.player2}</span>
+          <img src="${m.logo2 || ''}" class="w-4 h-4 rounded-full object-cover">
+          <span class="text-[10px] text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded font-bold">${m.scheduledTime || 'Live'}</span>
+        </span>
+      `).join('');
+
+      tickerCont.innerHTML = itemsHtml + " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " + itemsHtml;
+    }
+
     function saveAdminNews() {
       const newsHtml = document.getElementById('adminNewsInput').value;
       db.collection("settings").doc("site_content").update({ news: newsHtml }).then(() => {
@@ -669,7 +648,6 @@ index.html
       });
     }
 
-    // حفظ القوانين من الأدمن
     function saveAdminRules() {
       const rulesHtml = document.getElementById('adminRulesInput').value;
       db.collection("settings").doc("site_content").update({ rules: rulesHtml }).then(() => {
@@ -702,6 +680,7 @@ index.html
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', activeTourneyId);
       renderAll();
+      renderTickerMatches();
       alert('تم اختيار البطولة بنجاح!');
     }
 
@@ -1062,7 +1041,6 @@ index.html
 
     window.onload = function() {
       document.getElementById('langSelect').value = currentLang;
-      changeLanguage(currentLang);
       fetchRealtimeData();
       updateNotificationsUI();
     };
