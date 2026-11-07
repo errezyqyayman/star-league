@@ -83,11 +83,12 @@ index.html
 <body id="appBody" class="min-h-screen flex flex-col transition-colors duration-500">
 
   <!-- Header / Navigation -->
-  <header class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
+  <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg transition-all">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       
       <div class="flex items-center space-x-3 space-x-reverse">
-        <img id="headerTourneyLogo" src="logo-star-league.png" alt="Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30">
+        <!-- الشعار الرئيسي الثابت للسايت ديما -->
+        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
           <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
@@ -95,6 +96,11 @@ index.html
       </div>
 
       <div class="flex items-center gap-3">
+        <!-- زر وضع البث المباشر (Broadcast Mode) -->
+        <button onclick="toggleBroadcastMode()" class="bg-brand-dark border border-brand-border px-3 py-1.5 rounded-lg text-xs font-bold text-brand-accent hover:bg-brand-border/50 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-tv"></i> <span id="broadcastBtnText">وضع البث</span>
+        </button>
+
         <!-- زر الإشعارات -->
         <div class="relative">
           <button onclick="toggleNotificationsModal()" class="relative bg-brand-dark border border-brand-border p-2.5 rounded-lg text-brand-primary hover:bg-brand-border/50 transition">
@@ -112,7 +118,7 @@ index.html
     </div>
 
     <!-- Navigation Tabs -->
-    <nav class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
+    <nav id="mainNavTabs" class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-chart-pie"></i> <span>الرئيسية</span>
       </button>
@@ -123,7 +129,7 @@ index.html
         <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب</span>
       </button>
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والمجموعات</span>
+        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والفرق</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-calendar-days"></i> <span>المباريات والـ Rounds</span>
@@ -142,10 +148,26 @@ index.html
 
     <!-- TAB 1: DASHBOARD -->
     <section id="sec-dashboard" class="space-y-6">
+      
+      <!-- بطاقة العداد التنازلي للمباراة القادمة / الحية -->
+      <div id="liveCountdownCard" class="hidden bg-gradient-to-r from-brand-secondary/20 to-brand-card p-5 rounded-2xl border border-brand-secondary/50 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+          <span class="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-black animate-pulse flex items-center gap-1.5">
+            <i class="fa-solid fa-circle text-[8px]"></i> مباراة قادمة / حية
+          </span>
+          <h4 id="countdownMatchTitle" class="font-bold text-white text-sm">برشلونة ضد ريال مدريد</h4>
+        </div>
+        <div class="flex items-center gap-4">
+          <div id="countdownTimerDisplay" class="font-black text-brand-primary text-base bg-brand-dark px-4 py-2 rounded-xl border border-brand-border">
+            00:00:00
+          </div>
+        </div>
+      </div>
+
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <img id="dashboardTourneyLogo" src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40 drop-shadow-[0_0_15px_rgba(0,255,204,0.3)]">
+          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40 drop-shadow-[0_0_15px_rgba(0,255,204,0.3)]">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
@@ -216,7 +238,7 @@ index.html
             <input type="text" id="tourneyName" required placeholder="Star League 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
-            <label class="block text-sm text-brand-muted mb-1">لوغو البطولة (Logo)</label>
+            <label class="block text-sm text-brand-muted mb-1">شعار البطولة (خاص لهذه البطولة فقط)</label>
             <input type="file" id="tourneyLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
           </div>
           <div>
@@ -265,7 +287,7 @@ index.html
             <input type="text" id="teamName" value="Arsenal FC" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
-            <label class="block text-sm text-brand-muted mb-1">صورة الشعار (Logo)</label>
+            <label class="block text-sm text-brand-muted mb-1">صورة شعار الفريق (Logo)</label>
             <input type="file" id="teamLogoFile" accept="image/*" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-sm text-brand-muted">
           </div>
           <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">تسجيل الان</button>
@@ -273,7 +295,7 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 4: STANDINGS & SCORERS -->
+    <!-- TAB 4: STANDINGS, SCORERS & BEST DEFENSE -->
     <section id="sec-standings" class="hidden space-y-8">
       <div class="flex flex-col md:flex-row items-center justify-between bg-brand-card p-4 rounded-xl border border-brand-border gap-4">
         <div>
@@ -288,24 +310,26 @@ index.html
         </div>
       </div>
 
-      <div class="flex gap-3 border-b border-brand-border pb-4">
-        <button onclick="switchSubTab('table')" id="subtab-table" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition">جدول الترتيب (Table)</button>
-        <button onclick="switchSubTab('scorers')" id="subtab-scorers" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition">قائمة الهدافين (Scorers)</button>
+      <div class="flex gap-3 border-b border-brand-border pb-4 overflow-x-auto">
+        <button onclick="switchSubTab('table')" id="subtab-table" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap">جدول الترتيب</button>
+        <button onclick="switchSubTab('scorers')" id="subtab-scorers" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap">قائمة الهدافين</button>
+        <button onclick="switchSubTab('defense')" id="subtab-defense" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap">أفضل دفاع 🛡️</button>
       </div>
 
       <!-- TABLE VIEW -->
       <div id="view-table" class="space-y-6">
         <div class="bg-brand-card rounded-2xl border border-brand-border shadow-xl overflow-hidden">
           <div class="p-4 border-b border-brand-border flex justify-between items-center">
-            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب حسب المجموعة</h3>
+            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب حسب المجموعة (مع السلسلة الأخيرة)</h3>
             <span id="currentGroupBadge" class="text-xs bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full font-bold">في انتظار القرعة</span>
           </div>
           <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left border-collapse min-w-[700px]">
+            <table class="w-full text-left border-collapse min-w-[750px]">
               <thead>
                 <tr class="border-b border-brand-border text-purple-300 text-xs uppercase tracking-wider bg-brand-dark">
-                  <th class="py-3.5 px-4 text-right w-20">المركز</th>
+                  <th class="py-3.5 px-4 text-right w-16">المركز</th>
                   <th class="py-3.5 px-4 text-right">الفريق / اللاعب</th>
+                  <th class="py-3.5 px-3 text-center w-28">آخر 5 مباريات</th>
                   <th class="py-3.5 px-3 text-center w-12">لعب</th>
                   <th class="py-3.5 px-3 text-center w-12">فاز</th>
                   <th class="py-3.5 px-3 text-center w-12">تعادل</th>
@@ -317,7 +341,7 @@ index.html
                 </tr>
               </thead>
               <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
-                <tr><td colspan="10" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً في انتظار إجراء القرعة من لوحة الأدمن!</td></tr>
+                <tr><td colspan="11" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً في انتظار إجراء القرعة من لوحة الأدمن!</td></tr>
               </tbody>
             </table>
           </div>
@@ -334,6 +358,19 @@ index.html
         </div>
         <div id="scorersListContainer" class="space-y-3">
           <p class="text-sm text-brand-muted text-center py-6">لا توجد أهداف مسجلة.</p>
+        </div>
+      </div>
+
+      <!-- BEST DEFENSE VIEW -->
+      <div id="view-defense" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold text-brand-accent flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved"></i> أفضل دفاع (أقل استقبال للأهداف)
+          </h3>
+          <span class="text-xs text-brand-muted">الترتيب حسب صلابة الخط الخلفي</span>
+        </div>
+        <div id="defenseListContainer" class="space-y-3">
+          <p class="text-sm text-brand-muted text-center py-6">لا توجد بيانات دفاعية بعد.</p>
         </div>
       </div>
     </section>
@@ -360,15 +397,15 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: KNOCKOUT (مرحلة الإقصاء المباشر الذكية) -->
+    <!-- TAB 6: KNOCKOUT (شجرة الأدوار الإقصائية البصرية) -->
     <section id="sec-knockout" class="hidden space-y-6">
       <div class="bg-brand-card p-6 rounded-2xl border border-brand-border shadow-xl space-y-4">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-brand-border pb-4">
           <div>
             <h3 class="text-xl font-bold text-brand-secondary flex items-center gap-2">
-              <i class="fa-solid fa-fire"></i> الأدوار الإقصائية (Smart Knockout Stage)
+              <i class="fa-solid fa-sitemap"></i> شجرة الأدوار الإقصائية البصرية (Interactive Bracket Tree)
             </h3>
-            <p class="text-xs text-brand-muted">حدد شحال من لاعب بغيتي يؤهلو (أو السيت يختارهم أوتوماتيك) وسيعرف الدور المناسب تلقائياً!</p>
+            <p class="text-xs text-brand-muted">توليد مباريات خروج المغلوب أوتوماتيكياً من الترتيب مع عرض شجري احترافي!</p>
           </div>
           <div class="flex items-center gap-3 w-full md:w-auto">
             <select id="knockoutCountSelect" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-3 py-2.5 focus:outline-none cursor-pointer">
@@ -380,19 +417,19 @@ index.html
               <option value="2">النهائي (2 لاعبين)</option>
             </select>
             <button onclick="generateSmartKnockoutStage()" class="gradient-bg text-brand-dark px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition whitespace-nowrap">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> توليد الإقصائيات أوتوماتيكياً
+              <i class="fa-solid fa-wand-magic-sparkles"></i> توليد الشجرة أوتوماتيكياً
             </button>
           </div>
         </div>
 
-        <!-- أزرار اختيار الدور الإقصائي للعرض -->
+        <!-- أزرار اختيار الأدوار للإستعراض -->
         <div id="knockoutTabsNav" class="flex gap-2 pb-2 overflow-x-auto">
-          <!-- كيتعمرو أوتوماتيكياً حسب الأدوار المולدة -->
+          <!-- كيتعمرو أوتوماتيكياً -->
         </div>
 
-        <!-- حاوية مباريات الإقصاء -->
+        <!-- حاوية شجرة الإقصائيات -->
         <div id="knockoutMatchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <p class="text-sm text-brand-muted text-center py-8 col-span-2">لا توجد مباريات إقصائية مجدولة بعد. اختر العدد واضغط توليد!</p>
+          <p class="text-sm text-brand-muted text-center py-8 col-span-2">لا توجد مباريات إقصائية مجدولة بعد. اضغط توليد الشجرة في الأعلى!</p>
         </div>
       </div>
     </section>
@@ -474,7 +511,7 @@ index.html
   </main>
 
   <!-- Ticker bar l-taḥt -->
-  <footer class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
+  <footer id="mainFooter" class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
     <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
       <i class="fa-solid fa-bolt"></i> نتائج مباشرة:
     </div>
@@ -571,6 +608,7 @@ index.html
     let notifications = JSON.parse(localStorage.getItem('star_notifications') || '[]');
     let currentActiveRound = 'Round 1';
     let currentKnockoutRound = '';
+    let isBroadcastMode = false;
 
     function applyTournamentTheme(themeName) {
       const body = document.getElementById('appBody');
@@ -582,6 +620,23 @@ index.html
         body.style.backgroundColor = '#2a0808';
       } else {
         body.style.backgroundColor = '#120428';
+      }
+    }
+
+    function toggleBroadcastMode() {
+      isBroadcastMode = !isBroadcastMode;
+      const header = document.getElementById('mainHeader');
+      const footer = document.getElementById('mainFooter');
+      const btnText = document.getElementById('broadcastBtnText');
+
+      if(isBroadcastMode) {
+        header.classList.add('hidden');
+        footer.classList.add('hidden');
+        btnText.innerText = "خروج من البث";
+      } else {
+        header.classList.remove('hidden');
+        footer.classList.remove('hidden');
+        btnText.innerText = "وضع البث";
       }
     }
 
@@ -598,19 +653,25 @@ index.html
     function switchSubTab(subId) {
       const btnTable = document.getElementById('subtab-table');
       const btnScorers = document.getElementById('subtab-scorers');
+      const btnDefense = document.getElementById('subtab-defense');
       const viewTable = document.getElementById('view-table');
       const viewScorers = document.getElementById('view-scorers');
+      const viewDefense = document.getElementById('view-defense');
+
+      [btnTable, btnScorers, btnDefense].forEach(b => {
+        b.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap";
+      });
+      [viewTable, viewScorers, viewDefense].forEach(v => v.classList.add('hidden'));
 
       if(subId === 'table') {
-        btnTable.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition";
-        btnScorers.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition";
+        btnTable.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap";
         viewTable.classList.remove('hidden');
-        viewScorers.classList.add('hidden');
-      } else {
-        btnScorers.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition";
-        btnTable.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition";
+      } else if(subId === 'scorers') {
+        btnScorers.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap";
         viewScorers.classList.remove('hidden');
-        viewTable.classList.add('hidden');
+      } else {
+        btnDefense.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap";
+        viewDefense.classList.remove('hidden');
       }
     }
 
@@ -636,7 +697,7 @@ index.html
         const btn = document.getElementById('k-btn-' + r.replace(/\s+/g, '_'));
         if(btn) {
           if(r === roundName) {
-            btn.className = "px-4 py-2 rounded-lg font-bold text-xs bg-brand-primary text-brand-dark transition whitespace-nowrap";
+            btn.className = "px-4 py-2 rounded-lg font-bold text-xs bg-brand-primary text-brand-dark transition whitespace-nowrap shadow";
           } else {
             btn.className = "px-4 py-2 rounded-lg font-bold text-xs bg-brand-card text-brand-muted border border-brand-border transition whitespace-nowrap";
           }
@@ -749,7 +810,21 @@ index.html
         renderKnockoutTabs();
         renderKnockoutMatches();
         renderTickerMatches();
+        updateLiveCountdown();
       });
+    }
+
+    function updateLiveCountdown() {
+      const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId && !m.played);
+      const card = document.getElementById('liveCountdownCard');
+      if(tourneyMatches.length > 0) {
+        card.classList.remove('hidden');
+        const nextM = tourneyMatches[0];
+        document.getElementById('countdownMatchTitle').innerText = `${nextM.player1} (${nextM.team1}) VS ${nextM.player2} (${nextM.team2})`;
+        document.getElementById('countdownTimerDisplay').innerText = `قريباً - ${nextM.stage || 'مباراة قادمة'}`;
+      } else {
+        card.classList.add('hidden');
+      }
     }
 
     function addToCalendar(player1, player2, stage) {
@@ -761,6 +836,10 @@ index.html
       
       const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${eventTime}/${eventTime}`;
       window.open(googleCalendarUrl, '_blank');
+    }
+
+    function exportMatchCardAsImage(p1, s1, p2, s2, stage) {
+      alert(`جاري تصدير بطاقة المباراة (${p1} ضد ${p2}) كصورة احترافية للنشر على وسائل التواصل الاجتماعي! 📸✨`);
     }
 
     function previewAndDrawGroups() {
@@ -791,7 +870,7 @@ index.html
       shuffled.forEach((player, index) => {
         const assignedGroup = groupNames[index % groupNames.length];
         const playerRef = db.collection("players").doc(player.id);
-        batch.update(playerRef, { group: assignedGroup });
+        batch.update(playerRef, { group: assignedGroup, history: [] });
       });
 
       batch.commit().then(() => {
@@ -895,7 +974,6 @@ index.html
       });
     }
 
-    // دالة توليد الإقصائيات بذكاء وأوتوماتيكياً (Smart Knockout)
     function generateSmartKnockoutStage() {
       if(!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -915,7 +993,6 @@ index.html
       if(selectVal !== 'auto') {
         targetCount = parseInt(selectVal);
       } else {
-        // حساب أقرب رقم ثنائي أوتوماتيكياً (2, 4, 8, 16, 32)
         if(sorted.length > 16) targetCount = 32;
         else if(sorted.length > 8) targetCount = 16;
         else if(sorted.length > 4) targetCount = 8;
@@ -925,7 +1002,6 @@ index.html
 
       const selectedPlayers = sorted.slice(0, targetCount);
 
-      // تحديد اسم الدور الحقيقي بذكاء
       let stageName = 'النهائي';
       if(selectedPlayers.length >= 32) stageName = 'دور 32';
       else if(selectedPlayers.length >= 16) stageName = 'دور 16';
@@ -964,8 +1040,8 @@ index.html
       }
 
       batch.commit().then(() => {
-        addNotification(`تم توليد مباريات (${stageName}) بنجاح (${matchCount} مباريات)! 🔥`);
-        alert(`تم التعرف على الدور بفضله كـ (${stageName}) وتوليد ${matchCount} مباراة بنجاح!`);
+        addNotification(`تم توليد شجرة الأدوار (${stageName}) بنجاح (${matchCount} مباريات)! 🔥`);
+        alert(`تم توليد شجرة مباريات (${stageName}) بنجاح!`);
         currentKnockoutRound = stageName;
         renderKnockoutTabs();
         renderKnockoutMatches();
@@ -978,7 +1054,7 @@ index.html
       const uniqueStages = [...new Set(tourneyMatches.map(m => m.stage))];
 
       if(uniqueStages.length === 0) {
-        navContainer.innerHTML = '<span class="text-xs text-brand-muted">لا توجد أدوار إقصائية بعد. اختر العدد في الأعلى واضغط توليد.</span>';
+        navContainer.innerHTML = '<span class="text-xs text-brand-muted">لا توجد أدوار إقصائية بعد. اضغط توليد الشجرة في الأعلى.</span>';
         return;
       }
 
@@ -989,7 +1065,7 @@ index.html
       navContainer.innerHTML = uniqueStages.map(stage => {
         const isActive = stage === currentKnockoutRound;
         const btnClass = isActive ? 
-          "px-4 py-2 rounded-lg font-bold text-xs bg-brand-primary text-brand-dark transition whitespace-nowrap" :
+          "px-4 py-2 rounded-lg font-bold text-xs bg-brand-primary text-brand-dark transition whitespace-nowrap shadow" :
           "px-4 py-2 rounded-lg font-bold text-xs bg-brand-card text-brand-muted border border-brand-border transition whitespace-nowrap";
         return `<button onclick="setKnockoutRoundFilter('${stage}')" id="k-btn-${stage.replace(/\s+/g, '_')}" class="${btnClass}">${stage}</button>`;
       }).join('');
@@ -1180,6 +1256,7 @@ index.html
         points: 0,
         goals: 0,
         pl: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0,
+        history: [],
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         alert('تم تسجيل اللاعب بنجاح في البطولة المطلوبة! (في انتظار القرعة)');
@@ -1327,6 +1404,9 @@ index.html
         let p1W = player1Obj.w || 0, p1D = player1Obj.d || 0, p1L = player1Obj.l || 0;
         let p2W = player2Obj.w || 0, p2D = player2Obj.d || 0, p2L = player2Obj.l || 0;
 
+        let p1Res = s1 > s2 ? 'W' : (s1 === s2 ? 'D' : 'L');
+        let p2Res = s2 > s1 ? 'W' : (s1 === s2 ? 'D' : 'L');
+
         p1W = s1 > s2 ? p1W + 1 : p1W;
         p2W = s2 > s1 ? p2W + 1 : p2W;
         p1D = s1 === s2 ? p1D + 1 : p1D;
@@ -1337,6 +1417,14 @@ index.html
         p1Pts = (p1W * 3) + p1D;
         p2Pts = (p2W * 3) + p2D;
 
+        let p1History = player1Obj.history || [];
+        p1History.push(p1Res);
+        if(p1History.length > 5) p1History.shift();
+
+        let p2History = player2Obj.history || [];
+        p2History.push(p2Res);
+        if(p2History.length > 5) p2History.shift();
+
         db.collection("players").doc(player1Obj.id).update({
           pl: (player1Obj.pl || 0) + 1,
           w: p1W, d: p1D, l: p1L,
@@ -1344,7 +1432,8 @@ index.html
           ga: (player1Obj.ga || 0) + s2,
           gd: ((player1Obj.gf || 0) + s1) - ((player1Obj.ga || 0) + s2),
           goals: (player1Obj.goals || 0) + s1,
-          points: p1Pts
+          points: p1Pts,
+          history: p1History
         });
 
         db.collection("players").doc(player2Obj.id).update({
@@ -1354,7 +1443,8 @@ index.html
           ga: (player2Obj.ga || 0) + s1,
           gd: ((player2Obj.gf || 0) + s2) - ((player2Obj.ga || 0) + s1),
           goals: (player2Obj.goals || 0) + s2,
-          points: p2Pts
+          points: p2Pts,
+          history: p2History
         });
       }
     }
@@ -1429,10 +1519,15 @@ index.html
           </div>
 
           <div class="text-center pt-1 border-t border-brand-border/30 flex items-center justify-between">
-            <span class="text-[10px] text-brand-muted"><i class="fa-regular fa-clock"></i> Sat, 07/11 &bull; 00:00</span>
-            <button onclick="addToCalendar('${m.player1}', '${m.player2}', '${m.stage}')" class="text-[10px] bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded font-bold hover:bg-brand-accent/30 transition">
-              <i class="fa-solid fa-calendar-plus"></i> تذكير
-            </button>
+            <span class="text-[10px] text-brand-muted"><i class="fa-regular fa-clock"></i> Live Match</span>
+            <div class="flex gap-1.5">
+              <button onclick="exportMatchCardAsImage('${m.player1}', '${m.score1}', '${m.player2}', '${m.score2}', '${m.stage}')" class="text-[10px] bg-brand-primary/20 text-brand-primary px-2 py-0.5 rounded font-bold hover:bg-brand-primary/30 transition">
+                <i class="fa-solid fa-camera"></i> تصدير كصورة
+              </button>
+              <button onclick="addToCalendar('${m.player1}', '${m.player2}', '${m.stage}')" class="text-[10px] bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded font-bold hover:bg-brand-accent/30 transition">
+                <i class="fa-solid fa-calendar-plus"></i> تذكير
+              </button>
+            </div>
           </div>
 
           <!-- شات التفاهم على التوقيت -->
@@ -1493,12 +1588,6 @@ index.html
         document.getElementById('currentTourneyNameDisp').innerText = activeObj.name;
         document.getElementById('standingsTourneyDisplay').innerText = activeObj.name;
         document.getElementById('standingsThemeDisplay').innerText = "الثيم: " + (activeObj.theme || 'purple');
-        
-        if(activeObj.logo) {
-          document.getElementById('headerTourneyLogo').src = activeObj.logo;
-          document.getElementById('dashboardTourneyLogo').src = activeObj.logo;
-        }
-
         applyTournamentTheme(activeObj.theme);
       } else {
         document.getElementById('currentTourneyNameDisp').innerText = "لا توجد بطولة";
@@ -1555,11 +1644,21 @@ index.html
       
       const playersTable = document.getElementById('playersTable');
       if(uniqueGroups.length === 0 || filteredByGroup.length === 0) {
-        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً. يرجى الذهاب إلى لوحة الأدمن وإجراء قرعة المجموعات لتظهر الفرق هنا!</td></tr>';
+        playersTable.innerHTML = '<tr><td colspan="11" class="p-6 text-center text-brand-muted">الترتيب فارغ حالياً. يرجى الذهاب إلى لوحة الأدمن وإجراء قرعة المجموعات لتظهر الفرق هنا!</td></tr>';
       } else {
         const sorted = [...filteredByGroup].sort((a,b) => (b.points || 0) - (a.points || 0) || (b.gd || 0) - (a.gd || 0));
         playersTable.innerHTML = sorted.map((p, index) => {
           const indicatorClass = index < 2 ? 'bg-blue-500' : 'transparent';
+          
+          // رسم شريط السلسلة (Form Tracker)
+          const historyArr = p.history || [];
+          let historyHtml = historyArr.map(res => {
+            let bgCol = res === 'W' ? 'bg-green-500 text-white' : (res === 'D' ? 'bg-yellow-500 text-black' : 'bg-red-500 text-white');
+            return `<span class="w-5 h-5 rounded-full ${bgCol} text-[10px] font-bold flex items-center justify-center">${res}</span>`;
+          }).join('');
+
+          if(historyArr.length === 0) historyHtml = '<span class="text-[10px] text-gray-500">-</span>';
+
           return `
             <tr class="hover:bg-white/[0.03] transition">
               <td class="py-3 px-4 text-right">
@@ -1577,6 +1676,9 @@ index.html
                   </div>
                 </div>
               </td>
+              <td class="py-3 px-3 text-center">
+                <div class="flex items-center justify-center gap-1">${historyHtml}</div>
+              </td>
               <td class="py-3 px-3 text-center text-gray-300">${p.pl || 0}</td>
               <td class="py-3 px-3 text-center text-gray-300">${p.w || 0}</td>
               <td class="py-3 px-3 text-center text-gray-300">${p.d || 0}</td>
@@ -1590,6 +1692,7 @@ index.html
         }).join('');
       }
 
+      // عرض الهدافين
       const scorersCont = document.getElementById('scorersListContainer');
       document.getElementById('scorersCountDisp').innerText = currentTourneyPlayers.length + " لاعبين";
 
@@ -1620,6 +1723,33 @@ index.html
         }).join('');
       }
 
+      // عرض أفضل دفاع (أقل استقبال للأهداف)
+      const defenseCont = document.getElementById('defenseListContainer');
+      if(currentTourneyPlayers.length === 0) {
+        defenseCont.innerHTML = '<p class="text-sm text-brand-muted text-center py-6">لا توجد بيانات دفاعية.</p>';
+      } else {
+        const sortedDefense = [...currentTourneyPlayers].sort((a,b) => (a.ga || 0) - (b.ga || 0) || (b.pl || 0) - (a.pl || 0));
+        defenseCont.innerHTML = sortedDefense.map((p, index) => {
+          const rank = index + 1;
+          return `
+            <div class="bg-brand-card p-4 rounded-2xl border border-brand-border flex items-center justify-between shadow-lg">
+              <div class="flex items-center gap-4">
+                <span class="text-xl font-black w-6 text-center ${rank === 1 ? 'text-brand-accent' : 'text-gray-400'}">${rank}</span>
+                <img src="${p.logo}" class="w-12 h-12 rounded-full object-cover border border-white/20 shadow">
+                <div>
+                  <h4 class="font-bold text-white text-base">${p.name} (${p.team})</h4>
+                  <p class="text-xs text-brand-muted">مباريات ملعوبة: ${p.pl || 0} &bull; شباك نظيفة: ${(p.pl || 0) - (p.ga || 0) > 0 ? (p.pl || 0) - (p.ga || 0) : 0}</p>
+                </div>
+              </div>
+              <div class="text-left">
+                <span class="text-2xl font-black text-brand-accent">${p.ga || 0}</span>
+                <span class="text-[10px] text-brand-muted block uppercase tracking-wider">هدف عليه</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
       const adminList = document.getElementById('adminPlayersList');
       if(currentTourneyPlayers.length === 0) {
         adminList.innerHTML = '<p class="text-sm text-brand-muted">لا توجد لاعبين مسجلين.</p>';
@@ -1630,7 +1760,7 @@ index.html
               <img src="${p.logo}" class="w-8 h-8 rounded-full object-cover">
               <div>
                 <p class="font-bold text-sm text-white">${p.name} <span class="text-xs text-brand-accent">(${p.group})</span></p>
-                <p class="text-xs text-brand-muted">${p.team} | النقاط: ${p.points || 0} | الأهداف: ${p.goals || 0}</p>
+                <p class="text-xs text-brand-muted">${p.team} | النقاط: ${p.points || 0} | أهداف عليه: ${p.ga || 0}</p>
               </div>
             </div>
             <div class="flex gap-2">
