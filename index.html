@@ -66,7 +66,6 @@ index.html
       background: #2c1552;
       border-radius: 4px;
     }
-    /* Animation dyal s-smta li kador */
     @keyframes ticker {
       0% { transform: translateX(0); }
       100% { transform: translateX(50%); }
@@ -134,7 +133,7 @@ index.html
         <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب</span>
       </button>
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والهدافيين</span>
+        <i class="fa-solid fa-list-ol"></i> <span>الترتيب والمجموعات</span>
       </button>
       <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-calendar-days"></i> <span>المباريات والشات</span>
@@ -150,22 +149,18 @@ index.html
 
     <!-- TAB 1: DASHBOARD -->
     <section id="sec-dashboard" class="space-y-6">
-      
-      <!-- مرحباً بكم مع اللوجو -->
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-        
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
           <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-[0_0_15px_rgba(0,255,204,0.3)]">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
             <p class="text-brand-muted text-sm max-w-xl">
-              المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة. تابع الترتيب، المباريات، والأخبار أول بأول!
+              المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة. تابع الترتيب، المجموعات، والمباريات أول بأول!
             </p>
           </div>
         </div>
-
         <div class="flex flex-col gap-2 w-full md:w-auto">
           <div onclick="switchTab('tournaments')" class="cursor-pointer bg-brand-dark px-5 py-3 rounded-xl border border-brand-border text-center hover:border-brand-primary transition">
             <span class="text-xl font-bold text-brand-primary" id="stat-tourneys-count">0</span>
@@ -174,10 +169,7 @@ index.html
         </div>
       </div>
 
-      <!-- قسم الأخبار والقوانين -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- الأخبار الجديدة -->
         <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
           <div class="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
@@ -190,7 +182,6 @@ index.html
           </div>
         </div>
 
-        <!-- قوانين البطولة -->
         <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
           <div class="flex items-center justify-between border-b border-brand-border pb-3">
             <h3 class="text-lg font-bold text-brand-secondary flex items-center gap-2">
@@ -202,10 +193,8 @@ index.html
             <p class="text-white text-xs">جاري تحميل القوانين...</p>
           </div>
         </div>
-
       </div>
 
-      <!-- البطولات النشطة -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
           <i class="fa-solid fa-list-check"></i> <span>البطولات النشطة (اختر بطولة للمتابعة)</span>
@@ -214,7 +203,6 @@ index.html
           <p class="text-sm text-brand-muted">لا توجد بطولات بعد.</p>
         </div>
       </div>
-
     </section>
 
     <!-- TAB 2: TOURNAMENTS -->
@@ -252,9 +240,18 @@ index.html
     <section id="sec-register" class="hidden max-w-xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب أو فريق جديد</span>
+          <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب أو فريق جديد في مجموعة</span>
         </h3>
         <form id="playerForm" class="space-y-4" onsubmit="handleRegisterPlayer(event)">
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">اختر المجموعة (يمكنك تغييرها لاحقاً بالقرعة)</label>
+            <select id="playerGroup" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none cursor-pointer">
+              <option value="المجموعة أ (Group A)">المجموعة أ (Group A)</option>
+              <option value="المجموعة ب (Group B)">المجموعة ب (Group B)</option>
+              <option value="المجموعة ج (Group C)">المجموعة ج (Group C)</option>
+              <option value="المجموعة د (Group D)">المجموعة د (Group D)</option>
+            </select>
+          </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">اسم اللاعب (ID)</label>
             <input type="text" id="playerName" value="Arsenal" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
@@ -278,10 +275,19 @@ index.html
 
     <!-- TAB 4: STANDINGS & SCORERS -->
     <section id="sec-standings" class="hidden space-y-8">
-      <div class="flex items-center justify-between bg-brand-card p-4 rounded-xl border border-brand-border">
+      <div class="flex flex-col md:flex-row items-center justify-between bg-brand-card p-4 rounded-xl border border-brand-border gap-4">
         <div>
           <h3 class="text-lg font-bold text-brand-primary" id="standingsTourneyDisplay">البطولة الحالية</h3>
           <p class="text-xs text-brand-muted" id="standingsThemeDisplay">الثيم: افتراضي</p>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <label class="text-xs text-brand-muted whitespace-nowrap">اختر المجموعة:</label>
+          <select id="selectedGroupFilter" onchange="renderAll()" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-3 py-2 focus:outline-none cursor-pointer">
+            <option value="المجموعة أ (Group A)">المجموعة أ (Group A)</option>
+            <option value="المجموعة ب (Group B)">المجموعة ب (Group B)</option>
+            <option value="المجموعة ج (Group C)">المجموعة ج (Group C)</option>
+            <option value="المجموعة د (Group D)">المجموعة د (Group D)</option>
+          </select>
         </div>
       </div>
 
@@ -293,8 +299,9 @@ index.html
       <!-- TABLE VIEW -->
       <div id="view-table" class="space-y-6">
         <div class="bg-brand-card rounded-2xl border border-brand-border shadow-xl overflow-hidden">
-          <div class="p-4 border-b border-brand-border">
-            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب الرسمي</h3>
+          <div class="p-4 border-b border-brand-border flex justify-between items-center">
+            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب حسب المجموعة</h3>
+            <span id="currentGroupBadge" class="text-xs bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full font-bold">المجموعة أ</span>
           </div>
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse min-w-[700px]">
@@ -344,10 +351,27 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN -->
+    <!-- TAB 6: ADMIN (محدث بالقرعة الأوتوماتيكية) -->
     <section id="sec-admin" class="hidden space-y-6">
       
-      <!-- قسم تعديل الأخبار والقوانين في الأدمن -->
+      <!-- قسم أزرار القرعة التلقائية وتوليد المباريات -->
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> أدوات البطولات الأوتوماتيكية
+        </h3>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="drawGroupsAutomatically()" class="bg-brand-secondary text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition flex items-center gap-2">
+            <i class="fa-solid fa-dice"></i> إجراء قرعة المجموعات تلقائياً (Auto Draw)
+          </button>
+          <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition flex items-center gap-2">
+            <i class="fa-solid fa-gamepad"></i> توليد مباريات البطولة (قرعة)
+          </button>
+          <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-red-500/30 transition flex items-center gap-2">
+            <i class="fa-solid fa-trash"></i> مسح جميع اللاعبين
+          </button>
+        </div>
+      </div>
+
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
           <i class="fa-solid fa-pen-to-square"></i> تعديل الأخبار والقوانين في الواجهة
@@ -366,14 +390,8 @@ index.html
         </div>
       </div>
 
-      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
-        <div class="flex justify-between items-center border-b border-brand-border pb-4">
-          <h3 class="text-xl font-bold text-brand-primary">لوحة الأدمن وتوليد المباريات</h3>
-          <div class="flex gap-2">
-            <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-3 py-2 rounded-lg font-bold text-xs">توليد المباريات (قرعة)</button>
-            <button onclick="resetAllPlayers()" class="bg-red-500/20 text-red-400 border border-red-500/40 px-3 py-2 rounded-lg font-bold text-xs">مسح جميع اللاعبين</button>
-          </div>
-        </div>
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary">قائمة اللاعبين والفرق</h3>
         <div id="adminPlayersList" class="space-y-2 max-h-60 overflow-y-auto">
           <p class="text-sm text-brand-muted">لا توجد بيانات.</p>
         </div>
@@ -382,14 +400,14 @@ index.html
 
   </main>
 
-  <!-- SMTA DYAL NATA2IJ (Ticker bar mthbta ltaḥt kador) -->
+  <!-- Ticker bar l-taḥt -->
   <footer class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
     <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
       <i class="fa-solid fa-bolt"></i> Nata2ij Live:
     </div>
     <div class="overflow-hidden whitespace-nowrap w-full">
       <div id="tickerMatchesContainer" class="animate-ticker inline-flex gap-8 text-xs text-brand-muted">
-        <span class="text-white">La towjada mobarayat mntahiya ba3d...</span>
+        <span class="text-white">Star League - Marḥba bikom f l-botolat! 🎮⚽</span>
       </div>
     </div>
   </footer>
@@ -399,6 +417,15 @@ index.html
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
       <h3 class="text-lg font-bold text-brand-primary">تعديل بيانات اللاعب</h3>
       <input type="hidden" id="editPlayerId">
+      <div>
+        <label class="block text-sm text-brand-muted mb-1">المجموعة</label>
+        <select id="editPlayerGroup" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          <option value="المجموعة أ (Group A)">المجموعة أ (Group A)</option>
+          <option value="المجموعة ب (Group B)">المجموعة ب (Group B)</option>
+          <option value="المجموعة ج (Group C)">المجموعة ج (Group C)</option>
+          <option value="المجموعة د (Group D)">المجموعة د (Group D)</option>
+        </select>
+      </div>
       <div>
         <label class="block text-sm text-brand-muted mb-1">اسم اللاعب (ID)</label>
         <input type="text" id="editPlayerName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
@@ -457,28 +484,6 @@ index.html
     let players = [];
     let matches = [];
     let notifications = JSON.parse(localStorage.getItem('star_notifications') || '[]');
-    let currentLang = localStorage.getItem('star_lang') || 'ar';
-    let currentSubTab = 'table';
-
-    const translations = {
-      ar: {
-        subtitle: "منصة البطولات المتعددة والذكية",
-        nav_dashboard: "الرئيسية",
-        nav_tournaments: "إدارة البطولات",
-        nav_register: "تسجيل لاعب",
-        nav_standings: "الترتيب والهدافيين",
-        nav_schedule: "المباريات والشات",
-        nav_admin: "لوحة الأدمن",
-        dash_title: "منصة البطولات الاحترافية",
-        dash_desc: "أنشئ بطولتك، سجل فريقك، وتابع المباريات والترتيب أول بأول.",
-        active_tourneys_title: "البطولات النشطة"
-      }
-    };
-
-    function changeLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('star_lang', lang);
-    }
 
     function applyTournamentTheme(themeName) {
       const body = document.getElementById('appBody');
@@ -504,7 +509,6 @@ index.html
     }
 
     function switchSubTab(subId) {
-      currentSubTab = subId;
       const btnTable = document.getElementById('subtab-table');
       const btnScorers = document.getElementById('subtab-scorers');
       const viewTable = document.getElementById('view-table');
@@ -612,17 +616,54 @@ index.html
       });
     }
 
-    // Ticker Matches Renderer (Smta ltaḥt)
+    // خاصية القرعة الأوتوماتيكية للمجموعات 🎲
+    function drawGroupsAutomatically() {
+      if (!activeTourneyId) {
+        alert('اختر بطولة أولاً!');
+        return;
+      }
+
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      if (currentTourneyPlayers.length === 0) {
+        alert('لا يوجد لاعبين إجراء القرعة عليهم! سجل بعض الفرق أولاً.');
+        return;
+      }
+
+      if (!confirm(`هل أنت متأكد من إجراء القرعة عشوائياً لـ ${currentTourneyPlayers.length} فريق؟`)) return;
+
+      // المجموعات المتاحة
+      const availableGroups = [
+        "المجموعة أ (Group A)",
+        "المجموعة ب (Group B)",
+        "المجموعة ج (Group C)",
+        "المجموعة د (Group D)"
+      ];
+
+      // خلط اللاعبين عشوائياً (Shuffle Array)
+      const shuffled = [...currentTourneyPlayers].sort(() => Math.random() - 0.5);
+
+      const batch = db.batch();
+      shuffled.forEach((player, index) => {
+        const assignedGroup = availableGroups[index % availableGroups.length];
+        const playerRef = db.collection("players").doc(player.id);
+        batch.update(playerRef, { group: assignedGroup });
+      });
+
+      batch.commit().then(() => {
+        addNotification(`تمت القرعة الأوتوماتيكية بنجاح لـ ${shuffled.length} فريق! 🎲`);
+        alert('تمت قرعة المجموعات عشوائياً بنجاح وتم تحديث المجموعات للفرق!');
+      });
+    }
+
     function renderTickerMatches() {
       const tickerCont = document.getElementById('tickerMatchesContainer');
       const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
 
       if(tourneyMatches.length === 0) {
-        tickerCont.innerHTML = '<span class="text-white">Star League - Marḥba bikom f l-botolat al-ihtirafiya! 🎮⚽</span>';
+        tickerCont.innerHTML = '<span class="text-white">Star League - Marḥba bikom f l-botolat! 🎮⚽</span>';
         return;
       }
 
-      // Kandiro duplication bash t-ban l-haraka mstyra w m-katsalix b sor3a
       let itemsHtml = tourneyMatches.map(m => `
         <span class="inline-flex items-center gap-2 mx-4 bg-brand-dark px-3 py-1 rounded-lg border border-brand-border">
           <img src="${m.logo1 || ''}" class="w-4 h-4 rounded-full object-cover">
@@ -694,6 +735,7 @@ index.html
         alert('المرجو اختيار بطولة أولاً!');
         return;
       }
+      const group = document.getElementById('playerGroup').value;
       const playerName = document.getElementById('playerName').value.trim();
       const teamName = document.getElementById('teamName').value.trim();
       const goals = parseInt(document.getElementById('playerGoals').value) || 0;
@@ -703,17 +745,18 @@ index.html
       if(fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          savePlayerFinal(playerName, teamName, goals, e.target.result);
+          savePlayerFinal(group, playerName, teamName, goals, e.target.result);
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        savePlayerFinal(playerName, teamName, goals, logoUrl);
+        savePlayerFinal(group, playerName, teamName, goals, logoUrl);
       }
     }
 
-    function savePlayerFinal(name, team, goals, logo) {
+    function savePlayerFinal(group, name, team, goals, logo) {
       db.collection("players").add({
         tourneyId: activeTourneyId,
+        group: group,
         name: name,
         team: team,
         logo: logo,
@@ -722,7 +765,7 @@ index.html
         pl: 10, w: 7, d: 2, l: 1, gf: goals, ga: 10, gd: goals - 10,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        addNotification(`انضم اللاعب "${name}" (${team}) إلى البطولة! ⚽`);
+        addNotification(`انضم اللاعب "${name}" (${group}) إلى البطولة! ⚽`);
         alert('تم تسجيل اللاعب بنجاح!');
       });
     }
@@ -733,8 +776,9 @@ index.html
       }
     }
 
-    function openEditPlayer(id, name, team, points, goals) {
+    function openEditPlayer(id, group, name, team, points, goals) {
       document.getElementById('editPlayerId').value = id;
+      document.getElementById('editPlayerGroup').value = group || 'المجموعة أ (Group A)';
       document.getElementById('editPlayerName').value = name;
       document.getElementById('editPlayerTeam').value = team;
       document.getElementById('editPlayerPoints').value = points;
@@ -748,12 +792,14 @@ index.html
 
     function saveEditedPlayer() {
       const id = document.getElementById('editPlayerId').value;
+      const group = document.getElementById('editPlayerGroup').value;
       const name = document.getElementById('editPlayerName').value.trim();
       const team = document.getElementById('editPlayerTeam').value.trim();
       const points = parseInt(document.getElementById('editPlayerPoints').value) || 0;
       const goals = parseInt(document.getElementById('editPlayerGoals').value) || 0;
 
       db.collection("players").doc(id).update({
+        group: group,
         name: name,
         team: team,
         points: points,
@@ -943,16 +989,20 @@ index.html
         `).join('');
       }
 
+      const selectedGroup = document.getElementById('selectedGroupFilter').value;
+      document.getElementById('currentGroupBadge').innerText = selectedGroup;
+
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      const filteredByGroup = currentTourneyPlayers.filter(p => (p.group || 'المجموعة أ (Group A)') === selectedGroup);
       
       // Table Render
       const playersTable = document.getElementById('playersTable');
-      if(currentTourneyPlayers.length === 0) {
-        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">لا توجد بيانات.</td></tr>';
+      if(filteredByGroup.length === 0) {
+        playersTable.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">لا توجد فرق مسجلة في هذه المجموعة.</td></tr>';
       } else {
-        const sorted = [...currentTourneyPlayers].sort((a,b) => (b.points || 0) - (a.points || 0));
+        const sorted = [...filteredByGroup].sort((a,b) => (b.points || 0) - (a.points || 0));
         playersTable.innerHTML = sorted.map((p, index) => {
-          const indicatorClass = index < 4 ? 'bg-blue-500' : (index === 4 ? 'bg-orange-500' : 'transparent');
+          const indicatorClass = index < 2 ? 'bg-blue-500' : 'transparent';
           return `
             <tr class="hover:bg-white/[0.03] transition">
               <td class="py-3 px-4 text-right">
@@ -1001,7 +1051,7 @@ index.html
                 <div>
                   <h4 class="font-bold text-white text-base">${p.name}</h4>
                   <p class="text-xs text-brand-muted flex items-center gap-1.5 mt-0.5">
-                    <img src="${p.logo}" class="w-3.5 h-3.5 rounded-full object-cover"> ${p.team || p.name}
+                    <img src="${p.logo}" class="w-3.5 h-3.5 rounded-full object-cover"> ${p.team || p.name} &bull; <span class="text-brand-accent">${p.group || 'المجموعة أ'}</span>
                   </p>
                 </div>
               </div>
@@ -1024,12 +1074,12 @@ index.html
             <div class="flex items-center gap-3">
               <img src="${p.logo}" class="w-8 h-8 rounded-full object-cover">
               <div>
-                <p class="font-bold text-sm text-white">${p.name}</p>
+                <p class="font-bold text-sm text-white">${p.name} <span class="text-xs text-brand-accent">(${p.group || 'المجموعة أ'})</span></p>
                 <p class="text-xs text-brand-muted">${p.team} | النقاط: ${p.points || 0} | الأهداف: ${p.goals || 0}</p>
               </div>
             </div>
             <div class="flex gap-2">
-              <button onclick="openEditPlayer('${p.id}', '${p.name}', '${p.team}', ${p.points || 0}, ${p.goals || 0})" class="text-brand-primary text-xs bg-brand-primary/10 px-2.5 py-1 rounded">تعديل</button>
+              <button onclick="openEditPlayer('${p.id}', '${p.group || ''}', '${p.name}', '${p.team}', ${p.points || 0}, ${p.goals || 0})" class="text-brand-primary text-xs bg-brand-primary/10 px-2.5 py-1 rounded">تعديل</button>
               <button onclick="deletePlayer('${p.id}')" class="text-red-400 text-xs bg-red-500/10 px-2.5 py-1 rounded">حذف</button>
             </div>
           </div>
@@ -1040,7 +1090,6 @@ index.html
     }
 
     window.onload = function() {
-      document.getElementById('langSelect').value = currentLang;
       fetchRealtimeData();
       updateNotificationsUI();
     };
