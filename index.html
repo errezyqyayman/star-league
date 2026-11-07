@@ -244,7 +244,7 @@ index.html
         </h3>
         <form id="playerForm" class="space-y-4" onsubmit="handleRegisterPlayer(event)">
           <div>
-            <label class="block text-sm text-brand-muted mb-1">اختر المجموعة (يمكنك تغييرها لاحقاً بالقرعة)</label>
+            <label class="block text-sm text-brand-muted mb-1">اختر المجموعة</label>
             <select id="playerGroup" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none cursor-pointer">
               <option value="المجموعة أ (Group A)">المجموعة أ (Group A)</option>
               <option value="المجموعة ب (Group B)">المجموعة ب (Group B)</option>
@@ -307,16 +307,16 @@ index.html
             <table class="w-full text-left border-collapse min-w-[700px]">
               <thead>
                 <tr class="border-b border-brand-border text-purple-300 text-xs uppercase tracking-wider bg-brand-dark">
-                  <th class="py-3.5 px-4 text-right w-20">Pos</th>
-                  <th class="py-3.5 px-4 text-right">Team</th>
-                  <th class="py-3.5 px-3 text-center w-12">PL</th>
-                  <th class="py-3.5 px-3 text-center w-12">W</th>
-                  <th class="py-3.5 px-3 text-center w-12">D</th>
-                  <th class="py-3.5 px-3 text-center w-12">L</th>
-                  <th class="py-3.5 px-3 text-center w-12">GF</th>
-                  <th class="py-3.5 px-3 text-center w-12">GA</th>
-                  <th class="py-3.5 px-3 text-center w-12">GD</th>
-                  <th class="py-3.5 px-4 text-center w-16 font-bold text-brand-primary">Pts</th>
+                  <th class="py-3.5 px-4 text-right w-20">المركز</th>
+                  <th class="py-3.5 px-4 text-right">الفريق / اللاعب</th>
+                  <th class="py-3.5 px-3 text-center w-12">لعب</th>
+                  <th class="py-3.5 px-3 text-center w-12">فاز</th>
+                  <th class="py-3.5 px-3 text-center w-12">تعادل</th>
+                  <th class="py-3.5 px-3 text-center w-12">خسر</th>
+                  <th class="py-3.5 px-3 text-center w-12">له</th>
+                  <th class="py-3.5 px-3 text-center w-12">عليه</th>
+                  <th class="py-3.5 px-3 text-center w-12">الفارق</th>
+                  <th class="py-3.5 px-4 text-center w-16 font-bold text-brand-primary">النقاط</th>
                 </tr>
               </thead>
               <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
@@ -333,7 +333,7 @@ index.html
           <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
             <i class="fa-solid fa-futbol text-brand-secondary"></i> قائمة الهدافين
           </h3>
-          <span class="text-xs text-brand-muted" id="scorersCountDisp">0 Players</span>
+          <span class="text-xs text-brand-muted" id="scorersCountDisp">0 لاعبين</span>
         </div>
         <div id="scorersListContainer" class="space-y-3">
           <p class="text-sm text-brand-muted text-center py-6">لا توجد أهداف مسجلة.</p>
@@ -351,17 +351,17 @@ index.html
       </div>
     </section>
 
-    <!-- TAB 6: ADMIN (محدث بالقرعة الأوتوماتيكية) -->
+    <!-- TAB 6: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
-      <!-- قسم أزرار القرعة التلقائية وتوليد المباريات -->
+      <!-- قسم أزرار القرعة الأوتوماتيكية وتوليد المباريات -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
           <i class="fa-solid fa-wand-magic-sparkles"></i> أدوات البطولات الأوتوماتيكية
         </h3>
         <div class="flex flex-wrap gap-3">
           <button onclick="drawGroupsAutomatically()" class="bg-brand-secondary text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition flex items-center gap-2">
-            <i class="fa-solid fa-dice"></i> إجراء قرعة المجموعات تلقائياً (Auto Draw)
+            <i class="fa-solid fa-dice"></i> إجراء قرعة المجموعات تلقائياً
           </button>
           <button onclick="generateAutomaticMatches()" class="gradient-bg text-brand-dark px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition flex items-center gap-2">
             <i class="fa-solid fa-gamepad"></i> توليد مباريات البطولة (قرعة)
@@ -400,14 +400,14 @@ index.html
 
   </main>
 
-  <!-- Ticker bar l-taḥt -->
+  <!-- Ticker bar l-taḥt (باللغة العربية) -->
   <footer class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
     <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
-      <i class="fa-solid fa-bolt"></i> Nata2ij Live:
+      <i class="fa-solid fa-bolt"></i> نتائج مباشرة:
     </div>
     <div class="overflow-hidden whitespace-nowrap w-full">
       <div id="tickerMatchesContainer" class="animate-ticker inline-flex gap-8 text-xs text-brand-muted">
-        <span class="text-white">Star League - Marḥba bikom f l-botolat! 🎮⚽</span>
+        <span class="text-white">منصة ستار ليج - مرحباً بكم في البطولات الاحترافية! 🎮⚽</span>
       </div>
     </div>
   </footer>
@@ -625,13 +625,12 @@ index.html
 
       const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       if (currentTourneyPlayers.length === 0) {
-        alert('لا يوجد لاعبين إجراء القرعة عليهم! سجل بعض الفرق أولاً.');
+        alert('لا يوجد لاعبين لإجراء القرعة عليهم! سجل بعض الفرق أولاً.');
         return;
       }
 
       if (!confirm(`هل أنت متأكد من إجراء القرعة عشوائياً لـ ${currentTourneyPlayers.length} فريق؟`)) return;
 
-      // المجموعات المتاحة
       const availableGroups = [
         "المجموعة أ (Group A)",
         "المجموعة ب (Group B)",
@@ -639,7 +638,6 @@ index.html
         "المجموعة د (Group D)"
       ];
 
-      // خلط اللاعبين عشوائياً (Shuffle Array)
       const shuffled = [...currentTourneyPlayers].sort(() => Math.random() - 0.5);
 
       const batch = db.batch();
@@ -655,12 +653,13 @@ index.html
       });
     }
 
+    // السمطة التحتانية باللغة العربية
     function renderTickerMatches() {
       const tickerCont = document.getElementById('tickerMatchesContainer');
       const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
 
       if(tourneyMatches.length === 0) {
-        tickerCont.innerHTML = '<span class="text-white">Star League - Marḥba bikom f l-botolat! 🎮⚽</span>';
+        tickerCont.innerHTML = '<span class="text-white">منصة ستار ليج - مرحباً بكم في البطولات الاحترافية! 🎮⚽</span>';
         return;
       }
 
@@ -668,10 +667,10 @@ index.html
         <span class="inline-flex items-center gap-2 mx-4 bg-brand-dark px-3 py-1 rounded-lg border border-brand-border">
           <img src="${m.logo1 || ''}" class="w-4 h-4 rounded-full object-cover">
           <span class="font-bold text-white">${m.player1}</span>
-          <span class="text-brand-secondary font-black">VS</span>
+          <span class="text-brand-secondary font-black">ضد</span>
           <span class="font-bold text-white">${m.player2}</span>
           <img src="${m.logo2 || ''}" class="w-4 h-4 rounded-full object-cover">
-          <span class="text-[10px] text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded font-bold">${m.scheduledTime || 'Live'}</span>
+          <span class="text-[10px] text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded font-bold">${m.scheduledTime || 'مباشر'}</span>
         </span>
       `).join('');
 
@@ -914,7 +913,7 @@ index.html
               <p class="font-bold text-white text-sm">${m.player1}</p>
               <p class="text-[11px] text-brand-muted">${m.team1 || ''}</p>
             </div>
-            <span class="text-xl font-black text-brand-secondary">VS</span>
+            <span class="text-xl font-black text-brand-secondary">ضد</span>
             <div class="flex flex-col items-center space-y-1">
               <img src="${m.logo2 || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border border-brand-primary">
               <p class="font-bold text-white text-sm">${m.player2}</p>
@@ -1035,7 +1034,7 @@ index.html
 
       // Scorers Render
       const scorersCont = document.getElementById('scorersListContainer');
-      document.getElementById('scorersCountDisp').innerText = currentTourneyPlayers.length + " Players";
+      document.getElementById('scorersCountDisp').innerText = currentTourneyPlayers.length + " لاعبين";
 
       if(currentTourneyPlayers.length === 0) {
         scorersCont.innerHTML = '<p class="text-sm text-brand-muted text-center py-6">لا توجد أهداف مسجلة.</p>';
@@ -1057,7 +1056,7 @@ index.html
               </div>
               <div class="text-left">
                 <span class="text-2xl font-black text-white">${p.goals || 0}</span>
-                <span class="text-[10px] text-brand-muted block uppercase tracking-wider">Goal</span>
+                <span class="text-[10px] text-brand-muted block uppercase tracking-wider">هدف</span>
               </div>
             </div>
           `;
