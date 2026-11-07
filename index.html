@@ -161,10 +161,16 @@ index.html
             </p>
           </div>
         </div>
-        <div class="flex flex-col gap-2 w-full md:w-auto">
-          <div onclick="switchTab('tournaments')" class="cursor-pointer bg-brand-dark px-5 py-3 rounded-xl border border-brand-border text-center hover:border-brand-primary transition">
-            <span class="text-xl font-bold text-brand-primary" id="stat-tourneys-count">0</span>
-            <p class="text-[11px] text-brand-muted mt-0.5">البطولات النشطة</p>
+
+        <!-- إحصائيات البطولات واللاعبين (محدثة هنا) -->
+        <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto">
+          <div onclick="switchTab('tournaments')" class="cursor-pointer bg-brand-dark px-5 py-2.5 rounded-xl border border-brand-border text-center hover:border-brand-primary transition flex-1">
+            <span class="text-lg font-bold text-brand-primary" id="stat-tourneys-count">0</span>
+            <p class="text-[10px] text-brand-muted mt-0.5">البطولات النشطة</p>
+          </div>
+          <div onclick="switchTab('standings')" class="cursor-pointer bg-brand-dark px-5 py-2.5 rounded-xl border border-brand-border text-center hover:border-brand-primary transition flex-1">
+            <span class="text-lg font-bold text-brand-secondary" id="stat-players-count">0</span>
+            <p class="text-[10px] text-brand-muted mt-0.5">اللاعبون المسجلون</p>
           </div>
         </div>
       </div>
@@ -353,8 +359,6 @@ index.html
 
     <!-- TAB 6: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
-      
-      <!-- قسم أزرار القرعة الأوتوماتيكية وتوليد المباريات -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
           <i class="fa-solid fa-wand-magic-sparkles"></i> أدوات البطولات الأوتوماتيكية
@@ -400,7 +404,7 @@ index.html
 
   </main>
 
-  <!-- Ticker bar l-taḥt (باللغة العربية) -->
+  <!-- Ticker bar l-taḥt -->
   <footer class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
     <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
       <i class="fa-solid fa-bolt"></i> نتائج مباشرة:
@@ -616,7 +620,6 @@ index.html
       });
     }
 
-    // خاصية القرعة الأوتوماتيكية للمجموعات 🎲
     function drawGroupsAutomatically() {
       if (!activeTourneyId) {
         alert('اختر بطولة أولاً!');
@@ -653,7 +656,6 @@ index.html
       });
     }
 
-    // السمطة التحتانية باللغة العربية
     function renderTickerMatches() {
       const tickerCont = document.getElementById('tickerMatchesContainer');
       const tourneyMatches = matches.filter(m => m.tourneyId === activeTourneyId);
@@ -988,10 +990,13 @@ index.html
         `).join('');
       }
 
+      // تحديث عدد اللاعبين في الواجهة للبطولة الحالية
+      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
+      document.getElementById('stat-players-count').innerText = currentTourneyPlayers.length;
+
       const selectedGroup = document.getElementById('selectedGroupFilter').value;
       document.getElementById('currentGroupBadge').innerText = selectedGroup;
 
-      const currentTourneyPlayers = players.filter(p => p.tourneyId === activeTourneyId);
       const filteredByGroup = currentTourneyPlayers.filter(p => (p.group || 'المجموعة أ (Group A)') === selectedGroup);
       
       // Table Render
