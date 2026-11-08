@@ -141,9 +141,11 @@
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
           <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.src='https://via.placeholder.com/96'">
-          <div class="space-y-2">
-            <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
-            <h2 class="text-3xl font-black gradient-text" id="dashTourneyTitle">مرحباً بكم في منصة Star League! 🎮⚽</h2>
+          <div class="space-y-3">
+            <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+              <i class="fa-solid fa-trophy"></i> البطولة الحالية الملعبة: <span id="dashActiveTourneyName" class="text-white">جاري التحميل...</span>
+            </span>
+            <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
             <p class="text-brand-muted text-sm max-w-xl">المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة.</p>
           </div>
         </div>
@@ -411,7 +413,6 @@
     let tournaments = [];
     let isBroadcastMode = false;
 
-    // دالة لتحويل ملف الصورة المختار من الجهاز إلى Base64
     function convertFileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -421,7 +422,6 @@
       });
     }
 
-    // وضع البث
     function toggleBroadcastMode() {
       isBroadcastMode = !isBroadcastMode;
       const header = document.getElementById('mainHeader');
@@ -438,7 +438,6 @@
       }
     }
 
-    // التبديل بين الأقسام
     function switchTab(tabId) {
       document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
       const targetSec = document.getElementById('sec-' + tabId);
@@ -454,7 +453,6 @@
       }
     }
 
-    // جلب البطولات مع التحديث الفوري للواجهة عند تفعيل أي بطولة
     async function loadTournaments() {
       try {
         const snapshot = await db.collection("tournaments").get();
@@ -505,9 +503,10 @@
         const currentTourney = tournaments.find(t => t.id === activeTourneyId);
         if (currentTourney) {
           document.getElementById('currentTourneyNameDisp').innerText = currentTourney.name;
-          document.getElementById('dashTourneyTitle').innerText = `مرحباً بكم في بطولة ${currentTourney.name}! 🎮⚽`;
+          document.getElementById('dashActiveTourneyName').innerText = currentTourney.name;
         } else {
           document.getElementById('currentTourneyNameDisp').innerText = 'Star League';
+          document.getElementById('dashActiveTourneyName').innerText = 'لا توجد بطولة نشطة';
         }
 
         if (activeTourneyId) {
@@ -523,6 +522,7 @@
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', id);
       loadTournaments();
+      // تحديث مباشر للواجهة وتنبيه سلس
       alert("تم تفعيل البطولة بنجاح وتم تحديث الواجهة الرئيسية! 🏆");
     }
 
@@ -620,7 +620,6 @@
       }
     }
 
-    // جلب اللاعبين مع ظهور لوغواتهم المحملة من الكاليري
     async function loadPlayers() {
       if (!activeTourneyId) return;
       try {
@@ -759,7 +758,7 @@
     }
 
     async function savePlayerChanges() {
-      const id = document.getElementById('editPlayerId').value;
+      const id = document.getElementById('editPlayerId5').value || document.getElementById('editPlayerId').value;
       const newName = document.getElementById('modalPlayerName').value.trim();
       const newTeam = document.getElementById('modalTeamName').value.trim();
       const fileInput = document.getElementById('modalPlayerLogoFile');
@@ -848,6 +847,7 @@
           const snapshot = await matchesRef.where("status", "==", "pending").get();
           if (!snapshot.empty) {
             const batch = db.batch();
+            snapshot.fired = true;
             snapshot.forEach((doc) => {
               const match = doc.data();
               batch.update(doc.ref, {
@@ -867,7 +867,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       loadTournaments();
-      setTimeout(checkAndResolveForfeitsAt1145, 2000);
+      setTimeout(checkAndResolveFofeits = () => { checkAndResolveForfeitsAt1145(); }, 2000);
       setInterval(checkAndResolveForfeitsAt1145, 60000);
     });
   </script>
