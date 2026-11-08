@@ -86,7 +86,7 @@
   <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center space-x-3 space-x-reverse">
-        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30" onerror="this.style.display='none'">
+        <img id="headerLogoImg" src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30" onerror="this.style.display='none'">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
           <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
@@ -139,7 +139,7 @@
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.style.display='none'">
+          <img id="dashLogoImg" src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.style.display='none'">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
@@ -200,7 +200,7 @@
       </div>
 
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
-        <h3 class="text-xl font-bold text-brand-secondary">جميع البطولات</h3>
+        <h3 class="text-xl font-bold text-brand-secondary">جميع البطولات وإدارتها</h3>
         <div id="tournamentsListContainer" class="space-y-3">
           <p class="text-sm text-brand-muted">جاري تحميل البطولات...</p>
         </div>
@@ -355,6 +355,30 @@
     </div>
   </div>
 
+  <!-- Modal تعديل البطولة (اسم + لوغو) -->
+  <div id="editTournamentModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+      <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square"></i> تعديل معلومات البطولة
+      </h3>
+      <input type="hidden" id="editTourneyId">
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-brand-muted mb-1">اسم البطولة:</label>
+          <input type="text" id="modalTourneyName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs text-brand-muted mb-1">رابط أو شعار البطولة (Logo URL / Base64):</label>
+          <input type="text" id="modalTourneyLogo" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none" placeholder="ضع رابط الصورة هنا...">
+        </div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="saveTournamentChanges()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg text-xs hover:opacity-90 transition">حفظ التعديلات</button>
+        <button onclick="closeEditTournamentModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg text-xs hover:bg-brand-border/70 transition">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase Script Logic -->
   <script>
     const firebaseConfig = {
@@ -369,10 +393,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // فرض الـ ID الصحيح للبطولة القديمة مباشرة هنا لضمان عملها 100%
-    let activeTourneyId = "kPLNmdhH0bdWCBKKo7Wj";
-    localStorage.setItem('star_active_tourney', activeTourneyId);
-
+    // تثبيت الـ ID الأصلي للبطولة UEFA Nations League لضمان ظهور الـ 15 لاعب
+    let activeTourneyId = localStorage.getItem('star_active_tourney') || "kPLNmdhH0bdWCBKKo7Wj";
     let players = [];
     let tournaments = [];
     let isBroadcastMode = false;
@@ -410,7 +432,7 @@
       }
     }
 
-    // جلب البطولات والبيانات مباشرة
+    // جلب البطولات مع إمكانية التفعيل والتعديل
     async function loadTournaments() {
       try {
         const snapshot = await db.collection("tournaments").get();
@@ -423,18 +445,34 @@
           tournaments.push(t);
         });
 
+        // التأكد من أن activeTourneyId موجود في القائمة، وإلا نجعل UEFA Nations League هي الافتراضية
+        const exists = tournaments.some(t => t.id === activeTourneyId);
+        if (!exists && tournaments.length > 0) {
+          activeTourneyId = "kPLNmdhH0bdWCBKKo7Wj";
+          localStorage.setItem('star_active_tourney', activeTourneyId);
+        }
+
         tournaments.forEach(t => {
           const isActive = (t.id === activeTourneyId);
           selectHtml += `<option value="${t.id}" ${isActive ? 'selected' : ''}>${t.name}</option>`;
           
           html += `
-            <div class="bg-brand-dark p-4 rounded-xl border ${isActive ? 'border-brand-primary' : 'border-brand-border'} flex justify-between items-center">
-              <div>
-                <h4 class="font-bold text-white text-sm">${t.name}</h4>
+            <div class="bg-brand-dark p-4 rounded-xl border ${isActive ? 'border-brand-primary' : 'border-brand-border'} flex flex-col md:flex-row justify-between items-center gap-4">
+              <div class="flex items-center gap-3">
+                ${t.logo ? `<img src="${t.logo}" class="w-10 h-10 object-contain rounded-full border border-brand-primary/30">` : `<div class="w-10 h-10 rounded-full bg-brand-border flex items-center justify-center text-xs font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i></div>`}
+                <div>
+                  <h4 class="font-bold text-white text-sm">${t.name}</h4>
+                  <p class="text-[10px] text-brand-muted">ID: ${t.id}</p>
+                </div>
               </div>
-              <button onclick="setActiveTournament('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${isActive ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">
-                ${isActive ? 'نشطة حالياً' : 'تفعيل'}
-              </button>
+              <div class="flex items-center gap-2">
+                <button onclick="openEditTournamentModal('${t.id}', '${t.name || ''}', '${t.logo || ''}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-pen-to-square"></i> تعديل
+                </button>
+                <button onclick="setActiveTournament('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${isActive ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">
+                  ${isActive ? 'نشطة حالياً' : 'تفعيل'}
+                </button>
+              </div>
             </div>
           `;
         });
@@ -444,7 +482,15 @@
         document.getElementById('stat-tourneys-count').innerText = tournaments.length;
 
         const currentTourney = tournaments.find(t => t.id === activeTourneyId);
-        document.getElementById('currentTourneyNameDisp').innerText = currentTourney ? currentTourney.name : 'UEFA Nations League';
+        if (currentTourney) {
+          document.getElementById('currentTourneyNameDisp').innerText = currentTourney.name;
+          if (currentTourney.logo) {
+            document.getElementById('headerLogoImg').src = currentTourney.logo;
+            document.getElementById('dashLogoImg').src = currentTourney.logo;
+          }
+        } else {
+          document.getElementById('currentTourneyNameDisp').innerText = 'UEFA Nations League';
+        }
 
         if (activeTourneyId) {
           loadPlayers();
@@ -459,6 +505,41 @@
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', id);
       loadTournaments();
+    }
+
+    // فتح نافذة تعديل البطولة
+    function openEditTournamentModal(id, name, logo) {
+      document.getElementById('editTourneyId').value = id;
+      document.getElementById('modalTourneyName').value = name;
+      document.getElementById('modalTourneyLogo').value = logo;
+      document.getElementById('editTournamentModal').classList.remove('hidden');
+    }
+
+    function closeEditTournamentModal() {
+      document.getElementById('editTournamentModal').classList.add('hidden');
+    }
+
+    // حفظ تعديلات البطولة (الاسم واللوغو)
+    async function saveTournamentChanges() {
+      const id = document.getElementById('editTourneyId').value;
+      const newName = document.getElementById('modalTourneyName').value.trim();
+      const newLogo = document.getElementById('modalTourneyLogo').value.trim();
+
+      if (!id) return;
+
+      try {
+        await db.collection("tournaments").doc(id).update({
+          name: newName,
+          logo: newLogo
+        });
+
+        closeEditTournamentModal();
+        alert("تم تعديل بيانات البطولة بنجاح! 🏆");
+        loadTournaments();
+      } catch (err) {
+        console.error("Error updating tournament:", err);
+        alert("فشل تعديل البطولة.");
+      }
     }
 
     async function loadTournamentSettings() {
@@ -519,7 +600,7 @@
       }
     }
 
-    // جلب اللاعبين من البطولة النشطة
+    // جلب اللاعبين مع دعم البحث المباشر في البطولة النشطة والتحقق من التبعات
     async function loadPlayers() {
       if (!activeTourneyId) return;
       try {
@@ -528,6 +609,14 @@
         snapshot.forEach(doc => {
           players.push({ id: doc.id, ...doc.data() });
         });
+
+        // إذا لم نجد لاعبين في المسار الفرعي وكانت البطولة هي UEFA Nations League، نبحث في الكوليكشن العام كاحتياط
+        if (players.length === 0 && activeTourneyId === "kPLNmdhH0bdWCBKKo7Wj") {
+          const generalPlayers = await db.collection("players").get();
+          generalPlayers.forEach(doc => {
+            players.push({ id: doc.id, ...doc.data() });
+          });
+        }
 
         document.getElementById('stat-players-count').innerText = players.length;
         renderStandingsTable();
@@ -580,10 +669,10 @@
             </div>
             <div class="flex items-center gap-2">
               <button onclick="openEditPlayerModal('${p.id}', '${p.name || ''}', '${p.team || ''}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-pen-to-square"></i> تعديل (Edit)
+                <i class="fa-solid fa-pen-to-square"></i> تعديل
               </button>
               <button onclick="deletePlayer('${p.id}')" class="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-trash-can"></i> حذف (Delete)
+                <i class="fa-solid fa-trash-can"></i> حذف
               </button>
             </div>
           </div>
@@ -639,10 +728,14 @@
       if (!activeTourneyId || !id) return;
 
       try {
-        await db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id).update({
-          name: newName,
-          team: newTeam
-        });
+        // تحديث في المسار الفرعي للبطولة أو الكوليكشن العام
+        const playerRef = db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id);
+        const docSnap = await playerRef.get();
+        if (docSnap.exists) {
+          await playerRef.update({ name: newName, team: newTeam });
+        } else {
+          await db.collection("players").doc(id).update({ name: newName, team: newTeam });
+        }
 
         closeEditPlayerModal();
         alert("تم تعديل بيانات اللاعب بنجاح!");
@@ -657,7 +750,14 @@
       if (!confirm("هل أنت متأكد من مسح هذا اللاعب نهائياً؟")) return;
 
       try {
-        await db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id).delete();
+        const playerRef = db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id);
+        const docSnap = await playerRef.get();
+        if (docSnap.exists) {
+          await playerRef.delete();
+        } else {
+          await db.collection("players").doc(id).delete();
+        }
+
         alert("تم مسح اللاعب بنجاح.");
         loadPlayers();
       } catch (err) {
@@ -673,7 +773,7 @@
       try {
         const ref = await db.collection("tournaments").add({
           name,
-          news: "أهلاً بك في النسخة الجديدة من Star League. نظام الأتمتة (11:45 Forfeit) مفعل الآن!",
+          news: "أهلاً بك في بطولة " + name + ". نظام الأتمتة (11:45 Forfeit) مفعل الآن!",
           rules: "1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلأً.\n2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.\n3. الروح الرياضية واجبة بين جميع المشاركين.",
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
