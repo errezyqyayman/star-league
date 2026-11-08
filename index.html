@@ -86,7 +86,7 @@
   <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center space-x-3 space-x-reverse">
-        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30">
+        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30" onerror="this.style.display='none'">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
           <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
@@ -139,7 +139,7 @@
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40">
+          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.style.display='none'">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
@@ -167,7 +167,7 @@
             </h3>
           </div>
           <div id="newsContentDisplay" class="space-y-3 text-sm text-brand-muted leading-relaxed">
-            <p class="text-white text-xs">أهلاً بك في النسخة الجديدة من Star League. نظام الأتمتة (11:45 Forfeit) مفعل الآن!</p>
+            <p class="text-white text-xs">جاري تحميل الأخبار...</p>
           </div>
         </div>
 
@@ -178,7 +178,7 @@
             </h3>
           </div>
           <div id="rulesContentDisplay" class="space-y-2 text-xs text-brand-muted bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
-            <p class="text-white text-xs">1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلأً.<br>2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.<br>3. الروح الرياضية واجبة بين جميع المشاركين.</p>
+            <p class="text-white text-xs">جاري تحميل القوانين...</p>
           </div>
         </div>
       </div>
@@ -284,7 +284,7 @@
       </div>
     </section>
 
-    <!-- TAB 7: ADMIN (إدارة اللاعبين + تعديل القوانين والأخبار) -->
+    <!-- TAB 7: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
@@ -321,7 +321,7 @@
 
   </main>
 
-  <!-- Ticker bar (البار السفلي المتحرك للأخبار والمباريات) -->
+  <!-- Ticker bar -->
   <footer id="mainFooter" class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
     <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
       <i class="fa-solid fa-bolt"></i> نظام 11:45 Forfeit:
@@ -369,7 +369,10 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let activeTourneyId = localStorage.getItem('star_active_tourney') || null;
+    // فرض الـ ID الصحيح للبطولة القديمة مباشرة هنا لضمان عملها 100%
+    let activeTourneyId = "kPLNmdhH0bdWCBKKo7Wj";
+    localStorage.setItem('star_active_tourney', activeTourneyId);
+
     let players = [];
     let tournaments = [];
     let isBroadcastMode = false;
@@ -407,7 +410,7 @@
       }
     }
 
-    // جلب البطولات
+    // جلب البطولات والبيانات مباشرة
     async function loadTournaments() {
       try {
         const snapshot = await db.collection("tournaments").get();
@@ -419,14 +422,6 @@
           const t = { id: doc.id, ...doc.data() };
           tournaments.push(t);
         });
-
-        if (tournaments.length > 0) {
-          const exists = tournaments.some(t => t.id === activeTourneyId);
-          if (!activeTourneyId || !exists) {
-            activeTourneyId = tournaments[0].id;
-            localStorage.setItem('star_active_tourney', activeTourneyId);
-          }
-        }
 
         tournaments.forEach(t => {
           const isActive = (t.id === activeTourneyId);
@@ -449,7 +444,7 @@
         document.getElementById('stat-tourneys-count').innerText = tournaments.length;
 
         const currentTourney = tournaments.find(t => t.id === activeTourneyId);
-        document.getElementById('currentTourneyNameDisp').innerText = currentTourney ? currentTourney.name : 'لا توجد بطولة';
+        document.getElementById('currentTourneyNameDisp').innerText = currentTourney ? currentTourney.name : 'UEFA Nations League';
 
         if (activeTourneyId) {
           loadPlayers();
@@ -466,7 +461,6 @@
       loadTournaments();
     }
 
-    // جلب الإعدادات (الأخبار والقوانين) الخاصة بالبطولة الحالية من الفايربيس
     async function loadTournamentSettings() {
       if (!activeTourneyId) return;
       try {
@@ -485,7 +479,6 @@
       }
     }
 
-    // تعبئة حقول الأدمن بالأخبار والقوانين الحالية
     async function loadSettingsToAdminInputs() {
       if (!activeTourneyId) return;
       try {
@@ -500,7 +493,6 @@
       }
     }
 
-    // حفظ أخبار الدوري الجديدة
     async function saveAdminNews() {
       if (!activeTourneyId) return;
       const newsText = document.getElementById('adminNewsInput').value.trim();
@@ -514,7 +506,6 @@
       }
     }
 
-    // حفظ قوانين وشروط البطولة الجديدة
     async function saveAdminRules() {
       if (!activeTourneyId) return;
       const rulesText = document.getElementById('adminRulesInput').value.trim();
@@ -528,7 +519,7 @@
       }
     }
 
-    // جلب اللاعبين
+    // جلب اللاعبين من البطولة النشطة
     async function loadPlayers() {
       if (!activeTourneyId) return;
       try {
@@ -546,7 +537,6 @@
       }
     }
 
-    // جدول الترتيب العام
     function renderStandingsTable() {
       const tbody = document.getElementById('playersTable');
       if (players.length === 0) {
@@ -559,7 +549,7 @@
         html += `
           <tr class="border-b border-brand-border/50 hover:bg-brand-card/50 transition">
             <td class="py-3 px-4 font-bold text-white">${index + 1}</td>
-            <td class="py-3 px-4 text-white font-semibold">${p.name} <span class="text-xs text-brand-muted">(${p.team})</span></td>
+            <td class="py-3 px-4 text-white font-semibold">${p.name || 'لاعب'} <span class="text-xs text-brand-muted">(${p.team || '-'})</span></td>
             <td class="py-3 px-3 text-center text-brand-muted">${p.played || 0}</td>
             <td class="py-3 px-3 text-center text-green-400">${p.won || 0}</td>
             <td class="py-3 px-3 text-center text-yellow-400">${p.drawn || 0}</td>
@@ -571,7 +561,6 @@
       tbody.innerHTML = html;
     }
 
-    // لوحة الأدمن - إدارة اللاعبين (تعديل + حذف)
     function renderAdminPlayersList() {
       const container = document.getElementById('adminPlayersList');
       document.getElementById('adminPlayersCount').innerText = `${players.length} لاعبين`;
@@ -590,7 +579,7 @@
               <p class="text-xs text-brand-muted">الفريق: <span class="text-brand-accent">${p.team}</span></p>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="openEditPlayerModal('${p.id}', '${p.name}', '${p.team}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
+              <button onclick="openEditPlayerModal('${p.id}', '${p.name || ''}', '${p.team || ''}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
                 <i class="fa-solid fa-pen-to-square"></i> تعديل (Edit)
               </button>
               <button onclick="deletePlayer('${p.id}')" class="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition flex items-center gap-1.5">
@@ -603,17 +592,11 @@
       container.innerHTML = html;
     }
 
-    // تسجيل لاعب جديد
     async function handleRegisterPlayer(e) {
       e.preventDefault();
-      const tourneyId = document.getElementById('registerTourneySelect').value;
+      const tourneyId = document.getElementById('registerTourneySelect').value || activeTourneyId;
       const playerName = document.getElementById('playerName').value.trim();
       const teamName = document.getElementById('teamName').value.trim();
-
-      if (!tourneyId) {
-        alert("الرجاء اختيار البطولة أولاً!");
-        return;
-      }
 
       try {
         await db.collection("tournaments").doc(tourneyId).collection("players").add({
@@ -637,7 +620,6 @@
       }
     }
 
-    // فتح نافذة التعديل
     function openEditPlayerModal(id, name, team) {
       document.getElementById('editPlayerId').value = id;
       document.getElementById('modalPlayerName').value = name;
@@ -649,7 +631,6 @@
       document.getElementById('editPlayerModal').classList.add('hidden');
     }
 
-    // حفظ التعديلات
     async function savePlayerChanges() {
       const id = document.getElementById('editPlayerId').value;
       const newName = document.getElementById('modalPlayerName').value.trim();
@@ -672,7 +653,6 @@
       }
     }
 
-    // حذف اللاعب
     async function deletePlayer(id) {
       if (!confirm("هل أنت متأكد من مسح هذا اللاعب نهائياً؟")) return;
 
@@ -686,7 +666,6 @@
       }
     }
 
-    // حفظ بطولة جديدة
     async function handleSaveTournament(e) {
       e.preventDefault();
       const name = document.getElementById('tourneyName').value.trim();
@@ -706,56 +685,39 @@
       }
     }
 
-    // نظام الأتمتة الذكي: فحص الوقت (الساعة 23:45 أو ما بعدها) وحسم المباريات العالقة كـ Forfeit تلقائياً
     async function checkAndResolveForfeitsAt1145() {
       if (!activeTourneyId) return;
-      
       const now = new Date();
       const currentHours = now.getHours();
       const currentMinutes = now.getMinutes();
 
-      const isPast1145 = (currentHours > 23) || (currentHours === 23 && currentMinutes >= 45);
-
-      if (!isPast1145) return;
-
-      const matchesRef = db.collection("tournaments").doc(activeTourneyId).collection("matches");
-      try {
-        const snapshot = await matchesRef.where("status", "==", "pending").get();
-        if (snapshot.empty) return;
-
-        const batch = db.batch();
-        let updatesCount = 0;
-
-        snapshot.forEach((doc) => {
-          const match = doc.data();
-          batch.update(doc.ref, {
-            status: "finished",
-            score1: match.score1 || 0,
-            score2: match.score2 || 0,
-            note: "Forfeit: Resolved automatically at 11:45 PM by Star League system."
-          });
-          updatesCount++;
-        });
-
-        if (updatesCount > 0) {
-          await batch.commit();
-          console.log(`تم حسم ${updatesCount} مباراة تلقائياً بنظام Forfeit لعدم الحضور.`);
+      if ((currentHours > 23) || (currentHours === 23 && currentMinutes >= 45)) {
+        const matchesRef = db.collection("tournaments").doc(activeTourneyId).collection("matches");
+        try {
+          const snapshot = await matchesRef.where("status", "==", "pending").get();
+          if (!snapshot.empty) {
+            const batch = db.batch();
+            snapshot.forEach((doc) => {
+              const match = doc.data();
+              batch.update(doc.ref, {
+                status: "finished",
+                score1: match.score1 || 0,
+                score2: match.score2 || 0,
+                note: "Forfeit: Resolved automatically at 11:45 PM."
+              });
+            });
+            await batch.commit();
+          }
+        } catch (error) {
+          console.error("Error auto-resolving forfeits: ", error);
         }
-      } catch (error) {
-        console.error("Error auto-resolving forfeits: ", error);
       }
     }
 
-    // تشغيل عند فتح الصفحة ومع المراقبة المستمرة
     window.addEventListener("DOMContentLoaded", () => {
       loadTournaments();
-      setTimeout(() => {
-        checkAndResolveForfeitsAt1145();
-      }, 2000);
-
-      setInterval(() => {
-        checkAndResolveForfeitsAt1145();
-      }, 60000);
+      setTimeout(checkAndResolveForfeitsAt1145, 2000);
+      setInterval(checkAndResolveForfeitsAt1145, 60000);
     });
   </script>
 </body>
