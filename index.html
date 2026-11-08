@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlTag">
 <head>
   <meta charset="UTF-8">
@@ -66,26 +65,13 @@
       background: #2c1552;
       border-radius: 4px;
     }
-    @keyframes ticker {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(50%); }
-    }
-    .animate-ticker {
-      display: inline-block;
-      white-space: nowrap;
-      animation: ticker 25s linear infinite;
-    }
-    .animate-ticker:hover {
-      animation-play-state: paused;
-    }
   </style>
 </head>
 <body id="appBody" class="min-h-screen flex flex-col transition-colors duration-500">
 
   <!-- Header / Navigation -->
-  <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg transition-all">
+  <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
-      
       <div class="flex items-center space-x-3 space-x-reverse">
         <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30">
         <div>
@@ -95,23 +81,11 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <button onclick="toggleBroadcastMode()" class="bg-brand-dark border border-brand-border px-3 py-1.5 rounded-lg text-xs font-bold text-brand-accent hover:bg-brand-border/50 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-tv"></i> <span id="broadcastBtnText">وضع البث</span>
-        </button>
-
-        <div class="relative">
-          <button onclick="toggleNotificationsModal()" class="relative bg-brand-dark border border-brand-border p-2.5 rounded-lg text-brand-primary hover:bg-brand-border/50 transition">
-            <i class="fa-solid fa-bell text-sm"></i>
-            <span id="notifBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
-          </button>
-        </div>
-
-        <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
+        <div id="activeTournamentBadge" class="flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
           <i class="fa-solid fa-trophy"></i>
-          <span id="currentTourneyNameDisp">لا توجد بطولة</span>
+          <span id="currentTourneyNameDisp">جاري التحميل...</span>
         </div>
       </div>
-
     </div>
 
     <!-- Navigation Tabs -->
@@ -128,12 +102,6 @@
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-list-ol"></i> <span>الترتيب والفرق</span>
       </button>
-      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والـ Rounds</span>
-      </button>
-      <button onclick="switchTab('knockout')" id="tab-knockout" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-secondary whitespace-nowrap">
-        <i class="fa-solid fa-fire"></i> <span>الأدوار الإقصائية (Knockout)</span>
-      </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
       </button>
@@ -145,27 +113,20 @@
 
     <!-- TAB 1: DASHBOARD -->
     <section id="sec-dashboard" class="space-y-6">
-      <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
           <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
-            <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
-            <p class="text-brand-muted text-sm max-w-xl">
-              المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة.
-            </p>
+            <h2 class="text-3xl font-black gradient-text">منصة Star League 🎮⚽</h2>
+            <p class="text-brand-muted text-sm max-w-xl">المنصة الاحترافية لإدارة البطولات وتتبع نتائج المباريات بشكل أوتوماتيكي.</p>
           </div>
         </div>
 
         <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto">
-          <div onclick="switchTab('tournaments')" class="cursor-pointer bg-brand-dark px-5 py-2.5 rounded-xl border border-brand-border text-center hover:border-brand-primary transition flex-1">
-            <span class="text-lg font-bold text-brand-primary" id="stat-tourneys-count">0</span>
-            <p class="text-[10px] text-brand-muted mt-0.5">البطولات النشطة</p>
-          </div>
-          <div onclick="switchTab('standings')" class="cursor-pointer bg-brand-dark px-5 py-2.5 rounded-xl border border-brand-border text-center hover:border-brand-primary transition flex-1">
-            <span class="text-lg font-bold text-brand-secondary" id="stat-players-count">0</span>
-            <p class="text-[10px] text-brand-muted mt-0.5">اللاعبون المسجلون</p>
+          <div onclick="switchTab('standings')" class="cursor-pointer bg-brand-dark px-6 py-3 rounded-xl border border-brand-border text-center hover:border-brand-primary transition">
+            <span class="text-2xl font-bold text-brand-secondary" id="stat-players-count">0</span>
+            <p class="text-xs text-brand-muted mt-1">اللاعبون المسجلون</p>
           </div>
         </div>
       </div>
@@ -174,35 +135,22 @@
     <!-- TAB 2: TOURNAMENTS -->
     <section id="sec-tournaments" class="hidden space-y-6 max-w-3xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
-        <h3 id="tourneyFormTitle" class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة أو تعديلها</span>
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-sitemap"></i> <span>إنشاء بطولة جديدة</span>
         </h3>
         <form id="tournamentForm" class="space-y-4" onsubmit="handleSaveTournament(event)">
-          <input type="hidden" id="editingTourneyId">
           <div>
             <label class="block text-sm text-brand-muted mb-1">اسم البطولة</label>
-            <input type="text" id="tourneyName" required placeholder="Star League 1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            <input type="text" id="tourneyName" required placeholder="Star League 2026" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
-          <div>
-            <label class="block text-sm text-brand-muted mb-1">ثيم البطولة</label>
-            <select id="tourneyTheme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none cursor-pointer">
-              <option value="purple">بنفسجي ملكي</option>
-              <option value="dark">أزرق داكن</option>
-              <option value="emerald">أخضر زمردي</option>
-              <option value="crimson">أحمر حماسي</option>
-            </select>
-          </div>
-          <div class="flex gap-2">
-            <button type="submit" id="tourneySubmitBtn" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">حفظ وإنشاء البطولة</button>
-            <button type="button" onclick="resetTourneyForm()" id="tourneyCancelBtn" class="hidden bg-brand-border text-white px-4 py-3 rounded-lg text-sm">إلغاء</button>
-          </div>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">إنشاء البطولة</button>
         </form>
       </div>
 
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-secondary">جميع البطولات</h3>
         <div id="tournamentsListContainer" class="space-y-3">
-          <p class="text-sm text-brand-muted">لا توجد بطولات.</p>
+          <p class="text-sm text-brand-muted">جاري تحميل البطولات...</p>
         </div>
       </div>
     </section>
@@ -211,7 +159,7 @@
     <section id="sec-register" class="hidden max-w-xl mx-auto">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب أو فريق جديد</span>
+          <i class="fa-solid fa-user-plus"></i> <span>تسجيل لاعب جديد</span>
         </h3>
         <form id="playerForm" class="space-y-4" onsubmit="handleRegisterPlayer(event)">
           <div>
@@ -220,116 +168,62 @@
           </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">اسم اللاعب (ID)</label>
-            <input type="text" id="playerName" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            <input type="text" id="playerName" required placeholder="مثال: Ayman" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <div>
             <label class="block text-sm text-brand-muted mb-1">اسم الفريق / المنتخب</label>
-            <input type="text" id="teamName" required class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+            <input type="text" id="teamName" required placeholder="مثال: Manchester United" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
-          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">تسجيل الان</button>
+          <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">تسجيل الآن</button>
         </form>
       </div>
     </section>
 
-    <!-- TAB 4: STANDINGS & STATS -->
+    <!-- TAB 4: STANDINGS (يظهر اللاعبين مباشرة فور تسجيلهم) -->
     <section id="sec-standings" class="hidden space-y-8">
-      <div class="flex flex-col md:flex-row items-center justify-between bg-brand-card p-4 rounded-xl border border-brand-border gap-4">
-        <div>
-          <h3 class="text-lg font-bold text-brand-primary" id="standingsTourneyDisplay">البطولة الحالية</h3>
-          <p class="text-xs text-brand-muted" id="standingsThemeDisplay">الثيم: افتراضي</p>
+      <div class="bg-brand-card rounded-2xl border border-brand-border shadow-xl overflow-hidden">
+        <div class="p-4 border-b border-brand-border flex justify-between items-center">
+          <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب العام</h3>
         </div>
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <label class="text-xs text-brand-muted whitespace-nowrap">اختر المجموعة:</label>
-          <select id="selectedGroupFilter" onchange="renderStandingsTable()" class="bg-brand-dark border border-brand-border text-brand-primary text-xs font-bold rounded-lg px-3 py-2 focus:outline-none cursor-pointer">
-            <option value="الكل">جميع المجموعات</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex gap-3 border-b border-brand-border pb-4 overflow-x-auto">
-        <button onclick="switchSubTab('table')" id="subtab-table" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap">جدول الترتيب</button>
-        <button onclick="switchSubTab('scorers')" id="subtab-scorers" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap">قائمة الهدافين</button>
-        <button onclick="switchSubTab('defense')" id="subtab-defense" class="px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap">أفضل دفاع 🛡️</button>
-      </div>
-
-      <div id="view-table" class="space-y-6">
-        <div class="bg-brand-card rounded-2xl border border-brand-border shadow-xl overflow-hidden">
-          <div class="p-4 border-b border-brand-border flex justify-between items-center">
-            <h3 class="text-lg font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i> جدول الترتيب العام</h3>
-          </div>
-          <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left border-collapse min-w-[750px]">
-              <thead>
-                <tr class="border-b border-brand-border text-purple-300 text-xs uppercase tracking-wider bg-brand-dark">
-                  <th class="py-3.5 px-4 text-right w-16">المركز</th>
-                  <th class="py-3.5 px-4 text-right">الفريق / اللاعب</th>
-                  <th class="py-3.5 px-3 text-center w-12">لعب</th>
-                  <th class="py-3.5 px-3 text-center w-12">فاز</th>
-                  <th class="py-3.5 px-3 text-center w-12">تعادل</th>
-                  <th class="py-3.5 px-3 text-center w-12">خسر</th>
-                  <th class="py-3.5 px-3 text-center w-12">له</th>
-                  <th class="py-3.5 px-3 text-center w-12">عليه</th>
-                  <th class="py-3.5 px-3 text-center w-12">الفارق</th>
-                  <th class="py-3.5 px-4 text-center w-16 font-bold text-brand-primary">النقاط</th>
-                </tr>
-              </thead>
-              <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
-                <tr><td colspan="10" class="p-6 text-center text-brand-muted">لا توجد بيانات للترتيب.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div id="view-scorers" class="hidden space-y-4">
-        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2"><i class="fa-solid fa-futbol text-brand-secondary"></i> قائمة الهدافين</h3>
-        <div id="scorersListContainer" class="space-y-3">
-          <p class="text-sm text-brand-muted text-center py-6">لا توجد أهداف مسجلة.</p>
-        </div>
-      </div>
-
-      <div id="view-defense" class="hidden space-y-4">
-        <h3 class="text-xl font-bold text-brand-accent flex items-center gap-2"><i class="fa-solid fa-shield-halved"></i> أفضل دفاع</h3>
-        <div id="defenseListContainer" class="space-y-3">
-          <p class="text-sm text-brand-muted text-center py-6">لا توجد بيانات دفاعية.</p>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse min-w-[750px]">
+            <thead>
+              <tr class="border-b border-brand-border text-purple-300 text-xs uppercase tracking-wider bg-brand-dark">
+                <th class="py-3.5 px-4 text-right w-16">المركز</th>
+                <th class="py-3.5 px-4 text-right">اللاعب / الفريق</th>
+                <th class="py-3.5 px-3 text-center w-12">لعب</th>
+                <th class="py-3.5 px-3 text-center w-12">فاز</th>
+                <th class="py-3.5 px-3 text-center w-12">تعادل</th>
+                <th class="py-3.5 px-3 text-center w-12">خسر</th>
+                <th class="py-3.5 px-4 text-center w-16 font-bold text-brand-primary">النقاط</th>
+              </tr>
+            </thead>
+            <tbody id="playersTable" class="divide-y divide-brand-border/50 text-sm">
+              <tr><td colspan="7" class="p-6 text-center text-brand-muted">لا توجد بيانات للترتيب.</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- TAB 5: SCHEDULE & MATCHES -->
-    <section id="sec-schedule" class="hidden space-y-6">
-      <div id="roundsNavBar" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar"></div>
-      <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <p class="text-sm text-brand-muted">لا توجد مباريات مجدولة.</p>
-      </div>
-    </section>
-
-    <!-- TAB 6: KNOCKOUT -->
-    <section id="sec-knockout" class="hidden space-y-6">
-      <div class="bg-brand-card p-6 rounded-2xl border border-brand-border shadow-xl space-y-4">
-        <h3 class="text-xl font-bold text-brand-secondary"><i class="fa-solid fa-fire"></i> الأدوار الإقصائية (Knockout)</h3>
-        <div id="knockoutMatchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <p class="text-sm text-brand-muted text-center py-8 col-span-2">لا توجد مباريات إقصائية.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 7: ADMIN (مع قائمة اللاعبين والتعديل والحذف) -->
+    <!-- TAB 5: ADMIN (عرض اللاعبين + تعديل + حذف) -->
     <section id="sec-admin" class="hidden space-y-6">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-shield-halved"></i> لوحة تحكم الأدمن واللاعبين المسجلين
+          <i class="fa-solid fa-shield-halved"></i> لوحة الأدمن - إدارة اللاعبين
         </h3>
-        <p class="text-xs text-brand-muted">من هنا يمكنك مراجعة اللاعبين، تعديل معلوماتهم، أو حذف المكررين منهم:</p>
+        <p class="text-xs text-brand-muted">يمكنك هنا عرض كل اللاعبين المسجلين، تعديل بياناتهم، أو حذف الحسابات المكررة.</p>
       </div>
 
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
-        <h3 class="text-xl font-bold text-brand-secondary flex items-center justify-between">
-          <span>اللاعبون المسجلون في البطولة النشطة</span>
+        <div class="flex items-center justify-between border-b border-brand-border pb-3">
+          <h3 class="text-lg font-bold text-brand-secondary">اللاعبون المسجلون في البطولة الحالية</h3>
           <span id="adminPlayersCount" class="text-xs bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full font-bold">0 لاعبين</span>
-        </h3>
-        <div id="adminPlayersList" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
-          <p class="text-sm text-brand-muted text-center py-6">لا توجد لاعبون مسجلون حالياً.</p>
+        </div>
+
+        <!-- قائمة عرض اللاعبين -->
+        <div id="adminPlayersList" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
+          <p class="text-sm text-brand-muted text-center py-6">جاري تحميل قائمة اللاعبين...</p>
         </div>
       </div>
     </section>
@@ -343,22 +237,22 @@
       <input type="hidden" id="editPlayerId">
       <div class="space-y-3">
         <div>
-          <label class="block text-xs text-brand-muted mb-1">اسم اللاعب:</label>
-          <input type="text" id="modalPlayerName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white">
+          <label class="block text-xs text-brand-muted mb-1">اسم اللاعب (ID):</label>
+          <input type="text" id="modalPlayerName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
         </div>
         <div>
           <label class="block text-xs text-brand-muted mb-1">اسم الفريق:</label>
-          <input type="text" id="modalTeamName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white">
+          <input type="text" id="modalTeamName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
         </div>
       </div>
       <div class="flex gap-3 pt-2">
-        <button onclick="savePlayerChanges()" class="flex-1 gradient-bg text-brand-dark font-bold p-3 rounded-lg text-xs">حفظ</button>
-        <button onclick="closeEditPlayerModal()" class="bg-brand-border text-white px-4 py-3 rounded-lg text-xs">إلغاء</button>
+        <button onclick="savePlayerChanges()" class="flex-1 gradient-bg text-brand-dark font-bold p-2.5 rounded-lg text-xs hover:opacity-90 transition">حفظ التغييرات</button>
+        <button onclick="closeEditPlayerModal()" class="bg-brand-border text-white px-4 py-2.5 rounded-lg text-xs hover:bg-brand-border/70 transition">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase & App Script -->
+  <!-- Firebase Script Logic -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyASNrJten6zhja-LZNok84-I3vLl9adZE",
@@ -372,88 +266,72 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let tournaments = [];
     let activeTourneyId = localStorage.getItem('star_active_tourney') || null;
     let players = [];
-    let matches = [];
+    let tournaments = [];
 
+    // التبديل بين الأقسام
     function switchTab(tabId) {
       document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
       const targetSec = document.getElementById('sec-' + tabId);
       if (targetSec) targetSec.classList.remove('hidden');
+      
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active', 'text-brand-primary'));
       const targetBtn = document.getElementById('tab-' + tabId);
       if (targetBtn) targetBtn.classList.add('tab-active');
-      
-      if(tabId === 'admin') {
-        loadAdminPlayers();
+
+      if (tabId === 'admin') {
+        renderAdminPlayersList();
       }
     }
 
-    function switchSubTab(subId) {
-      const btnTable = document.getElementById('subtab-table');
-      const btnScorers = document.getElementById('subtab-scorers');
-      const btnDefense = document.getElementById('subtab-defense');
-      const viewTable = document.getElementById('view-table');
-      const viewScorers = document.getElementById('view-scorers');
-      const viewDefense = document.getElementById('view-defense');
-      
-      if(!btnTable) return;
-      
-      btnTable.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap";
-      btnScorers.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap";
-      btnDefense.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-dark text-gray-400 border border-brand-border transition whitespace-nowrap";
-      
-      viewTable.classList.add('hidden');
-      viewScorers.classList.add('hidden');
-      viewDefense.classList.add('hidden');
-      
-      if(subId === 'table') {
-        btnTable.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap";
-        viewTable.classList.remove('hidden');
-      } else if(subId === 'scorers') {
-        btnScorers.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap";
-        viewScorers.classList.remove('hidden');
-      } else if(subId === 'defense') {
-        btnDefense.className = "px-5 py-2 rounded-xl font-bold text-sm bg-brand-primary/10 text-brand-primary border border-brand-primary/40 transition whitespace-nowrap";
-        viewDefense.classList.remove('hidden');
-      }
-    }
-
-    // جلب البطولات
+    // جلب البطولات مع تعيين أول بطولة تلقائياً إذا لم تكن أي بطولة محددة
     async function loadTournaments() {
       try {
         const snapshot = await db.collection("tournaments").get();
         tournaments = [];
         let html = '';
         let selectHtml = '<option value="">اختر البطولة...</option>';
-        
+
         snapshot.forEach(doc => {
           const t = { id: doc.id, ...doc.data() };
           tournaments.push(t);
+        });
+
+        if (tournaments.length > 0) {
+          const exists = tournaments.some(t => t.id === activeTourneyId);
+          if (!activeTourneyId || !exists) {
+            activeTourneyId = tournaments[0].id;
+            localStorage.setItem('star_active_tourney', activeTourneyId);
+          }
+        }
+
+        tournaments.forEach(t => {
           const isActive = (t.id === activeTourneyId);
-          
           selectHtml += `<option value="${t.id}" ${isActive ? 'selected' : ''}>${t.name}</option>`;
+          
           html += `
             <div class="bg-brand-dark p-4 rounded-xl border ${isActive ? 'border-brand-primary' : 'border-brand-border'} flex justify-between items-center">
               <div>
-                <h4 class="font-bold text-white">${t.name}</h4>
-                <p class="text-xs text-brand-muted">الثيم: ${t.theme || 'purple'}</p>
+                <h4 class="font-bold text-white text-sm">${t.name}</h4>
               </div>
-              <button onclick="setActiveTournament('${t.id}')" class="px-4 py-2 rounded-lg text-xs font-bold ${isActive ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">
-                ${isActive ? 'البطولة النشطة' : 'تفعيل'}
+              <button onclick="setActiveTournament('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${isActive ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">
+                ${isActive ? 'نشطة حالياً' : 'تفعيل'}
               </button>
             </div>
           `;
         });
-        
+
         document.getElementById('tournamentsListContainer').innerHTML = html || '<p class="text-sm text-brand-muted">لا توجد بطولات.</p>';
         document.getElementById('registerTourneySelect').innerHTML = selectHtml;
-        
-        if(activeTourneyId) {
+
+        const currentTourney = tournaments.find(t => t.id === activeTourneyId);
+        document.getElementById('currentTourneyNameDisp').innerText = currentTourney ? currentTourney.name : 'لا توجد بطولة';
+
+        if (activeTourneyId) {
           loadPlayers();
         }
-      } catch(e) {
+      } catch (e) {
         console.error("Error loading tournaments:", e);
       }
     }
@@ -462,37 +340,34 @@
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', id);
       loadTournaments();
-      loadPlayers();
     }
 
-    // جلب اللاعبين
+    // جلب لاعبين البطولة النشطة وعرضهم فوراً
     async function loadPlayers() {
-      if(!activeTourneyId) return;
+      if (!activeTourneyId) return;
       try {
         const snapshot = await db.collection("tournaments").doc(activeTourneyId).collection("players").get();
         players = [];
         snapshot.forEach(doc => {
           players.push({ id: doc.id, ...doc.data() });
         });
-        
+
         document.getElementById('stat-players-count').innerText = players.length;
         renderStandingsTable();
-        if(!document.getElementById('sec-admin').classList.contains('hidden')) {
-          loadAdminPlayers();
-        }
-      } catch(e) {
+        renderAdminPlayersList();
+      } catch (e) {
         console.error("Error loading players:", e);
       }
     }
 
-    // جدول الترتيب
+    // عرض جدول الترتيب العام مباشرة بدون شروط مسبقة
     function renderStandingsTable() {
       const tbody = document.getElementById('playersTable');
-      if(players.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-brand-muted">لا توجد لاعبون مسجلون بعد.</td></tr>';
+      if (players.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-brand-muted">لا توجد بيانات للترتيب.</td></tr>';
         return;
       }
-      
+
       let html = '';
       players.forEach((p, index) => {
         html += `
@@ -503,9 +378,6 @@
             <td class="py-3 px-3 text-center text-green-400">${p.won || 0}</td>
             <td class="py-3 px-3 text-center text-yellow-400">${p.drawn || 0}</td>
             <td class="py-3 px-3 text-center text-red-400">${p.lost || 0}</td>
-            <td class="py-3 px-3 text-center text-white">${p.gf || 0}</td>
-            <td class="py-3 px-3 text-center text-white">${p.ga || 0}</td>
-            <td class="py-3 px-3 text-center text-brand-accent">${(p.gf || 0) - (p.ga || 0)}</td>
             <td class="py-3 px-4 text-center font-black text-brand-primary">${p.points || 0}</td>
           </tr>
         `;
@@ -513,30 +385,30 @@
       tbody.innerHTML = html;
     }
 
-    // عرض وإدارة اللاعبين في لوحة الأدمن (تعديل + حذف)
-    function loadAdminPlayers() {
+    // عرض قائمة اللاعبين في لوحة الأدمن مع أزرار التعديل والحذف
+    function renderAdminPlayersList() {
       const container = document.getElementById('adminPlayersList');
       document.getElementById('adminPlayersCount').innerText = `${players.length} لاعبين`;
-      
-      if(players.length === 0) {
-        container.innerHTML = '<p class="text-sm text-brand-muted text-center py-6">لا توجد لاعبو مسجلون في هذه البطولة.</p>';
+
+      if (players.length === 0) {
+        container.innerHTML = '<p class="text-sm text-brand-muted text-center py-6">لا يوجد لاعبون مسجلون في هذه البطولة.</p>';
         return;
       }
-      
+
       let html = '';
       players.forEach(p => {
         html += `
-          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between gap-4">
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between gap-4 hover:border-brand-primary/40 transition">
             <div>
               <h4 class="font-bold text-white text-sm">${p.name}</h4>
-              <p class="text-xs text-brand-muted">الفريق: ${p.team}</p>
+              <p class="text-xs text-brand-muted">الفريق: <span class="text-brand-accent">${p.team}</span></p>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="openEditPlayerModal('${p.id}', '${p.name}', '${p.team}')" class="bg-brand-accent/20 text-brand-accent px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition">
-                <i class="fa-solid fa-pen"></i> تعديل
+              <button onclick="openEditPlayerModal('${p.id}', '${p.name}', '${p.team}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-pen-to-square"></i> تعديل (Edit)
               </button>
-              <button onclick="deletePlayer('${p.id}')" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition">
-                <i class="fa-solid fa-trash"></i> حذف
+              <button onclick="deletePlayer('${p.id}')" class="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-trash-can"></i> حذف (Delete)
               </button>
             </div>
           </div>
@@ -551,12 +423,12 @@
       const tourneyId = document.getElementById('registerTourneySelect').value;
       const playerName = document.getElementById('playerName').value.trim();
       const teamName = document.getElementById('teamName').value.trim();
-      
-      if(!tourneyId) {
+
+      if (!tourneyId) {
         alert("الرجاء اختيار البطولة أولاً!");
         return;
       }
-      
+
       try {
         await db.collection("tournaments").doc(tourneyId).collection("players").add({
           name: playerName,
@@ -565,23 +437,21 @@
           won: 0,
           drawn: 0,
           lost: 0,
-          gf: 0,
-          ga: 0,
           points: 0,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        
+
         alert("تم تسجيل اللاعب بنجاح! ⚽");
         document.getElementById('playerForm').reset();
         loadPlayers();
         switchTab('standings');
-      } catch(err) {
+      } catch (err) {
         console.error("Error registering player:", err);
         alert("حدث خطأ أثناء التسجيل.");
       }
     }
 
-    // نافذة تعديل اللاعب
+    // فتح نافذة التعديل
     function openEditPlayerModal(id, name, team) {
       document.getElementById('editPlayerId').value = id;
       document.getElementById('modalPlayerName').value = name;
@@ -593,39 +463,40 @@
       document.getElementById('editPlayerModal').classList.add('hidden');
     }
 
+    // حفظ التعديلات
     async function savePlayerChanges() {
       const id = document.getElementById('editPlayerId').value;
       const newName = document.getElementById('modalPlayerName').value.trim();
       const newTeam = document.getElementById('modalTeamName').value.trim();
-      
-      if(!activeTourneyId || !id) return;
-      
+
+      if (!activeTourneyId || !id) return;
+
       try {
         await db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id).update({
           name: newName,
           team: newTeam
         });
-        
+
         closeEditPlayerModal();
-        alert("تم تعديل معلومات اللاعب بنجاح!");
+        alert("تم تعديل بيانات اللاعب بنجاح!");
         loadPlayers();
-      } catch(err) {
+      } catch (err) {
         console.error("Error updating player:", err);
-        alert("فشل في تعديل البيانات.");
+        alert("فشل التعديل.");
       }
     }
 
-    // حذف لاعب (للتخلص من المكررين)
+    // حذف اللاعب
     async function deletePlayer(id) {
-      if(!confirm("هل أنت متأكد من رغبتك في حذف هذا اللاعب نهائياً؟")) return;
-      
+      if (!confirm("هل أنت متأكد من مسح هذا اللاعب نهائياً؟")) return;
+
       try {
         await db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id).delete();
-        alert("تم حذف اللاعب بنجاح.");
+        alert("تم مسح اللاعب بنجاح.");
         loadPlayers();
-      } catch(err) {
+      } catch (err) {
         console.error("Error deleting player:", err);
-        alert("فشل في حذف اللاعب.");
+        alert("فشل الحذف.");
       }
     }
 
@@ -633,20 +504,21 @@
     async function handleSaveTournament(e) {
       e.preventDefault();
       const name = document.getElementById('tourneyName').value.trim();
-      const theme = document.getElementById('tourneyTheme').value;
-      
+
       try {
-        const ref = await db.collection("tournaments").add({ name, theme, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        const ref = await db.collection("tournaments").add({
+          name,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
         setActiveTournament(ref.id);
         alert("تم إنشاء البطولة بنجاح!");
         document.getElementById('tournamentForm').reset();
-        loadTournaments();
-      } catch(err) {
+      } catch (err) {
         console.error("Error creating tournament:", err);
       }
     }
 
-    // نظام الأتمتة المجاني 100% بدون Blaze
+    // التحقق التلقائي المجاني من المباريات
     async function checkAndResolveForfeits() {
       if (!activeTourneyId) return;
       const matchesRef = db.collection("tournaments").doc(activeTourneyId).collection("matches");
@@ -675,7 +547,7 @@
       }
     }
 
-    // التشغيل التلقائي عند فتح الموقع
+    // تشغيل عند فتح الصفحة
     window.addEventListener("DOMContentLoaded", () => {
       loadTournaments();
       setTimeout(() => {
