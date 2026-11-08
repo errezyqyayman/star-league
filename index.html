@@ -60,10 +60,23 @@
     }
     .custom-scrollbar::-webkit-scrollbar {
       height: 4px;
+      width: 4px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #2c1552;
       border-radius: 4px;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50%); }
+    }
+    .animate-ticker {
+      display: inline-block;
+      white-space: nowrap;
+      animation: ticker 25s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
     }
   </style>
 </head>
@@ -81,7 +94,11 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <div id="activeTournamentBadge" class="flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
+        <button onclick="toggleBroadcastMode()" class="bg-brand-dark border border-brand-border px-3 py-1.5 rounded-lg text-xs font-bold text-brand-accent hover:bg-brand-border/50 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-tv"></i> <span id="broadcastBtnText">وضع البث</span>
+        </button>
+
+        <div id="activeTournamentBadge" class="hidden md:flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 px-3 py-1.5 rounded-lg text-xs font-bold text-brand-primary">
           <i class="fa-solid fa-trophy"></i>
           <span id="currentTourneyNameDisp">جاري التحميل...</span>
         </div>
@@ -89,7 +106,7 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <nav id="mainNavTabs" class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto">
+    <nav id="mainNavTabs" class="flex justify-start md:justify-center border-t border-brand-border/50 bg-brand-dark/50 overflow-x-auto custom-scrollbar">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn tab-active px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-chart-pie"></i> <span>الرئيسية</span>
       </button>
@@ -102,6 +119,12 @@
       <button onclick="switchTab('standings')" id="tab-standings" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-list-ol"></i> <span>الترتيب والفرق</span>
       </button>
+      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-calendar-days"></i> <span>المباريات والـ Rounds</span>
+      </button>
+      <button onclick="switchTab('knockout')" id="tab-knockout" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-secondary whitespace-nowrap">
+        <i class="fa-solid fa-fire"></i> <span>الأدوار الإقصائية</span>
+      </button>
       <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn text-brand-muted hover:text-white px-4 py-3 font-semibold text-sm flex items-center gap-2 text-brand-primary whitespace-nowrap">
         <i class="fa-solid fa-shield-halved"></i> <span>لوحة الأدمن</span>
       </button>
@@ -109,24 +132,53 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 pb-16">
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 pb-20">
 
     <!-- TAB 1: DASHBOARD -->
     <section id="sec-dashboard" class="space-y-6">
-      <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+      <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
           <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
-            <h2 class="text-3xl font-black gradient-text">منصة Star League 🎮⚽</h2>
-            <p class="text-brand-muted text-sm max-w-xl">المنصة الاحترافية لإدارة البطولات وتتبع نتائج المباريات بشكل أوتوماتيكي.</p>
+            <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
+            <p class="text-brand-muted text-sm max-w-xl">المنصة الاحترافية لإدارة وتتبع البطولات الخاصة بكم بطريقة سهلة ومنظمة.</p>
           </div>
         </div>
 
         <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto">
-          <div onclick="switchTab('standings')" class="cursor-pointer bg-brand-dark px-6 py-3 rounded-xl border border-brand-border text-center hover:border-brand-primary transition">
-            <span class="text-2xl font-bold text-brand-secondary" id="stat-players-count">0</span>
-            <p class="text-xs text-brand-muted mt-1">اللاعبون المسجلون</p>
+          <div onclick="switchTab('tournaments')" class="cursor-pointer bg-brand-dark px-5 py-2.5 rounded-xl border border-brand-border text-center hover:border-brand-primary transition flex-1">
+            <span class="text-lg font-bold text-brand-primary" id="stat-tourneys-count">0</span>
+            <p class="text-[10px] text-brand-muted mt-0.5">البطولات النشطة</p>
+          </div>
+          <div onclick="switchTab('standings')" class="cursor-pointer bg-brand-dark px-5 py-2.5 rounded-xl border border-brand-border text-center hover:border-brand-primary transition flex-1">
+            <span class="text-lg font-bold text-brand-secondary" id="stat-players-count">0</span>
+            <p class="text-[10px] text-brand-muted mt-0.5">اللاعبون المسجلون</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-brand-border pb-3">
+            <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
+              <i class="fa-solid fa-bullhorn"></i> أخبار الدوري والإعلانات
+            </h3>
+          </div>
+          <div id="newsContentDisplay" class="space-y-3 text-sm text-brand-muted">
+            <p class="text-white text-xs">أهلاً بك في النسخة الجديدة من Star League. نظام الأتمتة التلقائي (11:45 Forfeit) مفعل الآن!</p>
+          </div>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-brand-border pb-3">
+            <h3 class="text-lg font-bold text-brand-secondary flex items-center gap-2">
+              <i class="fa-solid fa-gavel"></i> قوانين وشروط البطولة
+            </h3>
+          </div>
+          <div id="rulesContentDisplay" class="space-y-2 text-xs text-brand-muted bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
+            <p class="text-white text-xs">1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلاً.<br>2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.<br>3. الروح الرياضية واجبة بين جميع المشاركين.</p>
           </div>
         </div>
       </div>
@@ -179,7 +231,7 @@
       </div>
     </section>
 
-    <!-- TAB 4: STANDINGS (يظهر اللاعبين مباشرة فور تسجيلهم) -->
+    <!-- TAB 4: STANDINGS -->
     <section id="sec-standings" class="hidden space-y-8">
       <div class="bg-brand-card rounded-2xl border border-brand-border shadow-xl overflow-hidden">
         <div class="p-4 border-b border-brand-border flex justify-between items-center">
@@ -206,7 +258,33 @@
       </div>
     </section>
 
-    <!-- TAB 5: ADMIN (عرض اللاعبين + تعديل + حذف) -->
+    <!-- TAB 5: SCHEDULE & ROUNDS -->
+    <section id="sec-schedule" class="hidden space-y-6">
+      <div id="roundsNavBar" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+        <button class="px-4 py-2 bg-brand-primary/10 text-brand-primary border border-brand-primary/30 rounded-xl font-bold text-xs whitespace-nowrap">Round 1</button>
+      </div>
+      <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex justify-between items-center">
+        <div>
+          <h3 class="text-lg font-bold text-brand-primary" id="currentRoundTitleDisp">المباريات الرسمية</h3>
+          <p class="text-xs text-brand-muted">المباريات تنتهي تلقائياً عند الساعة 11:45 ليلأً في حالة عدم الحضور (Forfeit).</p>
+        </div>
+      </div>
+      <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <p class="text-sm text-brand-muted">لا توجد مباريات مجدولة حالياً.</p>
+      </div>
+    </section>
+
+    <!-- TAB 6: KNOCKOUT -->
+    <section id="sec-knockout" class="hidden space-y-6">
+      <div class="bg-brand-card p-6 rounded-2xl border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-secondary"><i class="fa-solid fa-fire"></i> الأدوار الإقصائية (Knockout)</h3>
+        <div id="knockoutMatchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <p class="text-sm text-brand-muted text-center py-8 col-span-2">لا توجد مباريات إقصائية مجدولة.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
@@ -221,7 +299,6 @@
           <span id="adminPlayersCount" class="text-xs bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full font-bold">0 لاعبين</span>
         </div>
 
-        <!-- قائمة عرض اللاعبين -->
         <div id="adminPlayersList" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
           <p class="text-sm text-brand-muted text-center py-6">جاري تحميل قائمة اللاعبين...</p>
         </div>
@@ -229,6 +306,18 @@
     </section>
 
   </main>
+
+  <!-- Ticker bar (البار السفلي المتحرك للأخبار والمباريات) -->
+  <footer id="mainFooter" class="fixed bottom-0 left-0 right-0 z-40 bg-brand-card border-t border-brand-border py-2 px-4 overflow-hidden shadow-2xl flex items-center">
+    <div class="bg-brand-primary text-brand-dark font-bold text-xs px-3 py-1 rounded ml-3 flex items-center gap-1.5 flex-shrink-0">
+      <i class="fa-solid fa-bolt"></i> نظام 11:45 Forfeit:
+    </div>
+    <div class="overflow-hidden whitespace-nowrap w-full">
+      <div id="tickerMatchesContainer" class="animate-ticker inline-flex gap-8 text-xs text-brand-muted">
+        <span class="text-white">منصة ستار ليج - البطولات الاحترافية! 🎮⚽ - يتم حسم المباريات غير اللعبوبة تلقائياً عند 11:45 ليلأً</span>
+      </div>
+    </div>
+  </footer>
 
   <!-- Modal تعديل اللاعب -->
   <div id="editPlayerModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
@@ -269,6 +358,24 @@
     let activeTourneyId = localStorage.getItem('star_active_tourney') || null;
     let players = [];
     let tournaments = [];
+    let isBroadcastMode = false;
+
+    // وضع البث
+    function toggleBroadcastMode() {
+      isBroadcastMode = !isBroadcastMode;
+      const header = document.getElementById('mainHeader');
+      const footer = document.getElementById('mainFooter');
+      const btnText = document.getElementById('broadcastBtnText');
+      if(isBroadcastMode) {
+        header.classList.add('hidden');
+        footer.classList.add('hidden');
+        btnText.innerText = "خروج";
+      } else {
+        header.classList.remove('hidden');
+        footer.classList.remove('hidden');
+        btnText.innerText = "وضع البث";
+      }
+    }
 
     // التبديل بين الأقسام
     function switchTab(tabId) {
@@ -285,7 +392,7 @@
       }
     }
 
-    // جلب البطولات مع تعيين أول بطولة تلقائياً إذا لم تكن أي بطولة محددة
+    // جلب البطولات
     async function loadTournaments() {
       try {
         const snapshot = await db.collection("tournaments").get();
@@ -324,6 +431,7 @@
 
         document.getElementById('tournamentsListContainer').innerHTML = html || '<p class="text-sm text-brand-muted">لا توجد بطولات.</p>';
         document.getElementById('registerTourneySelect').innerHTML = selectHtml;
+        document.getElementById('stat-tourneys-count').innerText = tournaments.length;
 
         const currentTourney = tournaments.find(t => t.id === activeTourneyId);
         document.getElementById('currentTourneyNameDisp').innerText = currentTourney ? currentTourney.name : 'لا توجد بطولة';
@@ -342,7 +450,7 @@
       loadTournaments();
     }
 
-    // جلب لاعبين البطولة النشطة وعرضهم فوراً
+    // جلب اللاعبين
     async function loadPlayers() {
       if (!activeTourneyId) return;
       try {
@@ -360,7 +468,7 @@
       }
     }
 
-    // عرض جدول الترتيب العام مباشرة بدون شروط مسبقة
+    // جدول الترتيب العام
     function renderStandingsTable() {
       const tbody = document.getElementById('playersTable');
       if (players.length === 0) {
@@ -385,7 +493,7 @@
       tbody.innerHTML = html;
     }
 
-    // عرض قائمة اللاعبين في لوحة الأدمن مع أزرار التعديل والحذف
+    // لوحة الأدمن - إدارة اللاعبين (تعديل + حذف)
     function renderAdminPlayersList() {
       const container = document.getElementById('adminPlayersList');
       document.getElementById('adminPlayersCount').innerText = `${players.length} لاعبين`;
@@ -466,8 +574,8 @@
     // حفظ التعديلات
     async function savePlayerChanges() {
       const id = document.getElementById('editPlayerId').value;
-      const newName = document.getElementById('modalPlayerName').value.trim();
-      const newTeam = document.getElementById('modalTeamName').value.trim();
+      let newName = document.getElementById('modalPlayerName').value.trim();
+      let newTeam = document.getElementById('modalTeamName').value.trim();
 
       if (!activeTourneyId || !id) return;
 
@@ -518,9 +626,19 @@
       }
     }
 
-    // التحقق التلقائي المجاني من المباريات
-    async function checkAndResolveForfeits() {
+    // نظام الأتمتة الذكي: فحص الوقت (الساعة 23:45 أو ما بعدها) وحسم المباريات العالقة كـ Forfeit تلقائياً
+    async function checkAndResolveForfeitsAt1145() {
       if (!activeTourneyId) return;
+      
+      const now = new Date();
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+
+      // التحقق واكتشاف واش وصلات 23:45 (11:45 ليلاً) أو أكثر
+      const isPast1145 = (currentHours > 23) || (currentHours === 23 && currentMinutes >= 45);
+
+      if (!isPast1145) return;
+
       const matchesRef = db.collection("tournaments").doc(activeTourneyId).collection("matches");
       try {
         const snapshot = await matchesRef.where("status", "==", "pending").get();
@@ -528,31 +646,39 @@
 
         const batch = db.batch();
         let updatesCount = 0;
+
         snapshot.forEach((doc) => {
           const match = doc.data();
+          // تطبيق Forfeit أوتوماتيكي للي ما لعبوش (مثلاً اعتبار النتيجة 3-0 أو إنهاء المباراة كـ Forfeit)
           batch.update(doc.ref, {
             status: "finished",
             score1: match.score1 || 0,
             score2: match.score2 || 0,
-            note: "Resolved automatically by Star League system."
+            note: "Forfeit: Resolved automatically at 11:45 PM by Star League system."
           });
           updatesCount++;
         });
 
         if (updatesCount > 0) {
           await batch.commit();
+          console.log(`تم حسم ${updatesCount} مباراة تلقائياً بنظام Forfeit لعدم الحضور.`);
         }
       } catch (error) {
-        console.error("Error auto-resolving matches: ", error);
+        console.error("Error auto-resolving forfeits: ", error);
       }
     }
 
-    // تشغيل عند فتح الصفحة
+    // تشغيل عند فتح الصفحة ومع المراقبة المستمرة
     window.addEventListener("DOMContentLoaded", () => {
       loadTournaments();
       setTimeout(() => {
-        checkAndResolveForfeits();
+        checkAndResolveForfeitsAt1145();
       }, 2000);
+
+      // مراقبة الوقت كل دقيقة لتنفيذ الأتمتة فالتوقيت المضبوط (11:45)
+      setInterval(() => {
+        checkAndResolveForfeitsAt1145();
+      }, 60000);
     });
   </script>
 </body>
