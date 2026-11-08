@@ -86,7 +86,8 @@
   <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center space-x-3 space-x-reverse">
-        <img id="headerLogoImg" src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/30" onerror="this.style.display='none'">
+        <!-- لوغو السيت الأصلي ثابت لا يتغير -->
+        <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/35" onerror="this.src='https://via.placeholder.com/40'">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
           <p class="text-xs text-brand-muted">منصة البطولات الذكية</p>
@@ -139,7 +140,7 @@
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <img id="dashLogoImg" src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.style.display='none'">
+          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.src='https://via.placeholder.com/96'">
           <div class="space-y-2">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">مرحباً بكم</span>
             <h2 class="text-3xl font-black gradient-text">مرحباً بكم في منصة Star League! 🎮⚽</h2>
@@ -225,6 +226,10 @@
           <div>
             <label class="block text-sm text-brand-muted mb-1">اسم الفريق / المنتخب</label>
             <input type="text" id="teamName" required placeholder="مثال: Manchester United" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm text-brand-muted mb-1">رابط شعار / لوغو الفريق (Logo URL)</label>
+            <input type="text" id="playerLogo" placeholder="https://..." class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-white focus:outline-none">
           </div>
           <button type="submit" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg hover:opacity-90 transition">تسجيل الآن</button>
         </form>
@@ -347,6 +352,10 @@
           <label class="block text-xs text-brand-muted mb-1">اسم الفريق:</label>
           <input type="text" id="modalTeamName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
         </div>
+        <div>
+          <label class="block text-xs text-brand-muted mb-1">رابط الشعار / اللوغو:</label>
+          <input type="text" id="modalPlayerLogo" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none">
+        </div>
       </div>
       <div class="flex gap-3 pt-2">
         <button onclick="savePlayerChanges()" class="flex-1 gradient-bg text-brand-dark font-bold p-2.5 rounded-lg text-xs hover:opacity-90 transition">حفظ التغييرات</button>
@@ -368,8 +377,8 @@
           <input type="text" id="modalTourneyName" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none">
         </div>
         <div>
-          <label class="block text-xs text-brand-muted mb-1">رابط أو شعار البطولة (Logo URL / Base64):</label>
-          <input type="text" id="modalTourneyLogo" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none" placeholder="ضع رابط الصورة هنا...">
+          <label class="block text-xs text-brand-muted mb-1">رابط شعار البطولة (Logo URL):</label>
+          <input type="text" id="modalTourneyLogo" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none">
         </div>
       </div>
       <div class="flex gap-3 pt-2">
@@ -393,7 +402,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // تثبيت الـ ID الأصلي للبطولة UEFA Nations League لضمان ظهور الـ 15 لاعب
     let activeTourneyId = localStorage.getItem('star_active_tourney') || "kPLNmdhH0bdWCBKKo7Wj";
     let players = [];
     let tournaments = [];
@@ -432,7 +440,7 @@
       }
     }
 
-    // جلب البطولات مع إمكانية التفعيل والتعديل
+    // جلب البطولات
     async function loadTournaments() {
       try {
         const snapshot = await db.collection("tournaments").get();
@@ -445,7 +453,6 @@
           tournaments.push(t);
         });
 
-        // التأكد من أن activeTourneyId موجود في القائمة، وإلا نجعل UEFA Nations League هي الافتراضية
         const exists = tournaments.some(t => t.id === activeTourneyId);
         if (!exists && tournaments.length > 0) {
           activeTourneyId = "kPLNmdhH0bdWCBKKo7Wj";
@@ -459,7 +466,7 @@
           html += `
             <div class="bg-brand-dark p-4 rounded-xl border ${isActive ? 'border-brand-primary' : 'border-brand-border'} flex flex-col md:flex-row justify-between items-center gap-4">
               <div class="flex items-center gap-3">
-                ${t.logo ? `<img src="${t.logo}" class="w-10 h-10 object-contain rounded-full border border-brand-primary/30">` : `<div class="w-10 h-10 rounded-full bg-brand-border flex items-center justify-center text-xs font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i></div>`}
+                ${t.logo ? `<img src="${t.logo}" class="w-10 h-10 object-contain rounded-full border border-brand-primary/30" onerror="this.style.display='none'">` : `<div class="w-10 h-10 rounded-full bg-brand-border flex items-center justify-center text-xs font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i></div>`}
                 <div>
                   <h4 class="font-bold text-white text-sm">${t.name}</h4>
                   <p class="text-[10px] text-brand-muted">ID: ${t.id}</p>
@@ -467,7 +474,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <button onclick="openEditTournamentModal('${t.id}', '${t.name || ''}', '${t.logo || ''}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
-                  <i class="fa-solid fa-pen-to-square"></i> تعديل
+                  <i class="fa-solid fa-pen-to-square"></i> تعديل البطولة
                 </button>
                 <button onclick="setActiveTournament('${t.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${isActive ? 'bg-brand-primary text-brand-dark' : 'bg-brand-border text-white'}">
                   ${isActive ? 'نشطة حالياً' : 'تفعيل'}
@@ -484,10 +491,6 @@
         const currentTourney = tournaments.find(t => t.id === activeTourneyId);
         if (currentTourney) {
           document.getElementById('currentTourneyNameDisp').innerText = currentTourney.name;
-          if (currentTourney.logo) {
-            document.getElementById('headerLogoImg').src = currentTourney.logo;
-            document.getElementById('dashLogoImg').src = currentTourney.logo;
-          }
         } else {
           document.getElementById('currentTourneyNameDisp').innerText = 'UEFA Nations League';
         }
@@ -507,7 +510,6 @@
       loadTournaments();
     }
 
-    // فتح نافذة تعديل البطولة
     function openEditTournamentModal(id, name, logo) {
       document.getElementById('editTourneyId').value = id;
       document.getElementById('modalTourneyName').value = name;
@@ -519,7 +521,6 @@
       document.getElementById('editTournamentModal').classList.add('hidden');
     }
 
-    // حفظ تعديلات البطولة (الاسم واللوغو)
     async function saveTournamentChanges() {
       const id = document.getElementById('editTourneyId').value;
       const newName = document.getElementById('modalTourneyName').value.trim();
@@ -534,7 +535,7 @@
         });
 
         closeEditTournamentModal();
-        alert("تم تعديل بيانات البطولة بنجاح! 🏆");
+        alert("تم تعديل معلومات البطولة بنجاح! 🏆");
         loadTournaments();
       } catch (err) {
         console.error("Error updating tournament:", err);
@@ -600,7 +601,7 @@
       }
     }
 
-    // جلب اللاعبين مع دعم البحث المباشر في البطولة النشطة والتحقق من التبعات
+    // جلب اللاعبين مع دعم ظهور اللوغوات الخاصة بهم
     async function loadPlayers() {
       if (!activeTourneyId) return;
       try {
@@ -610,7 +611,6 @@
           players.push({ id: doc.id, ...doc.data() });
         });
 
-        // إذا لم نجد لاعبين في المسار الفرعي وكانت البطولة هي UEFA Nations League، نبحث في الكوليكشن العام كاحتياط
         if (players.length === 0 && activeTourneyId === "kPLNmdhH0bdWCBKKo7Wj") {
           const generalPlayers = await db.collection("players").get();
           generalPlayers.forEach(doc => {
@@ -635,10 +635,17 @@
 
       let html = '';
       players.forEach((p, index) => {
+        const logoHtml = p.logo ? `<img src="${p.logo}" class="w-7 h-7 object-contain rounded-full border border-brand-primary/30 inline-block ml-2" onerror="this.style.display='none'">` : '';
         html += `
           <tr class="border-b border-brand-border/50 hover:bg-brand-card/50 transition">
             <td class="py-3 px-4 font-bold text-white">${index + 1}</td>
-            <td class="py-3 px-4 text-white font-semibold">${p.name || 'لاعب'} <span class="text-xs text-brand-muted">(${p.team || '-'})</span></td>
+            <td class="py-3 px-4 text-white font-semibold flex items-center gap-2">
+              ${logoHtml}
+              <div>
+                <span>${p.name || 'لاعب'}</span> 
+                <span class="text-xs text-brand-muted">(${p.team || '-'})</span>
+              </div>
+            </td>
             <td class="py-3 px-3 text-center text-brand-muted">${p.played || 0}</td>
             <td class="py-3 px-3 text-center text-green-400">${p.won || 0}</td>
             <td class="py-3 px-3 text-center text-yellow-400">${p.drawn || 0}</td>
@@ -661,14 +668,18 @@
 
       let html = '';
       players.forEach(p => {
+        const logoHtml = p.logo ? `<img src="${p.logo}" class="w-8 h-8 object-contain rounded-full border border-brand-primary/30" onerror="this.style.display='none'">` : `<div class="w-8 h-8 rounded-full bg-brand-border flex items-center justify-center text-xs font-bold text-brand-primary"><i class="fa-solid fa-shield"></i></div>`;
         html += `
           <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between gap-4 hover:border-brand-primary/40 transition">
-            <div>
-              <h4 class="font-bold text-white text-sm">${p.name}</h4>
-              <p class="text-xs text-brand-muted">الفريق: <span class="text-brand-accent">${p.team}</span></p>
+            <div class="flex items-center gap-3">
+              ${logoHtml}
+              <div>
+                <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                <p class="text-xs text-brand-muted">الفريق: <span class="text-brand-accent">${p.team}</span></p>
+              </div>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="openEditPlayerModal('${p.id}', '${p.name || ''}', '${p.team || ''}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
+              <button onclick="openEditPlayerModal('${p.id}', '${p.name || ''}', '${p.team || ''}', '${p.logo || ''}')" class="bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-accent/30 transition flex items-center gap-1.5">
                 <i class="fa-solid fa-pen-to-square"></i> تعديل
               </button>
               <button onclick="deletePlayer('${p.id}')" class="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition flex items-center gap-1.5">
@@ -686,11 +697,13 @@
       const tourneyId = document.getElementById('registerTourneySelect').value || activeTourneyId;
       const playerName = document.getElementById('playerName').value.trim();
       const teamName = document.getElementById('teamName').value.trim();
+      const playerLogo = document.getElementById('playerLogo').value.trim();
 
       try {
         await db.collection("tournaments").doc(tourneyId).collection("players").add({
           name: playerName,
           team: teamName,
+          logo: playerLogo,
           played: 0,
           won: 0,
           drawn: 0,
@@ -709,10 +722,11 @@
       }
     }
 
-    function openEditPlayerModal(id, name, team) {
+    function openEditPlayerModal(id, name, team, logo) {
       document.getElementById('editPlayerId').value = id;
       document.getElementById('modalPlayerName').value = name;
       document.getElementById('modalTeamName').value = team;
+      document.getElementById('modalPlayerLogo').value = logo || '';
       document.getElementById('editPlayerModal').classList.remove('hidden');
     }
 
@@ -724,17 +738,17 @@
       const id = document.getElementById('editPlayerId').value;
       const newName = document.getElementById('modalPlayerName').value.trim();
       const newTeam = document.getElementById('modalTeamName').value.trim();
+      const newLogo = document.getElementById('modalPlayerLogo').value.trim();
 
       if (!activeTourneyId || !id) return;
 
       try {
-        // تحديث في المسار الفرعي للبطولة أو الكوليكشن العام
         const playerRef = db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id);
         const docSnap = await playerRef.get();
         if (docSnap.exists) {
-          await playerRef.update({ name: newName, team: newTeam });
+          await playerRef.update({ name: newName, team: newTeam, logo: newLogo });
         } else {
-          await db.collection("players").doc(id).update({ name: newName, team: newTeam });
+          await db.collection("players").doc(id).update({ name: newName, team: newTeam, logo: newLogo });
         }
 
         closeEditPlayerModal();
@@ -773,6 +787,7 @@
       try {
         const ref = await db.collection("tournaments").add({
           name,
+          logo: "",
           news: "أهلاً بك في بطولة " + name + ". نظام الأتمتة (11:45 Forfeit) مفعل الآن!",
           rules: "1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلأً.\n2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.\n3. الروح الرياضية واجبة بين جميع المشاركين.",
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
