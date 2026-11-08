@@ -166,8 +166,8 @@
               <i class="fa-solid fa-bullhorn"></i> أخبار الدوري والإعلانات
             </h3>
           </div>
-          <div id="newsContentDisplay" class="space-y-3 text-sm text-brand-muted">
-            <p class="text-white text-xs">أهلاً بك في النسخة الجديدة من Star League. نظام الأتمتة التلقائي (11:45 Forfeit) مفعل الآن!</p>
+          <div id="newsContentDisplay" class="space-y-3 text-sm text-brand-muted leading-relaxed">
+            <p class="text-white text-xs">أهلاً بك في النسخة الجديدة من Star League. نظام الأتمتة (11:45 Forfeit) مفعل الآن!</p>
           </div>
         </div>
 
@@ -178,7 +178,7 @@
             </h3>
           </div>
           <div id="rulesContentDisplay" class="space-y-2 text-xs text-brand-muted bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
-            <p class="text-white text-xs">1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلاً.<br>2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.<br>3. الروح الرياضية واجبة بين جميع المشاركين.</p>
+            <p class="text-white text-xs">1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلأً.<br>2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.<br>3. الروح الرياضية واجبة بين جميع المشاركين.</p>
           </div>
         </div>
       </div>
@@ -284,13 +284,27 @@
       </div>
     </section>
 
-    <!-- TAB 7: ADMIN -->
+    <!-- TAB 7: ADMIN (إدارة اللاعبين + تعديل القوانين والأخبار) -->
     <section id="sec-admin" class="hidden space-y-6">
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-shield-halved"></i> لوحة الأدمن - إدارة اللاعبين
+          <i class="fa-solid fa-shield-halved"></i> لوحة الأدمن - إعدادات وقوانين الدوري
         </h3>
-        <p class="text-xs text-brand-muted">يمكنك هنا عرض كل اللاعبين المسجلين، تعديل بياناتهم، أو حذف الحسابات المكررة.</p>
+        <p class="text-xs text-brand-muted">تعديل محتوى أخبار الدوري وقوانين وشروط البطولات مباشرة لتظهر في الصفحة الرئيسية.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="space-y-2">
+            <label class="block text-xs text-brand-muted font-bold">تعديل أخبار الدوري والإعلانات:</label>
+            <textarea id="adminNewsInput" rows="4" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none" placeholder="اكتب الأخبار الجديدة هنا..."></textarea>
+            <button onclick="saveAdminNews()" class="gradient-bg text-brand-dark font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition">حفظ الأخبار</button>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-xs text-brand-muted font-bold">تعديل قوانين وشروط البطولة:</label>
+            <textarea id="adminRulesInput" rows="4" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none" placeholder="اكتب القوانين والشروط هنا..."></textarea>
+            <button onclick="saveAdminRules()" class="gradient-bg text-brand-dark font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition">حفظ القوانين</button>
+          </div>
+        </div>
       </div>
 
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
@@ -389,6 +403,7 @@
 
       if (tabId === 'admin') {
         renderAdminPlayersList();
+        loadSettingsToAdminInputs();
       }
     }
 
@@ -438,6 +453,7 @@
 
         if (activeTourneyId) {
           loadPlayers();
+          loadTournamentSettings();
         }
       } catch (e) {
         console.error("Error loading tournaments:", e);
@@ -448,6 +464,68 @@
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', id);
       loadTournaments();
+    }
+
+    // جلب الإعدادات (الأخبار والقوانين) الخاصة بالبطولة الحالية من الفايربيس
+    async function loadTournamentSettings() {
+      if (!activeTourneyId) return;
+      try {
+        const doc = await db.collection("tournaments").doc(activeTourneyId).get();
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.news) {
+            document.getElementById('newsContentDisplay').innerHTML = `<p class="text-white text-xs">${data.news.replace(/\n/g, '<br>')}</p>`;
+          }
+          if (data.rules) {
+            document.getElementById('rulesContentDisplay').innerHTML = `<p class="text-white text-xs">${data.rules.replace(/\n/g, '<br>')}</p>`;
+          }
+        }
+      } catch (e) {
+        console.error("Error loading settings:", e);
+      }
+    }
+
+    // تعبئة حقول الأدمن بالأخبار والقوانين الحالية
+    async function loadSettingsToAdminInputs() {
+      if (!activeTourneyId) return;
+      try {
+        const doc = await db.collection("tournaments").doc(activeTourneyId).get();
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.news) document.getElementById('adminNewsInput').value = data.news;
+          if (data.rules) document.getElementById('adminRulesInput').value = data.rules;
+        }
+      } catch (e) {
+        console.error("Error loading inputs:", e);
+      }
+    }
+
+    // حفظ أخبار الدوري الجديدة
+    async function saveAdminNews() {
+      if (!activeTourneyId) return;
+      const newsText = document.getElementById('adminNewsInput').value.trim();
+      try {
+        await db.collection("tournaments").doc(activeTourneyId).update({ news: newsText });
+        alert("تم تحديث أخبار الدوري بنجاح! 📢");
+        loadTournamentSettings();
+      } catch (e) {
+        console.error("Error saving news:", e);
+        alert("فشل حفظ الأخبار.");
+      }
+    }
+
+    // حفظ قوانين وشروط البطولة الجديدة
+    async function saveAdminRules() {
+      if (!activeTourneyId) return;
+      const rulesText = document.getElementById('adminRulesInput').value.trim();
+      try {
+        await db.collection("tournaments").doc(activeTourneyId).update({ rules: rulesText });
+        alert("تم تحديث قوانين البطولة بنجاح! ⚖️");
+        loadTournamentSettings();
+      } catch (e) {
+        console.error("Error saving rules:", e);
+        alert("فشل حفظ القوانين.");
+      }
     }
 
     // جلب اللاعبين
@@ -574,8 +652,8 @@
     // حفظ التعديلات
     async function savePlayerChanges() {
       const id = document.getElementById('editPlayerId').value;
-      let newName = document.getElementById('modalPlayerName').value.trim();
-      let newTeam = document.getElementById('modalTeamName').value.trim();
+      const newName = document.getElementById('modalPlayerName').value.trim();
+      const newTeam = document.getElementById('modalTeamName').value.trim();
 
       if (!activeTourneyId || !id) return;
 
@@ -616,6 +694,8 @@
       try {
         const ref = await db.collection("tournaments").add({
           name,
+          news: "أهلاً بك في النسخة الجديدة من Star League. نظام الأتمتة (11:45 Forfeit) مفعل الآن!",
+          rules: "1. الالتزام بوقت المباراة المحدد قبل الساعة 11:45 ليلأً.\n2. في حالة عدم الحضور تعتبر النتيجة Forfeit لصالح الخصم أوتوماتيكياً.\n3. الروح الرياضية واجبة بين جميع المشاركين.",
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         setActiveTournament(ref.id);
@@ -634,7 +714,6 @@
       const currentHours = now.getHours();
       const currentMinutes = now.getMinutes();
 
-      // التحقق واكتشاف واش وصلات 23:45 (11:45 ليلاً) أو أكثر
       const isPast1145 = (currentHours > 23) || (currentHours === 23 && currentMinutes >= 45);
 
       if (!isPast1145) return;
@@ -649,7 +728,6 @@
 
         snapshot.forEach((doc) => {
           const match = doc.data();
-          // تطبيق Forfeit أوتوماتيكي للي ما لعبوش (مثلاً اعتبار النتيجة 3-0 أو إنهاء المباراة كـ Forfeit)
           batch.update(doc.ref, {
             status: "finished",
             score1: match.score1 || 0,
@@ -675,7 +753,6 @@
         checkAndResolveForfeitsAt1145();
       }, 2000);
 
-      // مراقبة الوقت كل دقيقة لتنفيذ الأتمتة فالتوقيت المضبوط (11:45)
       setInterval(() => {
         checkAndResolveForfeitsAt1145();
       }, 60000);
