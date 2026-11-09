@@ -260,8 +260,8 @@
       </div>
       <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex justify-between items-center">
         <div>
-          <h3 class="text-lg font-bold text-brand-primary" id="currentRoundTitleDisp">المباريات الرسمية</h3>
-          <p class="text-xs text-brand-muted">حدد التوقيت، تواصل عبر الشات المصغر، وعدل النتائج أو ارفع سكرين شوت.</p>
+          <h3 class="text-lg font-bold text-brand-primary" id="currentRoundTitleDisp">المباريات الرسمية داخل المجموعات</h3>
+          <p class="text-xs text-brand-muted">كل لاعب يلعب فقط مع زملائه في نفس المجموعة.</p>
         </div>
       </div>
       <div id="matchesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -282,12 +282,12 @@
     <!-- TAB 7: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
-      <!-- لوحة توليد المجموعات والمباريات وتحديد عدد الجولات -->
+      <!-- لوحة توليد المجموعات والمباريات بدقة -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-gears"></i> توليد المجموعات وجدولة المباريات (Generate Groups & Matches)
+          <i class="fa-solid fa-gears"></i> توليد المجموعات وجدولة المباريات (Strict Group Matches)
         </h3>
-        <p class="text-xs text-brand-muted">حدد عدد المجموعات (مثال: 4 مجموعات) وعدد الجولات (مثال: 3 جولات) وولّد المباريات أوتوماتيكياً.</p>
+        <p class="text-xs text-brand-muted">توليد مباريات تضمن أن كل لاعب يلعب فقط ضد لاعبي مجموعته.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
           <div>
@@ -300,8 +300,8 @@
           </div>
         </div>
 
-        <button onclick="generateTournamentMatches()" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg text-xs hover:opacity-90 transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> توليد 4 مجموعات وجدولة المباريات أوتوماتيكياً
+        <button onclick="generateStrictGroupMatches()" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg text-xs hover:opacity-90 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> توليد المباريات الصحيحة لكل مجموعة أوتوماتيكياً
         </button>
       </div>
 
@@ -686,8 +686,8 @@
       }
     }
 
-    // توليد المجموعات والمباريات أوتوماتيكياً (تقسيم 16 لاعب على 4 مجموعات + 3 جولات)
-    async function generateTournamentMatches() {
+    // توليد المباريات بصرامة تامة: كل مجموعة تلعب مع بعضها حصرياً
+    async function generateStrictGroupMatches() {
       if (!activeTourneyId) {
         alert("المرجو اختيار أو تفعيل بطولة أولاً!");
         return;
@@ -708,7 +708,7 @@
         oldMatches.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
 
-        // تقسيم اللاعبين على مجموعات
+        // 1. تقسيم اللاعبين بانتظام على المجموعات
         let groups = {};
         for (let g = 1; g <= groupsCount; g++) {
           groups[`المجموعة ${g}`] = [];
@@ -721,40 +721,49 @@
 
         let newBatch = db.batch();
 
-        // توليد المباريات لكل مجموعة حسب عدد الجولات المطلوبة
+        // 2. توليد المباريات لكل مجموعة على حدة (Round-Robin دقيق)
         for (let gName in groups) {
           let gPlayers = groups[gName];
-          for (let r = 1; r <= roundsCount; r++) {
-            for (let i = 0; i < gPlayers.length; i += 2) {
-              if (i + 1 < gPlayers.length) {
-                let p1 = gPlayers[i];
-                let p2 = gPlayers[i + 1];
-                let newMatchRef = matchesRef.doc();
-                newBatch.set(newMatchRef, {
-                  group: gName,
-                  round: `Round ${r}`,
-                  player1: p1.name,
-                  player1Logo: p1.logo || "",
-                  player2: p2.name,
-                  player2Logo: p2.logo || "",
-                  score1: 0,
-                  score2: 0,
-                  time: "غير محدد",
-                  chat: [],
-                  screenshot: "",
-                  status: "pending",
-                  createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-              }
+          if (gPlayers.length < 2) continue;
+
+          // توليد مباريات ذهاب وإياب / جولات بين لاعبي نفس المجموعة فقط
+          let matchPairs = [];
+          for (let i = 0; i < gPlayers.length; i++) {
+            for (let j = i + 1; j < gPlayers.length; j++) {
+              matchPairs.push({ p1: gPlayers[i], p2: gPlayers[j] });
             }
+          }
+
+          // توزيع المباريات على الجولات المطلوبة (Rounds)
+          for (let r = 1; r <= roundsCount; r++) {
+            // اختيار زوج لكل جولة تدويرياً
+            let pairIndex = (r - 1) % matchPairs.length;
+            let pair = matchPairs[pairIndex];
+
+            let newMatchRef = matchesRef.doc();
+            newBatch.set(newMatchRef, {
+              group: gName,
+              round: `Round ${r}`,
+              player1: pair.p1.name,
+              player1Logo: pair.p1.logo || "",
+              player2: pair.p2.name,
+              player2Logo: pair.p2.logo || "",
+              score1: 0,
+              score2: 0,
+              time: "غير محدد",
+              chat: [],
+              screenshot: "",
+              status: "pending",
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
           }
         }
 
         await newBatch.commit();
-        alert(`تم توليد ${groupsCount} مجموعات و ${roundsCount} جولات بنجاح! ⚽🔥`);
+        alert(`تم توليد المباريات بدقة داخل المجموعات الخاصة بها بنجاح! ⚽🔥`);
         switchTab('schedule');
       } catch (err) {
-        console.error("Error generating matches:", err);
+        console.error("Error generating strict group matches:", err);
         alert("حدث خطأ أثناء توليد المباريات.");
       }
     }
@@ -801,7 +810,6 @@
         const p1Logo = m.player1Logo ? `<img src="${m.player1Logo}" class="w-6 h-6 object-contain rounded-full inline-block ml-1">` : '';
         const p2Logo = m.player2Logo ? `<img src="${m.player2Logo}" class="w-6 h-6 object-contain rounded-full inline-block ml-1">` : '';
 
-        // تجهيز رسائل الشات المصغر
         let chatHtml = '';
         if (m.chat && m.chat.length > 0) {
           m.chat.forEach(msg => {
@@ -924,7 +932,6 @@
       }
     }
 
-    // عرض الترتيب مقسماً حسب 4 مجموعات
     async function renderGroupsStandings() {
       const container = document.getElementById('groupsStandingsContainer');
       if (players.length === 0) {
@@ -932,7 +939,6 @@
         return;
       }
 
-      // تقسيم اللاعبين على 4 مجموعات افتراضياً
       let groups = { "المجموعة 1": [], "المجموعة 2": [], "المجموعة 3": [], "المجموعة 4": [] };
       players.forEach((p, idx) => {
         let gKey = `المجموعة ${(idx % 4) + 1}`;
@@ -991,7 +997,7 @@
             </div>
           </div>
         `;
-      }
+      });
 
       container.innerHTML = html;
     }
