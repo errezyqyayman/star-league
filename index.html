@@ -86,7 +86,7 @@
   <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center space-x-3 space-x-reverse">
-        <!-- لوغو السيت الأصلي ثابث ومستقل نهائياً -->
+        <!-- لوغو السيت الأصلي ثابث ومستقل -->
         <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/35" onerror="this.src='https://via.placeholder.com/40'">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
@@ -140,7 +140,6 @@
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <!-- لوغو البطولة النشطة يظهر هنا كشعار خاص بها -->
           <div id="dashTourneyLogoContainer" class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center bg-brand-dark rounded-full border border-brand-primary/40 overflow-hidden flex-shrink-0">
             <i class="fa-solid fa-trophy text-3xl text-brand-primary"></i>
           </div>
@@ -301,7 +300,7 @@
     <!-- TAB 7: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
       
-      <!-- لوحة توليد المجموعات والمباريات وتحديد عدد الجولات -->
+      <!-- لوحة توليد المجموعات والمباريات -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
           <i class="fa-solid fa-gears"></i> توليد المجموعات وجدولة المباريات (Generate Groups & Matches)
@@ -494,7 +493,7 @@
 
         const exists = tournaments.some(t => t.id === activeTourneyId);
         if (!exists && tournaments.length > 0) {
-          activeTourneyId = tournaments[0].id;
+          activeTourneyId = "kPLNmdhH0bdWCBKKo7Wj";
           localStorage.setItem('star_active_tourney', activeTourneyId);
         }
 
@@ -654,6 +653,35 @@
       }
     }
 
+    // دالة جلب اللاعبين الذكية لضمان ظهور جميع اللاعبين المسجلين سواء في الفرعي أو العام
+    async function loadPlayers() {
+      if (!activeTourneyId) return;
+      try {
+        players = [];
+        
+        // 1. جلب اللاعبين من المسار الفرعي للبطولة النشطة
+        const snapshot = await db.collection("tournaments").doc(activeTourneyId).collection("players").get();
+        snapshot.forEach(doc => {
+          players.push({ id: doc.id, ...doc.data() });
+        });
+
+        // 2. إذا كانت البطولة هي UEFA Nations League أو لم نجد كفاية، نجلب أيضاً من الكوليكشن العام players كاحتياط شامل
+        const generalSnapshot = await db.collection("players").get();
+        generalSnapshot.forEach(doc => {
+          const exists = players.some(p => p.id === doc.id || p.name === doc.data().name);
+          if (!exists) {
+            players.push({ id: doc.id, ...doc.data() });
+          }
+        });
+
+        document.getElementById('stat-players-count').innerText = players.length;
+        renderStandingsTable();
+        renderAdminPlayersList();
+      } catch (e) {
+        console.error("Error loading players:", e);
+      }
+    }
+
     // توليد المباريات والجداول والـ Rounds أوتوماتيكياً
     async function generateTournamentMatches() {
       if (!activeTourneyId) {
@@ -665,32 +693,24 @@
       const roundsCount = parseInt(document.getElementById('adminRoundsCount').value) || 2;
 
       try {
-        const snapshot = await db.collection("tournaments").doc(activeTourneyId).collection("players").get();
-        let tourneyPlayers = [];
-        snapshot.forEach(doc => {
-          tourneyPlayers.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (tourneyPlayers.length < 2) {
+        if (players.length < 2) {
           alert("لا توجد عدد كافٍ من اللاعبين لتوليد المباريات (على الأقل لاعبين اثنين).");
           return;
         }
 
         const matchesRef = db.collection("tournaments").doc(activeTourneyId).collection("matches");
         
-        // مسح المباريات القديمة إن وجدت
         const oldMatches = await matchesRef.get();
         const batch = db.batch();
         oldMatches.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
 
-        // توليد مباريات بسيطة لكل جولة بين اللاعبين
         let newBatch = db.batch();
         for (let r = 1; r <= roundsCount; r++) {
-          for (let i = 0; i < tourneyPlayers.length; i += 2) {
-            if (i + 1 < tourneyPlayers.length) {
-              const p1 = tourneyPlayers[i];
-              const p2 = tourneyPlayers[i + 1];
+          for (let i = 0; i < players.length; i += 2) {
+            if (i + 1 < players.length) {
+              const p1 = players[i];
+              const p2 = players[i + 1];
               const newMatchRef = matchesRef.doc();
               newBatch.set(newMatchRef, {
                 round: `Round ${r}`,
@@ -728,7 +748,6 @@
           if (m.round) roundsSet.add(m.round);
         });
 
-        // رسم شريط الجولات Rounds
         let roundsHtml = '';
         const sortedRounds = Array.from(roundsSet).sort();
         if (sortedRounds.length === 0) sortedRounds.push("Round 1");
@@ -779,30 +798,6 @@
 
     function filterMatchesByRound(roundName) {
       loadScheduleMatches();
-    }
-
-    async function loadPlayers() {
-      if (!activeTourneyId) return;
-      try {
-        const snapshot = await db.collection("tournaments").doc(activeTourneyId).collection("players").get();
-        players = [];
-        snapshot.forEach(doc => {
-          players.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (players.length === 0 && activeTourneyId === "kPLNmdhH0bdWCBKKo7Wj") {
-          const generalPlayers = await db.collection("players").get();
-          generalPlayers.forEach(doc => {
-            players.push({ id: doc.id, ...doc.data() });
-          });
-        }
-
-        document.getElementById('stat-players-count').innerText = players.length;
-        renderStandingsTable();
-        renderAdminPlayersList();
-      } catch (e) {
-        console.error("Error loading players:", e);
-      }
     }
 
     function renderStandingsTable() {
@@ -927,14 +922,13 @@
       if (!activeTourneyId || !id) return;
 
       try {
-        const playerRef = db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id);
-        const docSnap = await playerRef.get();
-        
         let updateData = { name: newName, team: newTeam };
         if (fileInput.files && fileInput.files[0]) {
           updateData.logo = await convertFileToBase64(fileInput.files[0]);
         }
 
+        const playerRef = db.collection("tournaments").doc(activeTourneyId).collection("players").doc(id);
+        const docSnap = await playerRef.get();
         if (docSnap.exists) {
           await playerRef.update(updateData);
         } else {
