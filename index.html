@@ -86,7 +86,7 @@
   <header id="mainHeader" class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center space-x-3 space-x-reverse">
-        <!-- لوغو السيت الأصلي ثابث ومستقل -->
+        <!-- لوغو السيت الأصلي ثابث ومستقل نهائياً -->
         <img src="logo-star-league.png" alt="Star League Logo" class="w-10 h-10 object-contain rounded-full flex-shrink-0 border border-brand-primary/35" onerror="this.src='https://via.placeholder.com/40'">
         <div>
           <h1 class="text-xl font-black tracking-wider gradient-text uppercase">STAR LEAGUE</h1>
@@ -140,7 +140,10 @@
       <div class="bg-brand-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-right">
-          <img src="logo-star-league.png" alt="Star League Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain rounded-full border border-brand-primary/40" onerror="this.src='https://via.placeholder.com/96'">
+          <!-- لوغو البطولة النشطة يظهر هنا كشعار خاص بها -->
+          <div id="dashTourneyLogoContainer" class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center bg-brand-dark rounded-full border border-brand-primary/40 overflow-hidden flex-shrink-0">
+            <i class="fa-solid fa-trophy text-3xl text-brand-primary"></i>
+          </div>
           <div class="space-y-3">
             <span class="bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               <i class="fa-solid fa-trophy"></i> البطولة الحالية الملعبة: <span id="dashActiveTourneyName" class="text-white">جاري التحميل...</span>
@@ -297,12 +300,34 @@
 
     <!-- TAB 7: ADMIN -->
     <section id="sec-admin" class="hidden space-y-6">
+      
+      <!-- لوحة توليد المجموعات والمباريات وتحديد عدد الجولات -->
       <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
         <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
-          <i class="fa-solid fa-shield-halved"></i> لوحة الأدمن - إعدادات وقوانين الدوري
+          <i class="fa-solid fa-gears"></i> توليد المجموعات وجدولة المباريات (Generate Groups & Matches)
         </h3>
-        <p class="text-xs text-brand-muted">تعديل محتوى أخبار الدوري وقوانين وشروط البطولات مباشرة لتظهر في الصفحة الرئيسية.</p>
+        <p class="text-xs text-brand-muted">تحكم في عدد المجموعات، عدد الجولات، وقم بتوليد المباريات تلقائياً للبطولة النشطة.</p>
         
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block text-xs text-brand-muted mb-1 font-bold">عدد المجموعات:</label>
+            <input type="number" id="adminGroupsCount" min="1" max="8" value="2" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs text-brand-muted mb-1 font-bold">عدد الجولات (Rounds):</label>
+            <input type="number" id="adminRoundsCount" min="1" max="10" value="2" class="w-full bg-brand-dark border border-brand-border rounded-lg p-3 text-xs text-white focus:outline-none">
+          </div>
+        </div>
+
+        <button onclick="generateTournamentMatches()" class="w-full gradient-bg text-brand-dark font-bold p-3 rounded-lg text-xs hover:opacity-90 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> توليد المباريات والجداول أوتوماتيكياً
+        </button>
+      </div>
+
+      <div class="bg-brand-card rounded-2xl p-6 border border-brand-border shadow-xl space-y-4">
+        <h3 class="text-xl font-bold text-brand-primary flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved"></i> إعدادات وقوانين الدوري والأخبار
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
           <div class="space-y-2">
             <label class="block text-xs text-brand-muted font-bold">تعديل أخبار الدوري والإعلانات:</label>
@@ -370,7 +395,7 @@
     </div>
   </div>
 
-  <!-- Modal تعديل البطولة (اسم + لوغو) -->
+  <!-- Modal تعديل البطولة -->
   <div id="editTournamentModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
       <h3 class="text-lg font-bold text-brand-primary flex items-center gap-2">
@@ -450,6 +475,8 @@
       if (tabId === 'admin') {
         renderAdminPlayersList();
         loadSettingsToAdminInputs();
+      } else if (tabId === 'schedule') {
+        loadScheduleMatches();
       }
     }
 
@@ -475,10 +502,12 @@
           const isActive = (t.id === activeTourneyId);
           selectHtml += `<option value="${t.id}" ${isActive ? 'selected' : ''}>${t.name}</option>`;
           
+          const logoDisplay = t.logo ? `<img src="${t.logo}" class="w-10 h-10 object-contain rounded-full border border-brand-primary/30" onerror="this.style.display='none'">` : `<div class="w-10 h-10 rounded-full bg-brand-border flex items-center justify-center text-xs font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i></div>`;
+          
           html += `
             <div class="bg-brand-dark p-4 rounded-xl border ${isActive ? 'border-brand-primary' : 'border-brand-border'} flex flex-col md:flex-row justify-between items-center gap-4">
               <div class="flex items-center gap-3">
-                ${t.logo ? `<img src="${t.logo}" class="w-10 h-10 object-contain rounded-full border border-brand-primary/30" onerror="this.style.display='none'">` : `<div class="w-10 h-10 rounded-full bg-brand-border flex items-center justify-center text-xs font-bold text-brand-primary"><i class="fa-solid fa-trophy"></i></div>`}
+                ${logoDisplay}
                 <div>
                   <h4 class="font-bold text-white text-sm">${t.name}</h4>
                   <p class="text-[10px] text-brand-muted">ID: ${t.id}</p>
@@ -504,6 +533,13 @@
         if (currentTourney) {
           document.getElementById('currentTourneyNameDisp').innerText = currentTourney.name;
           document.getElementById('dashActiveTourneyName').innerText = currentTourney.name;
+          
+          const logoContainer = document.getElementById('dashTourneyLogoContainer');
+          if (currentTourney.logo) {
+            logoContainer.innerHTML = `<img src="${currentTourney.logo}" class="w-full h-full object-contain rounded-full" onerror="this.style.display='none'">`;
+          } else {
+            logoContainer.innerHTML = `<i class="fa-solid fa-trophy text-3xl text-brand-primary"></i>`;
+          }
         } else {
           document.getElementById('currentTourneyNameDisp').innerText = 'Star League';
           document.getElementById('dashActiveTourneyName').innerText = 'لا توجد بطولة نشطة';
@@ -522,8 +558,7 @@
       activeTourneyId = id;
       localStorage.setItem('star_active_tourney', id);
       loadTournaments();
-      // تحديث مباشر للواجهة وتنبيه سلس
-      alert("تم تفعيل البطولة بنجاح وتم تحديث الواجهة الرئيسية! 🏆");
+      alert("تم تفعيل البطولة بنجاح وتحديث الواجهة الرئيسية! 🏆");
     }
 
     function openEditTournamentModal(id, name) {
@@ -547,14 +582,13 @@
       try {
         let updateData = { name: newName };
         if (fileInput.files && fileInput.files[0]) {
-          const base64Logo = await convertFileToBase64(fileInput.files[0]);
-          updateData.logo = base64Logo;
+          updateData.logo = await convertFileToBase64(fileInput.files[0]);
         }
 
         await db.collection("tournaments").doc(id).update(updateData);
 
         closeEditTournamentModal();
-        alert("تم تعديل معلومات البطولة بنجاح! 🏆");
+        alert("تم تعديل معلومات البطولة والشعار بنجاح! 🏆");
         loadTournaments();
       } catch (err) {
         console.error("Error updating tournament:", err);
@@ -618,6 +652,133 @@
         console.error("Error saving rules:", e);
         alert("فشل حفظ القوانين.");
       }
+    }
+
+    // توليد المباريات والجداول والـ Rounds أوتوماتيكياً
+    async function generateTournamentMatches() {
+      if (!activeTourneyId) {
+        alert("المرجو اختيار أو تفعيل بطولة أولاً!");
+        return;
+      }
+      
+      const groupsCount = parseInt(document.getElementById('adminGroupsCount').value) || 2;
+      const roundsCount = parseInt(document.getElementById('adminRoundsCount').value) || 2;
+
+      try {
+        const snapshot = await db.collection("tournaments").doc(activeTourneyId).collection("players").get();
+        let tourneyPlayers = [];
+        snapshot.forEach(doc => {
+          tourneyPlayers.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (tourneyPlayers.length < 2) {
+          alert("لا توجد عدد كافٍ من اللاعبين لتوليد المباريات (على الأقل لاعبين اثنين).");
+          return;
+        }
+
+        const matchesRef = db.collection("tournaments").doc(activeTourneyId).collection("matches");
+        
+        // مسح المباريات القديمة إن وجدت
+        const oldMatches = await matchesRef.get();
+        const batch = db.batch();
+        oldMatches.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        // توليد مباريات بسيطة لكل جولة بين اللاعبين
+        let newBatch = db.batch();
+        for (let r = 1; r <= roundsCount; r++) {
+          for (let i = 0; i < tourneyPlayers.length; i += 2) {
+            if (i + 1 < tourneyPlayers.length) {
+              const p1 = tourneyPlayers[i];
+              const p2 = tourneyPlayers[i + 1];
+              const newMatchRef = matchesRef.doc();
+              newBatch.set(newMatchRef, {
+                round: `Round ${r}`,
+                player1: p1.name,
+                player1Logo: p1.logo || "",
+                player2: p2.name,
+                player2Logo: p2.logo || "",
+                score1: 0,
+                score2: 0,
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          }
+        }
+        await newBatch.commit();
+        alert(`تم توليد المباريات وجداول ${roundsCount} جولات بنجاح! ⚽🔥`);
+        switchTab('schedule');
+      } catch (err) {
+        console.error("Error generating matches:", err);
+        alert("حدث خطأ أثناء توليد المباريات.");
+      }
+    }
+
+    async function loadScheduleMatches() {
+      if (!activeTourneyId) return;
+      try {
+        const snapshot = await db.collection("tournaments").doc(activeTourneyId).collection("matches").get();
+        let matches = [];
+        let roundsSet = new Set();
+        
+        snapshot.forEach(doc => {
+          const m = { id: doc.id, ...doc.data() };
+          matches.push(m);
+          if (m.round) roundsSet.add(m.round);
+        });
+
+        // رسم شريط الجولات Rounds
+        let roundsHtml = '';
+        const sortedRounds = Array.from(roundsSet).sort();
+        if (sortedRounds.length === 0) sortedRounds.push("Round 1");
+
+        sortedRounds.forEach((rnd, idx) => {
+          roundsHtml += `<button onclick="filterMatchesByRound('${rnd}')" class="px-4 py-2 ${idx === 0 ? 'bg-brand-primary/20 text-brand-primary border-brand-primary/50' : 'bg-brand-dark text-brand-muted border-brand-border'} border rounded-xl font-bold text-xs whitespace-nowrap transition">${rnd}</button>`;
+        });
+        document.getElementById('roundsNavBar').innerHTML = roundsHtml;
+
+        renderMatchesCards(matches, sortedRounds[0]);
+      } catch (e) {
+        console.error("Error loading schedule:", e);
+      }
+    }
+
+    function renderMatchesCards(matches, targetRound) {
+      const container = document.getElementById('matchesContainer');
+      const filtered = matches.filter(m => (m.round || "Round 1") === targetRound);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-sm text-brand-muted col-span-2 text-center py-6">لا توجد مباريات مجدولة في هذه الجولة.</p>';
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(m => {
+        const p1Logo = m.player1Logo ? `<img src="${m.player1Logo}" class="w-6 h-6 object-contain rounded-full inline-block ml-1">` : '';
+        const p2Logo = m.player2Logo ? `<img src="${m.player2Logo}" class="w-6 h-6 object-contain rounded-full inline-block ml-1">` : '';
+
+        html += `
+          <div class="bg-brand-dark p-4 rounded-xl border border-brand-border flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2 flex-1 justify-end text-right">
+              <span class="text-xs font-bold text-white">${m.player1 || 'لاعب 1'}</span>
+              ${p1Logo}
+            </div>
+            <div class="px-3 py-1 bg-brand-card rounded border border-brand-border text-xs font-black text-brand-primary">
+              ${m.score1} : ${m.score2}
+            </div>
+            <div class="flex items-center gap-2 flex-1 text-left">
+              ${p2Logo}
+              <span class="text-xs font-bold text-white">${m.player2 || 'لاعب 2'}</span>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function filterMatchesByRound(roundName) {
+      loadScheduleMatches();
     }
 
     async function loadPlayers() {
@@ -758,7 +919,7 @@
     }
 
     async function savePlayerChanges() {
-      const id = document.getElementById('editPlayerId5').value || document.getElementById('editPlayerId').value;
+      const id = document.getElementById('editPlayerId').value;
       const newName = document.getElementById('modalPlayerName').value.trim();
       const newTeam = document.getElementById('modalTeamName').value.trim();
       const fileInput = document.getElementById('modalPlayerLogoFile');
@@ -847,7 +1008,6 @@
           const snapshot = await matchesRef.where("status", "==", "pending").get();
           if (!snapshot.empty) {
             const batch = db.batch();
-            snapshot.fired = true;
             snapshot.forEach((doc) => {
               const match = doc.data();
               batch.update(doc.ref, {
@@ -867,7 +1027,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       loadTournaments();
-      setTimeout(checkAndResolveFofeits = () => { checkAndResolveForfeitsAt1145(); }, 2000);
+      setTimeout(checkAndResolveForfeitsAt1145, 2000);
       setInterval(checkAndResolveForfeitsAt1145, 60000);
     });
   </script>
